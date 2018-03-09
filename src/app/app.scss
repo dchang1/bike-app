@@ -14,3 +14,14 @@
 // To declare rules for a specific mode, create a child rule
 // for the .md, .ios, or .wp mode classes. The mode class is
 // automatically applied to the <body> element in the app.
+
+.floating {
+  width: 100%;
+  border: none;
+  padding: 10px;
+  font-size: 18px;
+  outline: none;
+  border-bottom: 2px solid #e4e4e4 !important;
+  box-sizing: border-box;
+  margin: 10px 0;
+}

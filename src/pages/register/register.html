@@ -1,0 +1,36 @@
+<ion-header>
+  <ion-navbar>
+    <ion-title>Sign Up</ion-title>
+  </ion-navbar>
+</ion-header>
+
+<ion-content padding>
+  <ion-slides>
+
+    <ion-slide>
+      <input type="text" class="floating" [(ngModel)]="access_code" placeholder="Access code">
+      <p class="error" *ngIf="error_message">{{ error_message }}</p>
+    </ion-slide>
+
+    <ion-slide>
+      <input type="text" class="floating" [(ngModel)]="firstName" placeholder="First name">
+      <input type="text" class="floating" [(ngModel)]="lastName" placeholder="Last name">
+      <input type="text" class="floating" [(ngModel)]="username" placeholder="Username">
+      <input type="password" class="floating" [(ngModel)]="password_1" placeholder="Password">
+      <input type="password" class="floating" [(ngModel)]="password_2" placeholder="Password confirmation">
+      <input type="text" class="floating" [(ngModel)]="email" placeholder="Email address">
+      <input type="number" class="floating" [(ngModel)]="numFamily" placeholder="# of family members">
+      <p class="error" *ngIf="error_message">{{ error_message }}</p>
+    </ion-slide>
+
+    <ion-slide>
+      <h2>Slide 3</h2>
+    </ion-slide>
+
+  </ion-slides>
+</ion-content>
+
+<ion-footer padding>
+  <button ion-button full (click)="next()" *ngIf="slides.getActiveIndex() == 0">Next</button>
+  <button ion-button full (click)="signUp()" *ngIf="slides.getActiveIndex() == 1">Sign Up</button>
+</ion-footer>

@@ -1,0 +1,5 @@
+page-login {
+  p.error {
+    color: map-get($colors, 'danger');
+  }
+}

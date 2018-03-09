@@ -1,14 +1,15 @@
 <ion-header>
   <ion-navbar>
-    <ion-title>
-      Ionic Blank
-    </ion-title>
+    <button ion-button menuToggle><ion-icon name="menu"></ion-icon></button>
+    <ion-title>Rock</ion-title>
   </ion-navbar>
 </ion-header>
 
 <ion-content padding>
-  The world is your oyster.
-  <p>
-    If you get lost, the <a href="http://ionicframework.com/docs/v2">docs</a> will be your guide.
-  </p>
+  <agm-map [latitude]="39.905022" [longitude]="-75.354034" [zoom]="16" [streetViewControl]="false">
+    <agm-marker [latitude]="39.905022" [longitude]="-75.354034"></agm-marker>
+    <agm-marker [latitude]="latitude" [longitude]="longitude" [iconUrl]="'https://i.stack.imgur.com/VpVF8.png'"></agm-marker>
+
+  </agm-map>
+
 </ion-content>
