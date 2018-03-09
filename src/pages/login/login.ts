@@ -6,7 +6,7 @@ import { NavController, Slides, LoadingController, AlertController } from 'ionic
 import { IAMService } from '../../services/iam.service';
 import { ConfigService } from '../../services/config.service';
 
-import { TabsPage } from '../tabs/tabs';
+import { HomePage } from '../../pages/home/home';
 
 @Component({
   selector: 'page-login',
@@ -37,7 +37,7 @@ export class LoginPage implements OnInit {
         content: 'Please wait...'
       });
       loading.present();*/
-      this.navCtrl.setRoot(TabsPage);
+      this.navCtrl.setRoot(HomePage);
       // make request to API to check login details
       /*
       this.httpClient.post(this.config.getAPILocation() + '/login', {username: this.username, password: this.password}, {responseType: 'text'}).subscribe(data => {
