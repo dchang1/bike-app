@@ -37,7 +37,6 @@ import { QRScanner, QRScannerStatus } from '@ionic-native/qr-scanner';
     BrowserModule,
     QRCodeModule,
     HttpClientModule,
-    QRScanner, 
     IonicModule.forRoot(MyApp, {
       mode: 'md'
     }),
@@ -59,6 +58,7 @@ import { QRScanner, QRScannerStatus } from '@ionic-native/qr-scanner';
     ConfigService,
     StatusBar,
     SplashScreen,
+    QRScanner,
     {provide: ErrorHandler, useClass: IonicErrorHandler}
   ]
 })

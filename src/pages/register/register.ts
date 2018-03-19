@@ -40,7 +40,8 @@ export class RegisterPage implements OnInit {
 
     // if we are on the first slide, attempt to verify access code
     if (this.slides.getActiveIndex() == 0) {
-
+      this.slides.slideNext();
+      /*
       // if the input isn't blank
       if (this.access_code) {
         // clear error message
@@ -72,7 +73,7 @@ export class RegisterPage implements OnInit {
         });
       } else {
         this.error_message = "Please fill out all fields";
-      }
+      }*/
     }
   }
 

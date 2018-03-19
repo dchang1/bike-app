@@ -10,7 +10,7 @@ import { QRScanner, QRScannerStatus } from '@ionic-native/qr-scanner';
 
 //constructor(private qrScanner: QRScanner) { }
 
-
+/*
 // Optionally request the permission early
 this.qrScanner.prepare()
   .then((status: QRScannerStatus) => {
@@ -40,7 +40,7 @@ this.qrScanner.prepare()
      }
   })
   .catch((e: any) => console.log('Error is', e));
-
+*/
 
 @Component({
   selector: 'page-home',
