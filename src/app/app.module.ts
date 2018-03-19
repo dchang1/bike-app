@@ -14,6 +14,10 @@ import { HomePage } from '../pages/home/home';
 import { LandingPage } from '../pages/landing/landing';
 import { LoginPage } from '../pages/login/login';
 import { RegisterPage } from '../pages/register/register';
+import { PaymentPage } from '../pages/payment/payment';
+import { RideHistoryPage } from '../pages/ridehistory/ridehistory';
+import { SettingsPage } from '../pages/settings/settings';
+import { HelpPage } from '../pages/help/help';
 
 import { IAMService } from '../services/iam.service';
 import { ConfigService } from '../services/config.service';
@@ -31,7 +35,11 @@ import { QRScanner, QRScannerStatus } from '@ionic-native/qr-scanner';
     HomePage,
     LandingPage,
     LoginPage,
-    RegisterPage
+    RegisterPage,
+    PaymentPage,
+    RideHistoryPage,
+    SettingsPage,
+    HelpPage
   ],
   imports: [
     BrowserModule,
@@ -51,7 +59,11 @@ import { QRScanner, QRScannerStatus } from '@ionic-native/qr-scanner';
     HomePage,
     LandingPage,
     LoginPage,
-    RegisterPage
+    RegisterPage,
+    PaymentPage,
+    RideHistoryPage,
+    SettingsPage,
+    HelpPage
   ],
   providers: [
     IAMService,

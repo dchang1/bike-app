@@ -5,10 +5,10 @@ import { LoginPage } from '../login/login';
 import { RegisterPage } from '../register/register';
 
 @Component({
-  selector: 'page-landing',
-  templateUrl: 'landing.html'
+  selector: 'page-settings',
+  templateUrl: 'settings.html'
 })
-export class LandingPage {
+export class SettingsPage {
 
   constructor(private navCtrl: NavController) {}
 
