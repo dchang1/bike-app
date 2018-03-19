@@ -24,4 +24,16 @@ export class TabsPage {
     this.iam.setCurrentUser(null);
     this.navCtrl.setRoot(LandingPage);
   }
+
+  payment(){
+
+  }
+
+  setting() {
+
+  }
+
+  help() {
+  
+  }
 }

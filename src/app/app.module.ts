@@ -18,6 +18,12 @@ import { RegisterPage } from '../pages/register/register';
 import { IAMService } from '../services/iam.service';
 import { ConfigService } from '../services/config.service';
 
+//QR scanner
+import { Component } from '@angular/core';
+import { NavController} from 'ionic-angular';
+import { QRScanner, QRScannerStatus } from '@ionic-native/qr-scanner';
+
+
 @NgModule({
   declarations: [
     MyApp,
@@ -31,6 +37,7 @@ import { ConfigService } from '../services/config.service';
     BrowserModule,
     QRCodeModule,
     HttpClientModule,
+    QRScanner, 
     IonicModule.forRoot(MyApp, {
       mode: 'md'
     }),
