@@ -5,7 +5,7 @@ export class ConfigService {
 
   // simple config file to store data that can be easily changed
 
-  api_location = "http://localhost:3000";
+  api_location = "https://ft-hlee6.oraclecloud2.dreamfactory.com/api/v2";
 
   constructor() {}
 

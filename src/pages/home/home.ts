@@ -1,9 +1,15 @@
 import { Component, OnInit } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Http, Headers, Response, URLSearchParams } from '@angular/http';
+import { NavController, Slides, LoadingController, AlertController } from 'ionic-angular';
 
 import { ConfigService } from '../../services/config.service';
 import { IAMService } from '../../services/iam.service';
+
+import { PaymentPage } from '../../pages/payment/payment';
+import { SettingsPage } from '../../pages/settings/settings';
+import { RideHistoryPage } from '../../pages/ridehistory/ridehistory';
+import { HelpPage } from '../../pages/help/help';
 
 // QR scanner
 import { QRScanner, QRScannerStatus } from '@ionic-native/qr-scanner';
@@ -47,12 +53,24 @@ this.qrScanner.prepare()
   templateUrl: 'home.html'
 })
 export class HomePage implements OnInit {
-  constructor(private httpClient: HttpClient, private config: ConfigService, private iam: IAMService) {
+  constructor(private navCtrl: NavController, private httpClient: HttpClient, private config: ConfigService, private iam: IAMService) {
   }
   ngOnInit() {
     navigator.geolocation.getCurrentPosition(position => {
       //this.latitude = position.coords.latitude;
       //this.longitude = position.coords.longitude;
     });
+  }
+  payment() {
+    this.navCtrl.setRoot(PaymentPage);
+  }
+  help() {
+    this.navCtrl.setRoot(HelpPage);
+  }
+  settings() {
+    this.navCtrl.setRoot(SettingsPage);
+  }
+  ridehistory() {
+    this.navCtrl.setRoot(RideHistoryPage);
   }
 }
