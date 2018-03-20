@@ -6,8 +6,6 @@ import { NavController, Slides, LoadingController, AlertController } from 'ionic
 import { ConfigService } from '../../services/config.service';
 import { IAMService } from '../../services/iam.service';
 
-import { TabsPage } from '../tabs/tabs';
-
 @Component({
   selector: 'page-register',
   templateUrl: 'register.html'

@@ -9,7 +9,6 @@ import { QRCodeModule } from 'angular2-qrcode';
 import { AgmCoreModule } from '@agm/core';
 
 import { MyApp } from './app.component';
-import { TabsPage } from '../pages/tabs/tabs';
 import { HomePage } from '../pages/home/home';
 import { LandingPage } from '../pages/landing/landing';
 import { LoginPage } from '../pages/login/login';
@@ -31,7 +30,6 @@ import { QRScanner, QRScannerStatus } from '@ionic-native/qr-scanner';
 @NgModule({
   declarations: [
     MyApp,
-    TabsPage,
     HomePage,
     LandingPage,
     LoginPage,
@@ -55,7 +53,6 @@ import { QRScanner, QRScannerStatus } from '@ionic-native/qr-scanner';
   bootstrap: [IonicApp],
   entryComponents: [
     MyApp,
-    TabsPage,
     HomePage,
     LandingPage,
     LoginPage,
