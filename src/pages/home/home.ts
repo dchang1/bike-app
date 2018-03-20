@@ -10,7 +10,7 @@ import { PaymentPage } from '../../pages/payment/payment';
 import { SettingsPage } from '../../pages/settings/settings';
 import { RideHistoryPage } from '../../pages/ridehistory/ridehistory';
 import { HelpPage } from '../../pages/help/help';
-
+import { LandingPage } from '../../pages/landing/landing'
 // QR scanner
 import { QRScanner, QRScannerStatus } from '@ionic-native/qr-scanner';
 
@@ -72,5 +72,10 @@ export class HomePage implements OnInit {
   }
   ridehistory() {
     this.navCtrl.setRoot(RideHistoryPage);
+  }
+  logout() {
+    // remove the user from localStorage and move them to the landing page
+    this.iam.setCurrentUser(null);
+    this.navCtrl.setRoot(LandingPage);
   }
 }
