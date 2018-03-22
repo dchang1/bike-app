@@ -116,7 +116,7 @@ export class RegisterPage implements OnInit {
             this.iam.setCurrentUser(data);
 
             // move them to the main page
-            this.navCtrl.setRoot(TabsPage);
+            //this.navCtrl.setRoot(TabsPage);
           } else {
             let alert = this.alertCtrl.create({
               title: 'Error',
