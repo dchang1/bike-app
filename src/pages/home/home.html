@@ -1,4 +1,5 @@
 <ion-header>
+
   <ion-navbar>
     <button ion-button menuToggle><ion-icon name="menu"></ion-icon></button>
     <ion-title>Rock</ion-title>
@@ -23,6 +24,7 @@
 <ion-nav #mycontent></ion-nav>
 
 <ion-content padding>
+  <button ion-button color="dark" full round (click)="qrScan()">Scan</button>
   <agm-map [latitude]="39.905022" [longitude]="-75.354034" [zoom]="16" [streetViewControl]="false">
     <agm-marker [latitude]="39.905022" [longitude]="-75.354034"></agm-marker>
     <agm-marker [latitude]="latitude" [longitude]="longitude" [iconUrl]="'https://i.stack.imgur.com/VpVF8.png'"></agm-marker>
