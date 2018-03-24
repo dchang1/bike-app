@@ -25,7 +25,8 @@ import { ConfigService } from '../services/config.service';
 import { Component } from '@angular/core';
 import { NavController} from 'ionic-angular';
 import { QRScanner, QRScannerStatus } from '@ionic-native/qr-scanner';
-
+// barcode
+import {BarcodeScanner} from '@ionic-native/barcode-scanner';
 
 @NgModule({
   declarations: [
@@ -67,6 +68,7 @@ import { QRScanner, QRScannerStatus } from '@ionic-native/qr-scanner';
     ConfigService,
     StatusBar,
     SplashScreen,
+    BarcodeScanner,
     QRScanner,
     {provide: ErrorHandler, useClass: IonicErrorHandler}
   ]

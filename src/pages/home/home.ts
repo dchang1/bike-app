@@ -13,7 +13,7 @@ import { HelpPage } from '../../pages/help/help';
 import { LandingPage } from '../../pages/landing/landing'
 // QR scanner
 import { QRScanner, QRScannerStatus } from '@ionic-native/qr-scanner';
-
+import {BarcodeScanner,BarcodeScannerOptions} from '@ionic-native/barcode-scanner';
 
      
 @Component({
@@ -21,13 +21,17 @@ import { QRScanner, QRScannerStatus } from '@ionic-native/qr-scanner';
   templateUrl: 'home.html'
 })
 export class HomePage implements OnInit {
-  constructor(private navCtrl: NavController, private httpClient: HttpClient, private config: ConfigService, private iam: IAMService,private qrScanner: QRScanner) {
+  latitude;
+  longitude;
+  options: BarcodeScannerOptions;
+  results: {};
+  constructor(private navCtrl: NavController, private httpClient: HttpClient, private config: ConfigService, private iam: IAMService,private qrScanner: QRScanner, private barcode: BarcodeScanner) {
   }
   ngOnInit() {
     navigator.geolocation.getCurrentPosition(position => {
-      //this.latitude = position.coords.latitude;
-      //this.longitude = position.coords.longitude;
-    });
+      this.latitude = position.coords.latitude;
+      this.longitude = position.coords.longitude;
+    })
   }
   payment() {
     this.navCtrl.setRoot(PaymentPage);
@@ -46,20 +50,60 @@ export class HomePage implements OnInit {
     this.iam.setCurrentUser(null);
     this.navCtrl.setRoot(LandingPage);
   }
-  qrScan(status: QRScannerStatus) {
-       // start scanning
-       let scanSub = this.qrScanner.scan().subscribe((text: string) => {
-         console.log('Scanned something', text);
-
-         this.qrScanner.hide(); // hide camera preview
-         scanSub.unsubscribe(); // stop scanning
-       });
-
-       // show camera preview
-       this.qrScanner.show();
-
-       // wait for user to scan something, then the observable callback will be called
+  async qrscanner(){
+    this.results = await this.qrScanner.scan();
+    console.log(this.results)
 
   }
+  async scanBarcode(){
+
+    this.options = {
+      prompt: "Scan a qr code!"
+    }
+    
+    this.results = await this.barcode.scan();
+    console.log(this.results)
+  }
+
+/*
+  qrscanner() {
+    // Optionally request the permission early
+    this.qrScanner.prepare()
+      .then((status: QRScannerStatus) => {
+        if (status.authorized) {
+          // camera permission was granted
+          alert('authorized');
+
+          // start scanning
+          let scanSub = this.qrScanner.scan().subscribe((text: string) => {
+            console.log('Scanned something', text);
+            alert(text);
+            this.qrScanner.hide(); // hide camera preview
+            scanSub.unsubscribe(); // stop scanning
+          });
+
+          this.qrScanner.resumePreview();
+
+          // show camera preview
+          this.qrScanner.show();
+
+          // wait for user to scan something, then the observable callback will be called
+        } else if (status.denied) {
+            alert('denied');
+            // camera permission was permanently denied
+            // you must use QRScanner.openSettings() method to guide the user to the settings page
+            // then they can grant the permission from there
+        } else {
+          // permission was denied, but not permanently. You can ask for permission again at a later time.
+          alert('else');
+        }
+      })
+      .catch((e: any) => {
+        alert('Error is' + e);
+      });
+
+  }
+  */
+
 
 }
