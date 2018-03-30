@@ -6,81 +6,35 @@ import { NavController, Slides, LoadingController, AlertController } from 'ionic
 import { ConfigService } from '../../services/config.service';
 import { IAMService } from '../../services/iam.service';
 
+import { HomePage } from '../../pages/home/home'
+import { LoginPage } from '../../pages/login/login'
+
 @Component({
   selector: 'page-register',
   templateUrl: 'register.html'
 })
-export class RegisterPage implements OnInit {
-  @ViewChild(Slides) slides: Slides;
+export class RegisterPage {
 
   // data the hooks up to the input models
-  access_code: string = "";
   firstName: string = "";
   lastName: string = "";
-  username: string = "";
+  email: string = "";
   password_1: string = "";
   password_2: string = "";
-  email: string = "";
-  numFamily: string = "";
-
+  birthday: string = "";
   error_message: string = "";
 
   constructor(private navCtrl: NavController, private loadingCtrl: LoadingController, private httpClient: HttpClient, private alertCtrl: AlertController, private config: ConfigService, private iam: IAMService) {}
 
-  ngOnInit() {
-    // lock the slides so the user can't swipe them
-    this.slides.lockSwipes(true);
-  }
-
-  next() {
-    // unlock slides temporarily so we can manually move them
-    this.slides.lockSwipes(false);
-
-    // if we are on the first slide, attempt to verify access code
-    if (this.slides.getActiveIndex() == 0) {
-      this.slides.slideNext();
-      /*
-      // if the input isn't blank
-      if (this.access_code) {
-        // clear error message
-        this.error_message = "";
-
-        // display loading
-        let loading = this.loadingCtrl.create({
-          content: 'Please wait...'
-        });
-        loading.present();
-
-        // make request to verify access code
-        this.httpClient.post(this.config.getAPILocation() + '/accessCodes', {code: this.access_code}, {responseType: 'text'}).subscribe(data => {
-          loading.dismiss();
-
-          // if the response is what we want, move to next part of signup
-          if (data == "valid code") {
-            this.slides.slideNext();
-          } else {
-            // otherwise, display error message
-            let alert = this.alertCtrl.create({
-              title: 'Error',
-              subTitle: 'Your access code was not valid.',
-              buttons: ['OK']
-            });
-            alert.present();
-          }
-          this.slides.lockSwipes(true);
-        });
-      } else {
-        this.error_message = "Please fill out all fields";
-      }*/
-    }
-  }
-
   // main method called when users attemts to sign up
   signUp() {
     // make sure user typed something into all inputs
-    if (this.firstName && this.lastName && this.username && this.password_1 && this.password_2 && this.email && this.numFamily) {
+    if (this.firstName && this.lastName && this.email && this.password_1 && this.password_2) {
       // all fields were filled out
-      if (this.password_1 == this.password_2) {
+      if(this.password_1.length<6) {
+        this.error_message = "Password must be at least 6 characters long.";
+      }
+      else if (this.password_1 == this.password_2) {
         // password confirmations were the same
 
         // clear error message
@@ -94,33 +48,96 @@ export class RegisterPage implements OnInit {
 
         // setup body to post to API
         let body = {
-          firstName: this.firstName,
-          lastName: this.lastName,
-          username: this.username,
-          password: this.password_1,
-          email: this.email,
-          code: this.access_code,
-          numFamily: this.numFamily
+          first_name: this.firstName,
+          last_name: this.lastName,
+          new_password: this.password_1,
+          email: this.email
         }
-
+        console.log(body);
+        let birthdayArray = this.birthday.split('-');
+        let year = birthdayArray[0];
+        let month = birthdayArray[1];
+        let day = birthdayArray[2];
         // post data to API endpoint to signup
-        this.httpClient.post(this.config.getAPILocation() + "/user/signup", body, {responseType: 'text'}).subscribe(data => {
-          loading.dismiss();
+
+        this.httpClient.post(this.config.getAPILocation() + "/user/register", body).subscribe(data => {
 
           // if we got a response
           if (data) {
+
+            this.httpClient.post(this.config.getAPILocation() + '/user/session', {email: this.email, password: this.password_1, remember_me: true}).subscribe(data => {
+
+              // if there is a successful response
+              if (data) {
+                // remove surrounding quotes
+                //data = data.substring(1, data.length - 1);
+                console.log(data);
+                // set the current user in localstorage to this user
+
+                this.iam.setCurrentUser(data);
+
+                body = {
+                  "resource": [
+                    {
+                      "id": localStorage.getItem('userID'),
+                      "email": this.email,
+                      "firstName": this.firstName,
+                      "lastName": this.lastName,
+                      "birthYear": year,
+                      "birthMonth": month,
+                      "birthDay": day,
+                      "campusName": "Swarthmore College"
+                    }
+                  ],
+                  "ids": [
+                    0
+                  ],
+                  "filter": "string",
+                  "params": [
+                    "string"
+                  ]
+                }
+                this.httpClient.post(this.config.getAPILocation() + '/rock/_table/userList?' + this.iam.getTokens(), body).subscribe(data => {
+                  loading.dismiss();
+                  console.log(data);
+                  console.log(data.resource[0].id);
+                  if(data.resource[0].id==localStorage.getItem('userID')) {
+                    let alert = this.alertCtrl.create({
+                      title: 'Account Created!',
+                      subTitle: 'Welcome to Rock!',
+                      buttons: ['OK']
+                    });
+                    alert.present();
+                    // move them to the main page
+                    this.navCtrl.setRoot(HomePage);
+                  } else {
+                    let alert = this.alertCtrl.create({
+                      title: 'Error',
+                      subTitle: 'Sign up failed.',
+                      buttons: ['OK']
+                    });
+                    alert.present();
+                  }
+                })
+              } else {
+                // display error that login was unsuccessful
+                let alert = this.alertCtrl.create({
+                  title: 'Error',
+                  subTitle: 'Your login information was incorrect.',
+                  buttons: ['OK']
+                });
+                alert.present();
+              }
+            }, error => {
+              loading.dismiss();
+              let alert = this.alertCtrl.create({
+                title: 'Error',
+                subTitle: 'Your login information was incorrect.',
+                buttons: ['OK']
+              });
+              alert.present();
+            });
             // successful user registration, data equals user id
-            data = data.substring(1, data.length - 1);
-
-            // set the current localStorage user_id so we can remember them for login
-            this.iam.setCurrentUser(data);
-
-            // move them to the main page
-<<<<<<< HEAD
-            this.navCtrl.setRoot(HomePage);
-=======
-            //this.navCtrl.setRoot(TabsPage);
->>>>>>> f03657f863049f0a73e00f40517af54269e88ba4
           } else {
             let alert = this.alertCtrl.create({
               title: 'Error',
@@ -129,6 +146,14 @@ export class RegisterPage implements OnInit {
             });
             alert.present();
           }
+        }, error => {
+          loading.dismiss();
+          let alert = this.alertCtrl.create({
+            title: 'Error',
+            subTitle: 'Email already taken.',
+            buttons: ['OK']
+          });
+          alert.present();
         });
 
       } else {

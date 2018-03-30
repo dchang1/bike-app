@@ -1,7 +1,52 @@
+<ion-header>
+  <ion-navbar>
+    <ion-buttons left>
+            <button ion-button icon-only (click)="back()">
+                <ion-icon name="arrow-back"></ion-icon>
+            </button>
+        </ion-buttons>
+    <ion-title>Payment</ion-title>
+  </ion-navbar>
+</ion-header>
+
 <ion-content padding>
-  <img src="assets/logo.png" class="logo">
+  <ion-slides>
+
+    <ion-slide>
+      <button ion-button full (click)="paypal()">Paypal<ion-icon name="arrow-forward"></ion-icon></button>
+      <button ion-button full (click)="addPayment()">Add Payment Method<ion-icon name="arrow-forward"></ion-icon></button>
+      <button ion-button full (click)="getBikeData()">Get Bike Data<ion-icon name="arrow-forward"></ion-icon></button>
+      <button ion-button full (click)="getGeofence()">Get Geofence<ion-icon name="arrow-forward"></ion-icon></button>
+      <button ion-button full (click)="newRide()">New Ride<ion-icon name="arrow-forward"></ion-icon></button>
+      <button ion-button full (click)="unlockBike()">Unlock Bike<ion-icon name="arrow-forward"></ion-icon></button>
+
+
+    </ion-slide>
+
+    <ion-slide>
+      <input type="text" class="floating" [(ngModel)]="access_code" placeholder="Access code">
+      <p class="error" *ngIf="error_message">{{ error_message }}</p>
+    </ion-slide>
+
+    <ion-slide>
+      <input type="text" class="floating" [(ngModel)]="firstName" placeholder="First name">
+      <input type="text" class="floating" [(ngModel)]="lastName" placeholder="Last name">
+      <input type="text" class="floating" [(ngModel)]="username" placeholder="Username">
+      <input type="password" class="floating" [(ngModel)]="password_1" placeholder="Password">
+      <input type="password" class="floating" [(ngModel)]="password_2" placeholder="Password confirmation">
+      <input type="text" class="floating" [(ngModel)]="email" placeholder="Email address">
+      <input type="number" class="floating" [(ngModel)]="numFamily" placeholder="# of family members">
+      <p class="error" *ngIf="error_message">{{ error_message }}</p>
+    </ion-slide>
+
+    <ion-slide>
+      <h2>Slide 3</h2>
+    </ion-slide>
+
+  </ion-slides>
 </ion-content>
 
 <ion-footer padding>
-  <p> PAYMENT </p>
+  <button ion-button full (click)="next()" *ngIf="slides.getActiveIndex() == 0">Next</button>
+  <button ion-button full (click)="signUp()" *ngIf="slides.getActiveIndex() == 1">Sign Up</button>
 </ion-footer>

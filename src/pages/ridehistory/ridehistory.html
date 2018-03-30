@@ -1,14 +1,35 @@
-<ion-content padding>
-  <img src="assets/logo.png" class="logo">
-</ion-content>
+<ion-header>
+  <ion-navbar>
+    <ion-buttons left>
+            <button ion-button icon-only (click)="back()">
+                <ion-icon name="arrow-back"></ion-icon>
+            </button>
+        </ion-buttons>
+    <ion-title>Your Rides</ion-title>
+  </ion-navbar>
+</ion-header>
 
-<ion-footer padding>
-  <ion-row>
-    <ion-col>
-      <button ion-button full (click)="goToLogin()">Login</button>
-    </ion-col>
-    <ion-col>
-      <button ion-button full (click)="goToSignUp()">Sign Up</button>
-    </ion-col>
-  </ion-row>
-</ion-footer>
+<ion-content padding>
+
+  <ion-card *ngFor="let location of locations">
+    <agm-map [latitude]="location.latitude" [longitude]="location.longitude" [zoom]="16" [streetViewControl]="false">
+      <agm-marker [latitude]="location.latitude" [longitude]="location.longitude"></agm-marker>
+    </agm-map>
+
+    <ion-item>
+      <ion-icon name="football" item-start large></ion-icon>
+      <h2>{{ location.name }}</h2>
+      <p>{{ location.address }}</p>
+    </ion-item>
+
+    <ion-item>
+      <span item-left>{{ location.time }} mins</span>
+      <span item-left>({{ location.distance }}) miles</span>
+      <button ion-button icon-left clear item-end>
+        <ion-icon name="navigate"></ion-icon>
+        Start
+      </button>
+    </ion-item>
+
+  </ion-card>
+</ion-content>

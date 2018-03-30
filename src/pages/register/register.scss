@@ -2,4 +2,7 @@ page-register {
   p.error {
     color: map-get($colors, 'danger');
   }
+  ion-datetime.birthday {
+    padding-left:8px
+  }
 }

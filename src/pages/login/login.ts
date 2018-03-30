@@ -33,24 +33,24 @@ export class LoginPage implements OnInit {
       this.error_message = "";
 
       // display loader
-      /*let loading = this.loadingCtrl.create({
+      let loading = this.loadingCtrl.create({
         content: 'Please wait...'
       });
-      loading.present();*/
-      this.navCtrl.setRoot(HomePage);
+      loading.present();
+      //this.navCtrl.setRoot(HomePage);
       // make request to API to check login details
-      /*
-      this.httpClient.post(this.config.getAPILocation() + '/login', {username: this.username, password: this.password}, {responseType: 'text'}).subscribe(data => {
+
+      this.httpClient.post(this.config.getAPILocation() + '/user/session', {email: this.username, password: this.password, remember_me: true}).subscribe(data => {
+
         loading.dismiss();
 
         // if there is a successful response
         if (data) {
           // remove surrounding quotes
-          data = data.substring(1, data.length - 1);
-
+          //data = data.substring(1, data.length - 1);
+          console.log(data);
           // set the current user in localstorage to this user
           this.iam.setCurrentUser(data);
-
           // move to the main page
           this.navCtrl.setRoot(HomePage);
         } else {
@@ -62,7 +62,15 @@ export class LoginPage implements OnInit {
           });
           alert.present();
         }
-      });*/
+      }, error => {
+        loading.dismiss();
+        let alert = this.alertCtrl.create({
+          title: 'Error',
+          subTitle: 'Your login information was incorrect.',
+          buttons: ['OK']
+        });
+        alert.present();
+      });
     } else {
       this.error_message = "Please fill out all fields";
     }
