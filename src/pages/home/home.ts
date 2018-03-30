@@ -15,7 +15,7 @@ import { LandingPage } from '../../pages/landing/landing'
 import { QRScanner, QRScannerStatus } from '@ionic-native/qr-scanner';
 import {BarcodeScanner,BarcodeScannerOptions} from '@ionic-native/barcode-scanner';
 
-     
+
 @Component({
   selector: 'page-home',
   templateUrl: 'home.html'
@@ -32,6 +32,35 @@ export class HomePage implements OnInit {
       this.latitude = position.coords.latitude;
       this.longitude = position.coords.longitude;
     })
+
+    if(localStorage.getItem('inRide')=="true") {
+      setInterval(() => {
+          this.httpClient.post(this.config.getAPILocation() + '/rock/_table/rideList?filter=id%20=%20%27' + localStorage.getItem('rideID') +'%27').subscribe(data => {
+            if (data) {
+              /*
+              this will be data.resource[0]
+              {
+              	"id": "23C2D7B4-BDB6-4E3A-9B65-7F197D6657E9",
+                "routeLine": null # if null, ride incomplete
+                # when ride is complete, a list of geo-points (lat, long), beginning with label MULTIPOINT, will be outputted
+                # EXAMPLE: "MULTIPOINT ( (34.32323 34.324242), (23.23242 23.23242) )"
+                "finishedAt": null # if null, ride incomplete
+                # when ride is complete, time will be the output (ex. '2018-02-02 04:28:12.0780000')
+                # in UTC format
+                "madeAt": "2018-03-06 06:06:42.297" # ride creation time,
+                \# this is one UTC format (based on Greenwich time)
+              	"bikeId": "BAD337CD-831B-476E-9CA6-BD1EB14BA08C",
+                "userId": "123456",
+              	"outsideFence": false
+              }
+      */
+              if(data.resource[0].finishedAt != null) {
+                localStorage.setItem('inRide', "false");
+              }
+            }
+          });
+      }, 1000);
+    }
   }
   payment() {
     this.navCtrl.setRoot(PaymentPage);
@@ -60,9 +89,106 @@ export class HomePage implements OnInit {
     this.options = {
       prompt: "Scan a qr code!"
     }
-    
+
     this.results = await this.barcode.scan();
     console.log(this.results)
+  }
+
+  getBikeData() { //replace 731053 with the bike number from scanning qr code
+    let loading = this.loadingCtrl.create({
+      content: 'Please wait...'
+    });
+    loading.present();
+    this.httpClient.get(this.config.getAPILocation() + '/rock/_table/bikeList?fields=*&filter=bikeNumber%20=%20%27' + "731053" + "%27&" + this.iam.getTokens()).subscribe(data => {
+      localStorage.setItem('bike', JSON.stringify(data.resource[0]));
+      loading.dismiss();
+      let alert = this.alertCtrl.create({
+        title: 'Scanned Bike',
+        subTitle: 'You are riding' + JSON.parse(localStorage.getItem('bike')).bikeName,
+        buttons: ['OK']
+      });
+      //All of below information is stored in localStorage
+      //To get anyone of this data just do JSON.parse(localStorage.getItem('bike')).bikeName
+      /*
+      "id": "BAD337CD-831B-476E-9CA6-BD1EB14BA08C",
+      "lockId": "310052000151363131363432", #This is the particle ID
+      "bikeNumber": "731053",
+      "bikeName": "Hava",
+      "userId": null,
+      "rating": null,
+      "madeAt": "2018-02-02 02:47:38.9566761",
+      "campusId": "52D0EB8E-CCA0-4268-80AF-CF5870B02307",
+      "campusName": "Test",
+      "curPos": "POINT (39.9069 -75.3543)",
+      "locTime": "2018-02-02 04:36:53.9178700",
+      "batteryLevel": 93.07,
+      "batTime": "2018-02-02 04:28:12.0780000",
+      "outsideFence": false,
+      "inRide": null
+      */
+    }, error => {
+      loading.dismiss();
+      let alert = this.alertCtrl.create({
+        title: 'Error',
+        subTitle: 'Invalid Bike',
+        buttons: ['OK']
+      });
+      alert.present();
+    })
+  }
+
+  getGeofence() {
+    this.httpClient.get(this.config.getAPILocation() + '/rock/_table/campusList?filter=id%20=%20%27' + JSON.parse(localStorage.getItem('bike')).campusId + "%27&" + this.iam.getTokens()).subscribe(data => {
+      localStorage.setItem('geofence', JSON.stringify(data.resource[0]));
+      console.log(JSON.parse(localStorage.getItem('geofence')));
+    })
+  }
+
+  newRide() {
+    let rideID = (Math.random()*0xFFFFFF<<0).toString(16);
+    let body = {
+      "resource": [
+        {
+          "id": rideID,
+          "userId": localStorage.getItem('userID'),
+          "bikeId": JSON.parse(localStorage.getItem('bike')).id,
+        }
+      ]
+    }
+    this.httpClient.get(this.config.getAPILocation() + '/rock/_table/rideList?' + this.iam.getTokens()).subscribe(data => {
+      localStorage.setItem('rideID', data.resource[0].id);
+      console.log(JSON.parse(localStorage.getItem('geofence')));
+      console.log(JSON.parse(localStorage.getItem('bike')).id);
+    })
+  }
+
+  unlockBike() {
+    let loading = this.loadingCtrl.create({
+      content: 'Please wait...'
+    });
+    loading.present();
+    let headers = new HttpHeaders({
+      'Content-Type': 'application/x-www-form-urlencoded',
+    });
+    let body = "arg=" + localStorage.getItem('rideID') + "&access_token" + localStorage.getItem('particleToken');
+    this.httpClient.post("https://api.particle.io/v1/devices/" + JSON.parse(localStorage.getItem('bike')).lockId + "/u", body, {headers: headers}).subscribe(data => {
+      console.log(data);
+      loading.dismiss();
+      let alert = this.alertCtrl.create({
+        title: 'Bike is unlocked',
+        subTitle: 'Begin riding!',
+        buttons: ['OK']
+      });
+
+    }, error => {
+      loading.dismiss();
+      let alert = this.alertCtrl.create({
+        title: 'Error',
+        subTitle: 'Did not unlock bike',
+        buttons: ['OK']
+      });
+      alert.present();
+    })
   }
 
 /*
