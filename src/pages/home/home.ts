@@ -35,7 +35,7 @@ export class HomePage implements OnInit {
 
     if(localStorage.getItem('inRide')=="true") {
       setInterval(() => {
-          this.httpClient.post(this.config.getAPILocation() + '/rock/_table/rideList?filter=id%20=%20%27' + localStorage.getItem('rideID') +'%27').subscribe(data => {
+          this.httpClient.get(this.config.getAPILocation() + '/rock/_table/rideList?filter=id%20=%20%27' + localStorage.getItem('rideID') +'%27').subscribe(data => {
             if (data) {
               /*
               this will be data.resource[0]

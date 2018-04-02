@@ -87,17 +87,18 @@ export class PaymentPage implements OnInit {
   }
 
   newRide() {
-    let rideID = (Math.random()*0xFFFFFF<<0).toString(16);
+    let rideID = (Math.random()*0xFFFFFFFFFF<<0).toString(16);
+    console.log(rideID);
     let body = {
       "resource": [
         {
-          "id": rideID,
+          "id": rideID.toString(0),
           "userId": localStorage.getItem('userID'),
-          "bikeId": JSON.parse(localStorage.getItem('bike')).id,
+          "bikeId": JSON.parse(localStorage.getItem('bike')).id
         }
       ]
     }
-    this.httpClient.get(this.config.getAPILocation() + '/rock/_table/rideList?' + this.iam.getTokens()).subscribe(data => {
+    this.httpClient.post(this.config.getAPILocation() + '/rock/_table/rideList?' + this.iam.getTokens(), body).subscribe(data => {
       localStorage.setItem('rideID', data.resource[0].id);
       console.log(JSON.parse(localStorage.getItem('geofence')));
       console.log(JSON.parse(localStorage.getItem('bike')).id);
@@ -115,7 +116,7 @@ export class PaymentPage implements OnInit {
     let body = "arg=" + localStorage.getItem('rideID') + "&access_token=" + localStorage.getItem('particleToken');
     console.log(body);
     console.log("lockID", JSON.parse(localStorage.getItem('bike')).lockId);
-    this.httpClient.post("https://api.particle.io/v1/devices/" + JSON.parse(localStorage.getItem('bike')).lockId + "/u", body, {headers: headers}).subscribe(data => {
+    this.httpClient.post("https://api.particle.io/v1/devices/" + JSON.parse(localStorage.getItem('bike')).lockId + "/unlock", body, {headers: headers}).subscribe(data => {
       console.log(data);
       localStorage.setItem('inRide', "true");
       loading.dismiss();

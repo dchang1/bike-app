@@ -29,8 +29,10 @@ export class IAMService {
     this.httpClient.put(this.config.getAPILocation() + '/user/session?session_token=' + localStorage.getItem('token') + "&api_key=36fda24fe5588fa4285ac6c6c2fdfbdb6b6bc9834699774c9bf777f706d05a88").subscribe(data => {
       localStorage.setItem('token', data.session_token);
       console.log("here");
+      localStorage.setItem('session', "true");
       return true;
     }, error => {
+      localStorage.setItem('session', "false");
       console.log("invalid session");
       return false;
     }

@@ -17,19 +17,16 @@ export class RideHistoryPage implements OnInit {
   constructor(private navCtrl: NavController, private httpClient: HttpClient, private config: ConfigService, private iam: IAMService) {}
 
   ngOnInit() {
-    // download the locations (once)
-    /*this.httpClient.post(this.config.getAPILocation() + '/nearestStores', {}).subscribe(data => {
+    this.httpClient.get(this.config.getAPILocation() + '/rock/_table/rideList?filter=userId%20=%20%27' + localStorage.getItem('userID') + '%27&' + this.iam.getTokens()).subscribe(data => {
       if (data) {
-        this.locations = data;
-        console.log(this.locations);
+        console.log(data);
       }
-    });*/
+    });
     var info = [];
     for(var i=0; i<5; i++) {
       info.push({"name": "Name", "address": "Address", "time": "Time", "distance": "Distance", "latitude": 39.905022, "longitude": -75.354034});
     }
     this.locations = info;
-    console.log(this.locations);
   }
 
   back() {
