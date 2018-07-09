@@ -131,7 +131,8 @@ export class HomePage implements OnInit {
     });
     loading.present();
     this.httpClient.post(this.config.getAPILocation() + '/newRide', {bike: 977500}, {headers: headers}).subscribe(data => {
-      if(data.success==true) {
+      this.response = data;
+      if(this.response.success==true) {
         loading.dismiss();
         localStorage.setItem('inRide', true);
         localStorage.setItem('rideID', data.rideID);
