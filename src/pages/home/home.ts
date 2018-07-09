@@ -37,27 +37,6 @@ export class HomePage implements OnInit {
       console.log(this.longitude);
     })
   }
-    setInterval(() => {
-      if(localStorage.getItem('inRide')==true) {
-        let headers = new HttpHeaders({
-          'Content-Type': 'application/x-www-form-urlencoded',
-          'Authorization': localStorage.getItem('token')
-        });
-        this.httpClient.get(this.config.getAPILocation() + '/ride/' + localStorage.getItem('rideID')).subscribe(data => {
-          if (data.ride.inRide==false) {
-            localStorage.setItem('inRide': false);
-            let alert = this.alertCtrl.create({
-              title: 'Ride finished!',
-              buttons: ['OK']
-            });
-            alert.present();
-          } else {
-              console.log("still in ride");
-          }
-        });
-      }
-    }, 1000);
-
 
   payment() {
     this.navCtrl.setRoot(PaymentPage);
@@ -144,23 +123,39 @@ export class HomePage implements OnInit {
   }
 
   newRide() {
-    let body = {
-      "bike": 977500
-    }
     let headers = new HttpHeaders({
-      'Content-Type': 'application/x-www-form-urlencoded',
       'Authorization': localStorage.getItem('token')
     });
-    this.httpClient.get(this.config.getAPILocation() + '/newRide').subscribe(data => {
-      let loading = this.loadingCtrl.create({
-        content: 'Unlocking Bike...'
-      });
-      loading.present();
+    let loading = this.loadingCtrl.create({
+      content: 'Unlocking Bike...'
+    });
+    loading.present();
+    this.httpClient.post(this.config.getAPILocation() + '/newRide', {bike: 977500}, {headers: headers}).subscribe(data => {
       if(data.success==true) {
         loading.dismiss();
         localStorage.setItem('inRide', true);
         localStorage.setItem('rideID', data.rideID);
         localStorage.setItem('bikeNumber', data.bike);
+        setInterval(() => {
+          if(localStorage.getItem('inRide')==true) {
+            let headers = new HttpHeaders({
+              'Content-Type': 'application/x-www-form-urlencoded',
+              'Authorization': localStorage.getItem('token')
+            });
+            this.httpClient.get(this.config.getAPILocation() + '/ride/' + localStorage.getItem('rideID'), {headers: headers}).subscribe(data => {
+              if (data.ride.inRide==false) {
+                localStorage.setItem('inRide', false);
+                let alert = this.alertCtrl.create({
+                  title: 'Ride finished!',
+                  buttons: ['OK']
+                });
+                alert.present();
+              } else {
+                  console.log("still in ride");
+              }
+            });
+          }
+        }, 1000);
       } else {
         let alert = this.alertCtrl.create({
           title: 'Error',
