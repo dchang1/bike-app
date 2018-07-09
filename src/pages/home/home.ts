@@ -20,48 +20,45 @@ import {BarcodeScanner,BarcodeScannerOptions} from '@ionic-native/barcode-scanne
   selector: 'page-home',
   templateUrl: 'home.html'
 })
+
 export class HomePage implements OnInit {
   latitude;
   longitude;
+  public response: any = {};
   options: BarcodeScannerOptions;
   results: {};
-  constructor(private navCtrl: NavController, private httpClient: HttpClient, private config: ConfigService, private iam: IAMService,private qrScanner: QRScanner, private barcode: BarcodeScanner) {
+  constructor(private navCtrl: NavController, private httpClient: HttpClient, private alertCtrl: AlertController, private loadingCtrl: LoadingController, private config: ConfigService, private iam: IAMService,private qrScanner: QRScanner, private barcode: BarcodeScanner) {
   }
   ngOnInit() {
     navigator.geolocation.getCurrentPosition(position => {
       this.latitude = position.coords.latitude;
       this.longitude = position.coords.longitude;
+      console.log(this.latitude);
+      console.log(this.longitude);
     })
-
-    if(localStorage.getItem('inRide')=="true") {
-      setInterval(() => {
-          this.httpClient.get(this.config.getAPILocation() + '/rock/_table/rideList?filter=id%20=%20%27' + localStorage.getItem('rideID') +'%27').subscribe(data => {
-            if (data) {
-              /*
-              this will be data.resource[0]
-              {
-              	"id": "23C2D7B4-BDB6-4E3A-9B65-7F197D6657E9",
-                "routeLine": null # if null, ride incomplete
-                # when ride is complete, a list of geo-points (lat, long), beginning with label MULTIPOINT, will be outputted
-                # EXAMPLE: "MULTIPOINT ( (34.32323 34.324242), (23.23242 23.23242) )"
-                "finishedAt": null # if null, ride incomplete
-                # when ride is complete, time will be the output (ex. '2018-02-02 04:28:12.0780000')
-                # in UTC format
-                "madeAt": "2018-03-06 06:06:42.297" # ride creation time,
-                \# this is one UTC format (based on Greenwich time)
-              	"bikeId": "BAD337CD-831B-476E-9CA6-BD1EB14BA08C",
-                "userId": "123456",
-              	"outsideFence": false
-              }
-      */
-              if(data.resource[0].finishedAt != null) {
-                localStorage.setItem('inRide', "false");
-              }
-            }
-          });
-      }, 1000);
-    }
   }
+    setInterval(() => {
+      if(localStorage.getItem('inRide')==true) {
+        let headers = new HttpHeaders({
+          'Content-Type': 'application/x-www-form-urlencoded',
+          'Authorization': localStorage.getItem('token')
+        });
+        this.httpClient.get(this.config.getAPILocation() + '/ride/' + localStorage.getItem('rideID')).subscribe(data => {
+          if (data.ride.inRide==false) {
+            localStorage.setItem('inRide': false);
+            let alert = this.alertCtrl.create({
+              title: 'Ride finished!',
+              buttons: ['OK']
+            });
+            alert.present();
+          } else {
+              console.log("still in ride");
+          }
+        });
+      }
+    }, 1000);
+
+
   payment() {
     this.navCtrl.setRoot(PaymentPage);
   }
@@ -100,7 +97,8 @@ export class HomePage implements OnInit {
     });
     loading.present();
     this.httpClient.get(this.config.getAPILocation() + '/rock/_table/bikeList?fields=*&filter=bikeNumber%20=%20%27' + "731053" + "%27&" + this.iam.getTokens()).subscribe(data => {
-      localStorage.setItem('bike', JSON.stringify(data.resource[0]));
+      this.response = data;
+      localStorage.setItem('bike', JSON.stringify(this.response.resource[0]));
       loading.dismiss();
       let alert = this.alertCtrl.create({
         title: 'Scanned Bike',
@@ -139,26 +137,38 @@ export class HomePage implements OnInit {
 
   getGeofence() {
     this.httpClient.get(this.config.getAPILocation() + '/rock/_table/campusList?filter=id%20=%20%27' + JSON.parse(localStorage.getItem('bike')).campusId + "%27&" + this.iam.getTokens()).subscribe(data => {
-      localStorage.setItem('geofence', JSON.stringify(data.resource[0]));
+      this.response = data;
+      localStorage.setItem('geofence', JSON.stringify(this.response.resource[0]));
       console.log(JSON.parse(localStorage.getItem('geofence')));
     })
   }
 
   newRide() {
-    let rideID = (Math.random()*0xFFFFFF<<0).toString(16);
     let body = {
-      "resource": [
-        {
-          "id": rideID,
-          "userId": localStorage.getItem('userID'),
-          "bikeId": JSON.parse(localStorage.getItem('bike')).id,
-        }
-      ]
+      "bike": 977500
     }
-    this.httpClient.get(this.config.getAPILocation() + '/rock/_table/rideList?' + this.iam.getTokens()).subscribe(data => {
-      localStorage.setItem('rideID', data.resource[0].id);
-      console.log(JSON.parse(localStorage.getItem('geofence')));
-      console.log(JSON.parse(localStorage.getItem('bike')).id);
+    let headers = new HttpHeaders({
+      'Content-Type': 'application/x-www-form-urlencoded',
+      'Authorization': localStorage.getItem('token')
+    });
+    this.httpClient.get(this.config.getAPILocation() + '/newRide').subscribe(data => {
+      let loading = this.loadingCtrl.create({
+        content: 'Unlocking Bike...'
+      });
+      loading.present();
+      if(data.success==true) {
+        loading.dismiss();
+        localStorage.setItem('inRide', true);
+        localStorage.setItem('rideID', data.rideID);
+        localStorage.setItem('bikeNumber', data.bike);
+      } else {
+        let alert = this.alertCtrl.create({
+          title: 'Error',
+          subTitle: 'Bike did not unlock.',
+          buttons: ['OK']
+        });
+        alert.present();
+      }
     })
   }
 

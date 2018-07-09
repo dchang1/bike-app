@@ -40,12 +40,12 @@ export class LoginPage implements OnInit {
       //this.navCtrl.setRoot(HomePage);
       // make request to API to check login details
 
-      this.httpClient.post(this.config.getAPILocation() + '/user/session', {email: this.username, password: this.password, remember_me: true}).subscribe(data => {
+      this.httpClient.post(this.config.getAPILocation() + '/login', {email: this.username, password: this.password}).subscribe(data => {
 
         loading.dismiss();
 
         // if there is a successful response
-        if (data) {
+        if (data.success==true) {
           // remove surrounding quotes
           //data = data.substring(1, data.length - 1);
           console.log(data);
@@ -66,7 +66,7 @@ export class LoginPage implements OnInit {
         loading.dismiss();
         let alert = this.alertCtrl.create({
           title: 'Error',
-          subTitle: 'Your login information was incorrect.',
+          subTitle: 'Could not connect to server.',
           buttons: ['OK']
         });
         alert.present();

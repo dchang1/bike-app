@@ -23,6 +23,7 @@ export class RegisterPage {
   password_2: string = "";
   birthday: string = "";
   error_message: string = "";
+  public response: any = {};
 
   constructor(private navCtrl: NavController, private loadingCtrl: LoadingController, private httpClient: HttpClient, private alertCtrl: AlertController, private config: ConfigService, private iam: IAMService) {}
 
@@ -76,7 +77,7 @@ export class RegisterPage {
 
                 this.iam.setCurrentUser(data);
 
-                body = {
+                let body = {
                   "resource": [
                     {
                       "id": localStorage.getItem('userID'),
@@ -99,9 +100,10 @@ export class RegisterPage {
                 }
                 this.httpClient.post(this.config.getAPILocation() + '/rock/_table/userList?' + this.iam.getTokens(), body).subscribe(data => {
                   loading.dismiss();
+                  this.response = data;
                   console.log(data);
-                  console.log(data.resource[0].id);
-                  if(data.resource[0].id==localStorage.getItem('userID')) {
+                  console.log(this.response.resource[0].id);
+                  if(this.response.resource[0].id==localStorage.getItem('userID')) {
                     let alert = this.alertCtrl.create({
                       title: 'Account Created!',
                       subTitle: 'Welcome to Rock!',

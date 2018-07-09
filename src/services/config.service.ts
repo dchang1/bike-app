@@ -4,8 +4,7 @@ import { Injectable } from '@angular/core';
 export class ConfigService {
 
   // simple config file to store data that can be easily changed
-
-  api_location = "https://ft-hyongharklee.oraclecloud2.dreamfactory.com/api/v2";
+  api_location = "http://renecycle-env.av7huk4ush.us-west-2.elasticbeanstalk.com";
   particle_api_location = "https://api.particle.io/oauth/token"
   constructor() {}
 

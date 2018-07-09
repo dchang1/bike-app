@@ -14,6 +14,7 @@ import { HomePage } from '../home/home';
 })
 export class PaymentPage implements OnInit {
   @ViewChild(Slides) slides: Slides;
+  public response: any = {};
 
   constructor(private navCtrl: NavController, private loadingCtrl: LoadingController, private httpClient: HttpClient, private alertCtrl: AlertController, private config: ConfigService, private iam: IAMService) {}
 
@@ -74,15 +75,18 @@ export class PaymentPage implements OnInit {
   }
   getBikeData() {
     this.httpClient.get(this.config.getAPILocation() + '/rock/_table/bikeList?fields=*&filter=bikeNumber%20=%20%27' + "731053" + "%27&" + this.iam.getTokens()).subscribe(data => {
-      localStorage.setItem('bike', JSON.stringify(data.resource[0]));
+      this.response = data;
+      localStorage.setItem('bike', JSON.stringify(this.response.resource[0]));
       console.log(JSON.parse(localStorage.getItem('bike')));
       console.log(JSON.parse(localStorage.getItem('bike')).id);
     })
   }
-  getGeofence() {
-    this.httpClient.get(this.config.getAPILocation() + '/rock/_table/campusList?filter=id%20=%20%27' + JSON.parse(localStorage.getItem('bike')).campusId + "%27&" + this.iam.getTokens()).subscribe(data => {
-      localStorage.setItem('geofence', JSON.stringify(data.resource[0]));
-      console.log(JSON.parse(localStorage.getItem('geofence')));
+  getCampus() {
+    let headers = new HttpHeaders().set('Authorization', localStorage.getItem('token'));
+    console.log(localStorage.getItem('token'));
+    console.log(headers);
+    this.httpClient.get(this.config.getAPILocation() + '/user/campus', {headers: headers}).subscribe(data => {
+      console.log(data);
     })
   }
 
@@ -92,14 +96,15 @@ export class PaymentPage implements OnInit {
     let body = {
       "resource": [
         {
-          "id": rideID.toString(0),
+          "id": rideID.toString(),
           "userId": localStorage.getItem('userID'),
           "bikeId": JSON.parse(localStorage.getItem('bike')).id
         }
       ]
     }
     this.httpClient.post(this.config.getAPILocation() + '/rock/_table/rideList?' + this.iam.getTokens(), body).subscribe(data => {
-      localStorage.setItem('rideID', data.resource[0].id);
+      this.response = data;
+      localStorage.setItem('rideID', this.response.resource[0].id);
       console.log(JSON.parse(localStorage.getItem('geofence')));
       console.log(JSON.parse(localStorage.getItem('bike')).id);
     })

@@ -20,9 +20,7 @@ export class MyApp {
       statusBar.styleDefault();
       splashScreen.hide();
     });
-    iam.getCurrentSession();
     if (localStorage.getItem('session')) {
-      iam.getParticleToken();
       this.rootPage = HomePage;
     } else {
       this.rootPage = LandingPage;

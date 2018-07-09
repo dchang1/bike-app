@@ -1,14 +1,14 @@
-<ion-content padding>
+<ion-content padding class="background">
   <img src="assets/logo.png" class="logo">
 </ion-content>
 
-<ion-footer padding>
+<ion-footer padding no-border>
   <ion-row>
     <ion-col>
-      <button ion-button full (click)="goToLogin()">Login</button>
+      <button ion-button full (click)="goToLogin()" class="button">Login</button>
     </ion-col>
     <ion-col>
-      <button ion-button full (click)="goToSignUp()">Sign Up</button>
+      <button ion-button full (click)="goToSignUp()" class="button">Sign Up</button>
     </ion-col>
   </ion-row>
 </ion-footer>

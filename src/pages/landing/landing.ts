@@ -4,10 +4,13 @@ import { NavController } from 'ionic-angular';
 import { LoginPage } from '../login/login';
 import { RegisterPage } from '../register/register';
 
+declare var LINKA: any;
+
 @Component({
   selector: 'page-landing',
   templateUrl: 'landing.html'
 })
+
 export class LandingPage {
 
   constructor(private navCtrl: NavController) {}

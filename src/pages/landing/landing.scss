@@ -1,5 +1,19 @@
 page-landing {
   .logo {
-    margin-top: 100px;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    width: 100%;
+  }
+  .background {
+    background-color: #633bb7;
+    overflow-y: auto;
+  }
+  ::-webkit-scrollbar{
+    display:none;
+  }
+  .button {
+    background-color: white;
+    color: #633bb7;
   }
 }
