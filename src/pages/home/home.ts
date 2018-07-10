@@ -24,6 +24,7 @@ import {BarcodeScanner,BarcodeScannerOptions} from '@ionic-native/barcode-scanne
 export class HomePage implements OnInit {
   latitude;
   longitude;
+  public rideInfo: any = {};
   public response: any = {};
   options: BarcodeScannerOptions;
   results: {};
@@ -134,18 +135,19 @@ export class HomePage implements OnInit {
       this.response = data;
       if(this.response.success==true) {
         loading.dismiss();
-        localStorage.setItem('inRide', true);
+        localStorage.setItem('inRide', "true");
         localStorage.setItem('rideID', this.response.rideID);
         localStorage.setItem('bikeNumber', this.response.bike);
         setInterval(() => {
-          if(localStorage.getItem('inRide')==true) {
+          if(localStorage.getItem('inRide')=="true") {
             let headers = new HttpHeaders({
               'Content-Type': 'application/x-www-form-urlencoded',
               'Authorization': localStorage.getItem('token')
             });
             this.httpClient.get(this.config.getAPILocation() + '/ride/' + localStorage.getItem('rideID'), {headers: headers}).subscribe(data => {
-              if (data.ride.inRide==false) {
-                localStorage.setItem('inRide', false);
+              this.rideInfo = data;
+              if (this.rideInfo.ride.inRide==false) {
+                localStorage.setItem('inRide', "true");
                 let alert = this.alertCtrl.create({
                   title: 'Ride finished!',
                   buttons: ['OK']

@@ -19,7 +19,7 @@ export class LoginPage implements OnInit {
 
   username: string;
   password: string;
-
+  public response: any = {};
   constructor(private navCtrl: NavController, private loadingCtrl: LoadingController, private httpClient: HttpClient, private config: ConfigService, private iam: IAMService, private alertCtrl: AlertController) {}
 
   ngOnInit() {
@@ -43,14 +43,14 @@ export class LoginPage implements OnInit {
       this.httpClient.post(this.config.getAPILocation() + '/login', {email: this.username, password: this.password}).subscribe(data => {
 
         loading.dismiss();
-
+        this.response = data;
         // if there is a successful response
-        if (data.success==true) {
+        if (this.response.success==true) {
           // remove surrounding quotes
           //data = data.substring(1, data.length - 1);
-          console.log(data);
+          console.log(this.response);
           // set the current user in localstorage to this user
-          this.iam.setCurrentUser(data);
+          this.iam.setCurrentUser(this.response);
           // move to the main page
           this.navCtrl.setRoot(HomePage);
         } else {
