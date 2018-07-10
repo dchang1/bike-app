@@ -135,8 +135,8 @@ export class HomePage implements OnInit {
       if(this.response.success==true) {
         loading.dismiss();
         localStorage.setItem('inRide', true);
-        localStorage.setItem('rideID', data.rideID);
-        localStorage.setItem('bikeNumber', data.bike);
+        localStorage.setItem('rideID', this.response.rideID);
+        localStorage.setItem('bikeNumber', this.response.bike);
         setInterval(() => {
           if(localStorage.getItem('inRide')==true) {
             let headers = new HttpHeaders({
@@ -158,6 +158,7 @@ export class HomePage implements OnInit {
           }
         }, 1000);
       } else {
+        loading.dismiss();
         let alert = this.alertCtrl.create({
           title: 'Error',
           subTitle: 'Bike did not unlock.',
