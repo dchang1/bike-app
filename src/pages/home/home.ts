@@ -11,8 +11,7 @@ import { SettingsPage } from '../../pages/settings/settings';
 import { RideHistoryPage } from '../../pages/ridehistory/ridehistory';
 import { HelpPage } from '../../pages/help/help';
 import { LandingPage } from '../../pages/landing/landing'
-// QR scanner
-import { QRScanner, QRScannerStatus } from '@ionic-native/qr-scanner';
+
 import {BarcodeScanner,BarcodeScannerOptions} from '@ionic-native/barcode-scanner';
 
 
@@ -28,7 +27,7 @@ export class HomePage implements OnInit {
   public response: any = {};
   options: BarcodeScannerOptions;
   results: {};
-  constructor(private navCtrl: NavController, private httpClient: HttpClient, private alertCtrl: AlertController, private loadingCtrl: LoadingController, private config: ConfigService, private iam: IAMService,private qrScanner: QRScanner, private barcode: BarcodeScanner) {
+  constructor(private navCtrl: NavController, private httpClient: HttpClient, private alertCtrl: AlertController, private loadingCtrl: LoadingController, private config: ConfigService, private iam: IAMService, private barcode: BarcodeScanner) {
   }
   ngOnInit() {
     navigator.geolocation.getCurrentPosition(position => {
@@ -56,19 +55,22 @@ export class HomePage implements OnInit {
     this.iam.setCurrentUser(null);
     this.navCtrl.setRoot(LandingPage);
   }
-  async qrscanner(){
-    this.results = await this.qrScanner.scan();
-    console.log(this.results)
 
-  }
   async scanBarcode(){
 
     this.options = {
       prompt: "Scan a qr code!"
     }
-
     this.results = await this.barcode.scan();
-    console.log(this.results)
+    console.log(this.results);
+
+    let alert = this.alertCtrl.create({
+      title: 'Scanned Bike',
+      subTitle: this.results.text,
+      buttons: ['OK']
+    });
+    alert.present();
+    
   }
 
   getBikeData() { //replace 731053 with the bike number from scanning qr code
