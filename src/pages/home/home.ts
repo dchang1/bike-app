@@ -26,7 +26,7 @@ export class HomePage implements OnInit {
   public rideInfo: any = {};
   public response: any = {};
   options: BarcodeScannerOptions;
-  results: {};
+  public results: any = {};
   constructor(private navCtrl: NavController, private httpClient: HttpClient, private alertCtrl: AlertController, private loadingCtrl: LoadingController, private config: ConfigService, private iam: IAMService, private barcode: BarcodeScanner) {
   }
   ngOnInit() {
@@ -65,12 +65,70 @@ export class HomePage implements OnInit {
     console.log(this.results);
 
     let alert = this.alertCtrl.create({
-      title: 'Scanned Bike',
-      subTitle: this.results.text,
-      buttons: ['OK']
+      title: 'New ride',
+      message: 'Do you want to unlock bike #' + this.results.text + '?',
+      buttons: [
+        {
+          text: 'Confirm',
+          handler: () => {
+            let headers = new HttpHeaders({
+              'Authorization': localStorage.getItem('token')
+            });
+            let loading = this.loadingCtrl.create({
+              content: 'Unlocking Bike...'
+            });
+            loading.present();
+            this.httpClient.post(this.config.getAPILocation() + '/newRide', {bike: 977500}, {headers: headers}).subscribe(data => {
+              this.response = data;
+              if(this.response.success==true) {
+                loading.dismiss();
+                localStorage.setItem('inRide', "true");
+                localStorage.setItem('rideID', this.response.rideID);
+                localStorage.setItem('bikeNumber', this.response.bike);
+                setInterval(() => {
+                  if(localStorage.getItem('inRide')=="true") {
+                    let headers = new HttpHeaders({
+                      'Content-Type': 'application/x-www-form-urlencoded',
+                      'Authorization': localStorage.getItem('token')
+                    });
+                    this.httpClient.get(this.config.getAPILocation() + '/ride/' + localStorage.getItem('rideID'), {headers: headers}).subscribe(data => {
+                      this.rideInfo = data;
+                      if (this.rideInfo.ride.inRide==false) {
+                        localStorage.setItem('inRide', "true");
+                        let alert = this.alertCtrl.create({
+                          title: 'Ride finished!',
+                          buttons: ['OK']
+                        });
+                        alert.present();
+                      } else {
+                          console.log("still in ride");
+                      }
+                    });
+                  }
+                }, 1000);
+              } else {
+                loading.dismiss();
+                let alert = this.alertCtrl.create({
+                  title: 'Error',
+                  subTitle: 'Bike did not unlock.',
+                  buttons: ['OK']
+                });
+                alert.present();
+              }
+            })
+          }
+        },
+        {
+          text: 'Cancel',
+          role: 'cancel',
+          handler: () => {
+            console.log('cancel clicked');
+          }
+        }
+      ]
     });
     alert.present();
-    
+
   }
 
   getBikeData() { //replace 731053 with the bike number from scanning qr code
