@@ -110,7 +110,7 @@ export class HomePage implements OnInit {
                 loading.dismiss();
                 let alert = this.alertCtrl.create({
                   title: 'Error',
-                  subTitle: 'Bike did not unlock.',
+                  subTitle: 'Bike does not exist or it could not be unlock.',
                   buttons: ['OK']
                 });
                 alert.present();
