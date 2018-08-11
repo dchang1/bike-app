@@ -15,7 +15,10 @@ export class RideHistoryPage implements OnInit {
   locations;
 
   constructor(private navCtrl: NavController, private httpClient: HttpClient, private config: ConfigService, private iam: IAMService) {}
-
+  ngOnInit() {
+    
+  }
+  /*
   ngOnInit() {
     this.httpClient.get(this.config.getAPILocation() + '/rock/_table/rideList?filter=userId%20=%20%27' + localStorage.getItem('userID') + '%27&' + this.iam.getTokens()).subscribe(data => {
       if (data) {
@@ -32,4 +35,5 @@ export class RideHistoryPage implements OnInit {
   back() {
     this.navCtrl.setRoot(HomePage);
   }
+  */
 }

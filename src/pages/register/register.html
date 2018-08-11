@@ -1,31 +1,19 @@
-<ion-header>
-  <ion-navbar>
-    <ion-title>Sign Up</ion-title>
-  </ion-navbar>
-</ion-header>
-
-<ion-content padding>
-
-
-    <ion-item>
-      <ion-input placeholder="First Name"  [(ngModel)]="firstName"></ion-input>
-    </ion-item>
-    <ion-item>
-      <ion-input placeholder="Last Name"  [(ngModel)]="lastName"></ion-input>
-    </ion-item>
-    <ion-item>
-      <ion-input placeholder="Email address"  [(ngModel)]="email"></ion-input>
-    </ion-item>
-    <ion-item>
-      <ion-input type="password" placeholder="Password"  [(ngModel)]="password_1"></ion-input>
-    </ion-item>
-    <ion-item>
-      <ion-input type="password" placeholder="Password Confirmation"  [(ngModel)]="password_2"></ion-input>
-    </ion-item>
-        <p class="error" *ngIf="error_message">{{ error_message }}</p>
-
+<ion-content padding class="background">
+  <ion-icon name="arrow-back" style="color: white; font-size:30px" (click)="back()"></ion-icon>
+  <div class="center">
+    <img src="assets/text-logo.png" class="logo">
+      <div class="inputs">
+        <input type="text" class="rounded" [(ngModel)]="firstName" placeholder="First Name"/>
+        <input type="text" class="rounded" [(ngModel)]="lastName" placeholder="Last Name"/>
+        <input type="text" class="rounded" [(ngModel)]="email" placeholder="Email"/>
+        <input type="password" class="rounded" [(ngModel)]="password_1" placeholder="Password"/>
+        <input type="password" class="rounded" [(ngModel)]="password_2" placeholder="Confirm Password"/>
+        <select [(ngModel)]="campus" class="rounded" style="padding: 0px; padding-left: 20px" required>
+          <option value="" selected disabled>Campus</option>
+          <option *ngFor="let name of campuses" [value]="name">{{name}}</option>
+        </select>
+        <input type="button" class="rounded button" style="background-color:#ffffff; color: #633bb7; padding:0px" value="Sign up" (click)="signUp()">
+        <p class="error">{{ error_message }}</p>
+      </div>
+  </div>
 </ion-content>
-
-<ion-footer padding>
-  <button ion-button full (click)="signUp()">Sign Up</button>
-</ion-footer>

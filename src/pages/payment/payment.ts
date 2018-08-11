@@ -64,6 +64,7 @@ export class PaymentPage implements OnInit {
       }*/
     }
   }
+  /*
   back() {
     if(this.slides.getActiveIndex()==0) {
       console.log("home");
@@ -141,5 +142,5 @@ export class PaymentPage implements OnInit {
       alert.present();
     })
   }
-
+  */
 }

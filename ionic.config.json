@@ -1,8 +1,9 @@
 {
   "name": "bike-app",
-  "app_id": "c501c299",
-  "type": "ionic-angular",
   "integrations": {
     "cordova": {}
-  }
+  },
+  "type": "ionic-angular",
+  "pro_id": "c501c299",
+  "app_id": ""
 }

@@ -4,6 +4,7 @@ page-landing {
     margin-left: auto;
     margin-right: auto;
     width: 100%;
+    margin-bottom: -30px;
   }
   .background {
     background-color: #633bb7;
@@ -16,4 +17,37 @@ page-landing {
     background-color: white;
     color: #633bb7;
   }
+  .rounded {
+    border-radius: 25px;
+    border: 1px solid #ffffff;
+    padding: 20px;
+    width: 100%;
+    height: 40px;
+    border-radius: 10px;
+    margin-bottom: 10px;
+    color: #ffffff;
+    background-color: #633bb7;
+  }
+
+  ::placeholder {
+    color: #ffffff;
+  }
+  .center {
+    margin: auto;
+    width: 70vw;
+  }
+  .inputs {
+    width: 50vw;
+    margin: auto;
+    text-align: center;
+  }
+  .text-button {
+    color: white;
+    text-align: center;
+    margin-bottom: 10px;
+  }
+  p.error {
+    color: map-get($colors, 'danger');
+  }
+
 }

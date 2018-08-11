@@ -1,22 +1,68 @@
-<ion-header>
+<ion-content class="background">
+  <div class="menu">
+    <ion-icon name="menu" menuToggle="left" style="color: black; font-size:40px; float: left;"></ion-icon>
+  </div>
+  <div class="filter">
+    <ion-icon name="options" menuToggle="right" style="color: black; font-size:40px; float: right;"></ion-icon>
+  </div>
+  <img src="assets/qrcode.png" class="qr" (click)="scanQR()">
+  <agm-map [latitude]="39.905022" [longitude]="-75.354034" [zoom]="16" [streetViewControl]="false" (mapClick)="closeProfiles(gm)" #gm>
+    <!--<agm-marker [latitude]="39.905022" [longitude]="-75.354034"></agm-marker>-->
+    <agm-marker [latitude]="latitude" [longitude]="longitude" [iconUrl]="'https://i.stack.imgur.com/VpVF8.png'"></agm-marker>
+    <agm-marker [latitude]="39.905022" [longitude]="-75.354034" [iconUrl]="'https://i.stack.imgur.com/VpVF8.png'" (markerClick)="bikeProfile(infoWindow, gm, 2)">
+    <agm-info-window [disableAutoPan]="false" #infoWindow>Title</agm-info-window></agm-marker>
+    <agm-marker *ngFor="let bike of bikes" [latitude]="bike.currentPosition[0]" [longitude]="bike.currentPosition[1]" [iconUrl]="'assets/bike.png'" (markerClick)="bikeProfile(infoWindow, gm, bike.number)">
+      <agm-info-window [disableAutoPan]="false" #infoWindow>
+        <div class="profile">
+          {{bike.name}} <br>{{bike.type}} <br>{{bike.color}}<br>
+          <input type="button" class="rounded" value="Show more details" (click)="moreDetails(bike.number)">
+        </div>
+      </agm-info-window>
+</agm-marker>
+  </agm-map>
 
-  <ion-navbar>
-    <button ion-button menuToggle><ion-icon name="menu"></ion-icon></button>
-    <ion-title>Renecycle</ion-title>
-  </ion-navbar>
-</ion-header>
-<ion-menu [content]="mycontent">
-  <ion-header>
-    <ion-toolbar>
-      <ion-title>Menu</ion-title>
-    </ion-toolbar>
-  </ion-header>
-  <ion-content>
-    <div *ngIf='results'>
-      <p>{{results.text}}</p>
-      <p>{{results.format}}</p>
-      <p>{{results.cancelled}}</p>
-    </div>
+  <ion-menu [content]="menu" side="left" id="menu">
+    <ion-content>
+      <ion-item class="menu-items" text-wrap>
+        <div class="name">
+          {{firstName}} {{lastName}}
+        </div>
+        <div class="name">
+          {{campus}} College
+        </div>
+        <br>
+        <div style="display: inline-block">
+          <ion-icon name="bicycle" class="icon"></ion-icon>
+          <p class="stats">{{totalRides}}</p>
+        </div>
+        <div style="display: inline-block">
+          <ion-icon name="speedometer" class="icon"></ion-icon>
+          <p class="stats">{{totalDistance}}</p>
+        </div>
+        <div style="display: inline-block">
+          <ion-icon name="time" class="icon"></ion-icon>
+          <p class="stats">{{totalRideTime}}</p>
+        </div>
+      </ion-item>
+      <ion-list>
+        <button ion-item (click)="ridehistory()">Your Rides</button>
+        <button ion-item (click)="payment()">Payment</button>
+        <button ion-item (click)="help()">Help</button>
+        <button ion-item (click)="setting()">Settings</button>
+        <button ion-item (click)="share()">Share a bike</button>
+        <button ion-item (click)="logout()">Logout</button>
+      </ion-list>
+    </ion-content>
+  </ion-menu>
+  <ion-nav #menu style="display: none"></ion-nav>
+
+  <ion-menu [content]="filter" side="right" id="filter">
+    <ion-header>
+      <ion-toolbar>
+        <ion-title>Filter</ion-title>
+      </ion-toolbar>
+    </ion-header>
+    <ion-content>
     <ion-list>
       <button ion-item (click)="payment()">Payment</button>
       <button ion-item (click)="ridehistory()">Your Rides</button>
@@ -25,16 +71,7 @@
       <button ion-item (click)="logout()">Logout</button>
     </ion-list>
   </ion-content>
-</ion-menu>
-<ion-nav #mycontent></ion-nav>
-
-<ion-content padding>
-  <button ion-button color="dark" full round (click)="scanBarcode()">Scan</button>
-  <button ion-button color="dark" full round (click)="newRide()">Unlock</button>
-  <agm-map [latitude]="39.905022" [longitude]="-75.354034" [zoom]="16" [streetViewControl]="false">
-    <agm-marker [latitude]="39.905022" [longitude]="-75.354034"></agm-marker>
-    <agm-marker [latitude]="latitude" [longitude]="longitude" [iconUrl]="'https://i.stack.imgur.com/VpVF8.png'"></agm-marker>
-
-  </agm-map>
+  </ion-menu>
+  <ion-nav #filter style="display: none"></ion-nav>
 
 </ion-content>

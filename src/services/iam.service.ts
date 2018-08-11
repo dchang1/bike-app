@@ -22,11 +22,27 @@ export class IAMService {
       localStorage.setItem('session', "true");
       localStorage.setItem('campus', data.campus);
       localStorage.setItem('userType', data.userType);
+      /*
+      localStorage.setItem('totalRideTime', data.totalRideTime);
+      localStorage.setItem('totalDistance', data.totalDistance);
+      localStorage.setItem('totalRides', data.pastRides.length);
+      localStorage.setItem('bikeScore', data.bikeScore);
+      */
     }
   }
 
-  getTokens() {
-    let data = "api_key=36fda24fe5588fa4285ac6c6c2fdfbdb6b6bc9834699774c9bf777f706d05a88&session_token=" + localStorage.getItem('token');
-    return data;
+  checkUser() {
+    let headers = new HttpHeaders({
+      'Authorization': localStorage.getItem('token')
+    });
+    this.httpClient.get(this.config.getAPILocation() + '/user', {headers: headers}).subscribe(data => {
+      if(data) {
+        return true;
+      } else {
+        return false;
+      }
+    }, error => {
+      console.log("ERROR");
+    })
   }
 }

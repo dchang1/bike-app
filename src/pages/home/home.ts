@@ -27,17 +27,87 @@ export class HomePage implements OnInit {
   public response: any = {};
   options: BarcodeScannerOptions;
   public results: any = {};
+  public bikes: any = [];
+  public firstName: string;
+  public lastName: string;
+  public campus: string;
+  public totalDistance: number;
+  public totalRideTime: number;
+  public totalRides: number;
+  public bikeScore: number;
   constructor(private navCtrl: NavController, private httpClient: HttpClient, private alertCtrl: AlertController, private loadingCtrl: LoadingController, private config: ConfigService, private iam: IAMService, private barcode: BarcodeScanner) {
   }
   ngOnInit() {
+    this.firstName = localStorage.getItem("firstName");
+    this.lastName = localStorage.getItem("lastName");
+    this.campus = localStorage.getItem("campus");
+    this.totalDistance = 10;
+    this.totalRideTime = 5.32;
+    this.totalRides = 2;
+    this.bikeScore = 1;
+    /*
+    this.totalRideTime = localStorage.getItem("totalRideTime");
+    this.totalDistance = localStorage.getItem("totalDistance");
+    this.totalRides = localStorage.getItem("totalRides");
+    this.bikeScore = localStorage.getItem("bikeScore");
+    */
     navigator.geolocation.getCurrentPosition(position => {
       this.latitude = position.coords.latitude;
       this.longitude = position.coords.longitude;
       console.log(this.latitude);
       console.log(this.longitude);
-    })
+    });
+    let headers = new HttpHeaders({
+      'Authorization': localStorage.getItem('token')
+    });
+    this.httpClient.get(this.config.getAPILocation() + '/allCampusBikes', {headers: headers}).subscribe(data => {
+      this.bikes = data;
+      this.bikes = this.bikes.bikes;
+      if(this.bikes) {
+        console.log(this.bikes);
+      }
+    }, error => {
+      console.log("ERROR");
+    });
+    /*
+    setInterval(() => {
+      navigator.geolocation.getCurrentPosition(position => {
+        this.latitude = position.coords.latitude;
+        this.longitude = position.coords.longitude;
+        console.log(this.latitude);
+        console.log(this.longitude);
+      });
+      let headers = new HttpHeaders({
+        'Authorization': localStorage.getItem('token')
+      });
+      this.httpClient.get(this.config.getAPILocation() + '/allCampusBikes', {headers: headers}).subscribe(data => {
+        this.response = data;
+        if(this.response) {
+          console.log(data);
+        }
+      }, error => {
+        console.log("ERROR");
+      });
+    }, 5000);
+    */
+  }
+  public bikeProfile(infoWindow, gm, number) {
+    console.log("bike");
+    console.log(number);
+    if (gm.lastOpen != null) {
+            gm.lastOpen.close();
+        }
+
+        gm.lastOpen = infoWindow;
+
+        infoWindow.open();
   }
 
+  public closeProfiles(gm) {
+    if(gm.lastOpen) {
+      gm.lastOpen.close();
+    }
+  }
   payment() {
     this.navCtrl.setRoot(PaymentPage);
   }
@@ -55,7 +125,9 @@ export class HomePage implements OnInit {
     this.iam.setCurrentUser(null);
     this.navCtrl.setRoot(LandingPage);
   }
-
+  scanQR() {
+    console.log("QR");
+  }
   async scanBarcode(){
 
     this.options = {
@@ -131,6 +203,7 @@ export class HomePage implements OnInit {
 
   }
 
+  /*
   getBikeData() { //replace 731053 with the bike number from scanning qr code
     let loading = this.loadingCtrl.create({
       content: 'Please wait...'
@@ -147,23 +220,7 @@ export class HomePage implements OnInit {
       });
       //All of below information is stored in localStorage
       //To get anyone of this data just do JSON.parse(localStorage.getItem('bike')).bikeName
-      /*
-      "id": "BAD337CD-831B-476E-9CA6-BD1EB14BA08C",
-      "lockId": "310052000151363131363432", #This is the particle ID
-      "bikeNumber": "731053",
-      "bikeName": "Hava",
-      "userId": null,
-      "rating": null,
-      "madeAt": "2018-02-02 02:47:38.9566761",
-      "campusId": "52D0EB8E-CCA0-4268-80AF-CF5870B02307",
-      "campusName": "Test",
-      "curPos": "POINT (39.9069 -75.3543)",
-      "locTime": "2018-02-02 04:36:53.9178700",
-      "batteryLevel": 93.07,
-      "batTime": "2018-02-02 04:28:12.0780000",
-      "outsideFence": false,
-      "inRide": null
-      */
+
     }, error => {
       loading.dismiss();
       let alert = this.alertCtrl.create({
@@ -182,7 +239,7 @@ export class HomePage implements OnInit {
       console.log(JSON.parse(localStorage.getItem('geofence')));
     })
   }
-
+  */
   newRide() {
     let headers = new HttpHeaders({
       'Authorization': localStorage.getItem('token')
