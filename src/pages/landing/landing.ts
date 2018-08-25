@@ -41,11 +41,12 @@ export class LandingPage {
 
         loading.dismiss();
         this.response = data;
+        console.log(this.response);
+
         // if there is a successful response
         if (this.response.success==true) {
           // remove surrounding quotes
           //data = data.substring(1, data.length - 1);
-          console.log(this.response);
           // set the current user in localstorage to this user
           this.iam.setCurrentUser(this.response);
           // move to the main page
@@ -54,19 +55,28 @@ export class LandingPage {
           // display error that login was unsuccessful
           let alert = this.alertCtrl.create({
             title: 'Error',
-            subTitle: 'Your login information was incorrect.',
+            subTitle: this.response.message,
             buttons: ['OK']
           });
           alert.present();
         }
       }, error => {
         loading.dismiss();
-        let alert = this.alertCtrl.create({
-          title: 'Error',
-          subTitle: 'Could not connect to server.',
-          buttons: ['OK']
-        });
-        alert.present();
+        if(error.error.success==false) {
+          let alert = this.alertCtrl.create({
+            title: 'Error',
+            subTitle: error.error.message,
+            buttons: ['OK']
+          });
+          alert.present();
+        } else {
+          let alert = this.alertCtrl.create({
+            title: 'Error',
+            subTitle: 'Could not connect to server.',
+            buttons: ['OK']
+          });
+          alert.present();
+        }
       });
     } else {
       this.error_message = "Please fill out all fields";

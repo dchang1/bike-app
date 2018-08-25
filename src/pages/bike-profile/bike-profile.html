@@ -1,0 +1,74 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>
+      <div class="title" *ngIf="header">
+        {{header}}
+      </div>
+      <div class="close">
+        <ion-icon name="close" class="icon" (click)="dismiss()"></ion-icon>
+      </div>
+    </ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <img src="assets/bike-profile.png" class="bike">
+  <div class="labels">
+    <p>
+      Name
+    </p>
+    <p>
+      Type
+    </p>
+    <p>
+      Color
+    </p>
+    <p>
+      Rating
+    </p>
+    <p>
+      Total Rides
+    </p>
+    <p>
+      Total Ride Hours
+    </p>
+    <p>
+      Total Distance
+    </p>
+    <p>
+      Campus
+    </p>
+  </div>
+  <div class="stats" *ngIf="bikeProfile">
+    <p>
+      {{bikeProfile.name}}
+    </p>
+    <p>
+      {{bikeProfile.type}}
+    </p>
+    <p>
+      {{bikeProfile.color}}
+    </p>
+    <p>
+      {{bikeProfile.rating}}
+    </p>
+    <p>
+      {{bikeProfile.rides.length}}
+    </p>
+    <p>
+      {{bikeProfile.totalHours}} h
+    </p>
+    <p>
+      {{bikeProfile.totalDistance}} km
+    </p>
+    <p>
+      {{bikeProfile.campus}}
+    </p>
+  </div>
+  <div class="button" *ngIf="reportBike">
+    <input type="button" class="rounded-red" value="Report this bike" (click)="report()">
+  </div>
+  <div class="button" *ngIf="unlockBike">
+    <input type="button" class="rounded" value="Unlock this bike" (click)="unlock()">
+  </div>
+</ion-content>

@@ -29,6 +29,8 @@ page-home {
     margin: auto;
     z-index: 1;
     width: 40%;
+    max-height:300px;
+    max-width: 300px;
   }
   .menu-items {
     width: 100%;
@@ -59,10 +61,8 @@ page-home {
   }
   .profile {
     margin: auto;
-    text-align: center;
-    padding-left: 20px;
+    text-align: left;
   }
-
   .icon {
     font-size:50px;
     padding-left: 20px;
@@ -75,5 +75,14 @@ page-home {
   }
   .gm-style-iw + div {
     display: none;
+  }
+  .inRide-stats {
+    font-size:20px;
+    text-align: center;
+  }
+  .rating {
+    float: right;
+    position: absolute;
+    right: 0px;
   }
 }

@@ -1,0 +1,85 @@
+<ion-header *ngIf="rideSummary">
+  <ion-toolbar>
+    <ion-title>
+      <div class="title">
+        Your Ride Summary
+      </div>
+    </ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <div class="center">
+    <h1 *ngIf="!rideSummary">Ride completed!</h1>
+    <div class="rating" *ngIf="!rideSummary">
+      <ion-icon name="star-outline" (click)="oneStar()" *ngIf="!one"></ion-icon>
+      <ion-icon name="star" *ngIf="one"></ion-icon>
+      <ion-icon name="star-outline" (click)="twoStar()" *ngIf="!two"></ion-icon>
+      <ion-icon name="star" *ngIf="two"></ion-icon>
+      <ion-icon name="star-outline" (click)="threeStar()" *ngIf="!three"></ion-icon>
+      <ion-icon name="star" *ngIf="three"></ion-icon>
+      <ion-icon name="star-outline" (click)="fourStar()" *ngIf="!four"></ion-icon>
+      <ion-icon name="star" *ngIf="four"></ion-icon>
+      <ion-icon name="star-outline" (click)="fiveStar()" *ngIf="!five"></ion-icon>
+      <ion-icon name="star" *ngIf="five"></ion-icon>
+    </div>
+    <p *ngIf="!rideSummary">Please rate your ride</p>
+    <p *ngIf="!rideSummary" (click)="skip()">Skip</p>
+    <div class="rideSummary" *ngIf="rideSummary">
+      <div class="labels">
+        <p>
+          Start Time:
+        </p>
+        <p>
+          End Time:
+        </p>
+        <p>
+          Ride Time:
+        </p>
+        <p>
+          Distance:
+        </p>
+        <p>
+          Calories:
+        </p>
+        <p>
+          Rating:
+        </p>
+      </div>
+      <div class="stats">
+        <p>
+          {{ride.startTime}}
+        </p>
+        <p>
+          {{ride.endTime}}
+        </p>
+        <p>
+          {{ride.time}}
+        </p>
+        <p>
+          {{ride.distance}}
+        </p>
+        <p>
+          {{ride.calories}}
+        </p>
+        <p>
+          {{ride.rating}}
+        </p>
+      </div>
+      <div class="map">
+        <agm-map [latitude]="currentLatitude" [longitude]="currentLongitude" [zoom]="16" [clickableIcons]="false" [streetViewControl]="false">
+          <agm-polyline>
+            <agm-polyline-point *ngFor="let data of ridePath"
+              [latitude]="data.lat"
+              [longitude]="data.lng">
+            </agm-polyline-point>
+          </agm-polyline>
+          <agm-marker [latitude]="currentLatitude" [longitude]="currentLongitude" [iconUrl]="'assets/inride.png'"></agm-marker>
+        </agm-map>
+      </div>
+      <div class="button">
+        <input type="button" class="rounded" value="Done" (click)="dismiss()">
+      </div>
+    </div>
+  </div>
+</ion-content>

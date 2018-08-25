@@ -17,14 +17,16 @@ import { PaymentPage } from '../pages/payment/payment';
 import { RideHistoryPage } from '../pages/ridehistory/ridehistory';
 import { SettingsPage } from '../pages/settings/settings';
 import { HelpPage } from '../pages/help/help';
+import { BikeProfilePage } from '../pages/bike-profile/bike-profile';
+import { EndRidePage } from '../pages/end-ride/end-ride';
 
 import { IAMService } from '../services/iam.service';
 import { ConfigService } from '../services/config.service';
 
 //QR scanner
 import { Component } from '@angular/core';
-import { NavController} from 'ionic-angular';
-import {BarcodeScanner} from '@ionic-native/barcode-scanner';
+import { NavController } from 'ionic-angular';
+import  {BarcodeScanner } from '@ionic-native/barcode-scanner';
 
 @NgModule({
   declarations: [
@@ -36,7 +38,9 @@ import {BarcodeScanner} from '@ionic-native/barcode-scanner';
     PaymentPage,
     RideHistoryPage,
     SettingsPage,
-    HelpPage
+    HelpPage,
+    BikeProfilePage,
+    EndRidePage
   ],
   imports: [
     BrowserModule,
@@ -59,7 +63,9 @@ import {BarcodeScanner} from '@ionic-native/barcode-scanner';
     PaymentPage,
     RideHistoryPage,
     SettingsPage,
-    HelpPage
+    HelpPage,
+    BikeProfilePage,
+    EndRidePage
   ],
   providers: [
     IAMService,

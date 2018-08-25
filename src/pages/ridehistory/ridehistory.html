@@ -5,30 +5,28 @@
                 <ion-icon name="arrow-back"></ion-icon>
             </button>
         </ion-buttons>
-    <ion-title>Your Rides</ion-title>
+    <ion-title>Your Ride History</ion-title>
   </ion-navbar>
 </ion-header>
 
 <ion-content padding>
 
-  <ion-card *ngFor="let location of locations">
-    <agm-map [latitude]="location.latitude" [longitude]="location.longitude" [zoom]="16" [streetViewControl]="false">
-      <agm-marker [latitude]="location.latitude" [longitude]="location.longitude"></agm-marker>
+  <ion-card *ngFor="let ride of rides">
+    <agm-map [latitude]="ride.currentLatitude" [longitude]="ride.currentLongitude" [zoom]="16" [clickableIcons]="false" [streetViewControl]="false">
+      <agm-polyline>
+        <agm-polyline-point *ngFor="let data of ride.ridePath"
+          [latitude]="data.lat"
+          [longitude]="data.lng">
+        </agm-polyline-point>
+      </agm-polyline>
+      <agm-marker [latitude]="ride.currentLatitude" [longitude]="ride.currentLongitude" [iconUrl]="'assets/inride.png'"></agm-marker>
     </agm-map>
-
     <ion-item>
-      <ion-icon name="football" item-start large></ion-icon>
-      <h2>{{ location.name }}</h2>
-      <p>{{ location.address }}</p>
-    </ion-item>
-
-    <ion-item>
-      <span item-left>{{ location.time }} mins</span>
-      <span item-left>({{ location.distance }}) miles</span>
-      <button ion-button icon-left clear item-end>
-        <ion-icon name="navigate"></ion-icon>
-        Start
-      </button>
+      <h2 style="display: inline">{{ride.rideInfo.startTime}}</h2>
+      <p style="float: right; display: inline">{{ride.rideInfo.distance}} km</p>
+      <br>
+      <p style="display: inline">{{ride.rideInfo.time}} min</p>
+      <p style="float: right; display: inline">{{ride.rideInfo.calories}} cal</p>
     </ion-item>
 
   </ion-card>

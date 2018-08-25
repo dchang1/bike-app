@@ -26,7 +26,6 @@ export class IAMService {
       localStorage.setItem('totalRideTime', data.totalRideTime);
       localStorage.setItem('totalDistance', data.totalDistance);
       localStorage.setItem('totalRides', data.pastRides.length);
-      localStorage.setItem('bikeScore', data.bikeScore);
       */
     }
   }
