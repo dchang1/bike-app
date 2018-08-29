@@ -31,9 +31,9 @@ export class HomePage implements OnInit {
   public firstName: string;
   public lastName: string;
   public campus: string;
-  public totalDistance: number;
-  public totalRideTime: number;
-  public totalRides: number;
+  public totalDistance;
+  public totalRideTime;
+  public totalRides;
   public bikeScore: number;
   public inRide: boolean = false;
   public lines;
@@ -42,9 +42,9 @@ export class HomePage implements OnInit {
   public currentLongitude;
   public bikeNumber;
   public data;
-  public rideTime = '0.00';
-  public rideDistance = '0.00';
-  public rideCalories = '0.00';
+  public rideTime = 0;
+  public rideDistance = 0;
+  public rideCalories = 0;
   public rideCost = '0.00';
   lat: number = 0;
   lng: number = 0;

@@ -119,6 +119,7 @@ export class EndRidePage implements OnInit {
   rating;
   currentLatitude;
   currentLongitude;
+  ridePath;
   ngOnInit() {
     let headers = new HttpHeaders({
       'Content-Type': 'application/x-www-form-urlencoded',
@@ -152,7 +153,7 @@ export class EndRidePage implements OnInit {
       });
       this.httpClient.post(this.config.getAPILocation() + '/rating', {ride: localStorage.getItem('rideID'), rating: 1}, {headers: headers}).subscribe(data => {
         this.response = data;
-        if(response.success==true) {
+        if(this.response.success==true) {
           console.log("rating");
         } else {
           console.log("error");
@@ -173,7 +174,7 @@ export class EndRidePage implements OnInit {
       });
       this.httpClient.post(this.config.getAPILocation() + '/rating', {ride: localStorage.getItem('rideID'), rating: 2}, {headers: headers}).subscribe(data => {
         this.response = data;
-        if(this.response.success==true) {
+        if(this.this.response.success==true) {
           console.log("rating");
         } else {
           console.log("error");
@@ -195,7 +196,7 @@ export class EndRidePage implements OnInit {
       });
       this.httpClient.post(this.config.getAPILocation() + '/rating', {ride: localStorage.getItem('rideID'), rating: 3}, {headers: headers}).subscribe(data => {
         this.response = data;
-        if(response.success==true) {
+        if(this.response.success==true) {
           console.log("rating");
         } else {
           console.log("error");
@@ -218,7 +219,7 @@ export class EndRidePage implements OnInit {
       });
       this.httpClient.post(this.config.getAPILocation() + '/rating', {ride: localStorage.getItem('rideID'), rating: 4}, {headers: headers}).subscribe(data => {
         this.response = data;
-        if(response.success==true) {
+        if(this.response.success==true) {
           console.log("rating");
         } else {
           console.log("error");
@@ -242,7 +243,7 @@ export class EndRidePage implements OnInit {
       });
       this.httpClient.post(this.config.getAPILocation() + '/rating', {ride: localStorage.getItem('rideID'), rating: 5}, {headers: headers}).subscribe(data => {
         this.response = data;
-        if(response.success==true) {
+        if(this.response.success==true) {
           console.log("rating");
         } else {
           console.log("error");
