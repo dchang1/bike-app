@@ -653,8 +653,8 @@ export class HomePage implements OnInit {
                       this.currentLatitude = this.rideInfo.ride.route[this.rideInfo.ride.route.length-1][0];
                       this.currentLongitude = this.rideInfo.ride.route[this.rideInfo.ride.route.length-1][1];
                       this.ridePath = this.rideInfo.ride.route;
-                      this.rideTime = ((Date.now()-this.rideInfo.ride.startTime)/60000).toFixed(2);
-                      this.rideCalories = (650*this.rideTime / 60).toFixed(2);
+                      this.rideTime = Math.round((Date.now()-this.rideInfo.ride.startTime)/60000 * 100)/100;
+                      this.rideCalories = Math.round(650*this.rideTime / 60 * 100)/100;
                       this.rideDistance = (this.distance(this.rideInfo.ride.startPosition[0], this.rideInfo.ride.startPosition[1], this.currentLatitude, this.currentLongitude));
                       console.log("still in ride");
                   }
