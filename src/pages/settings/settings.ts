@@ -128,8 +128,8 @@ export class SettingsPage implements OnInit {
       this.slides.slideTo(0, 0);
       this.slides.lockSwipes(true);
     } else {
-      this.response = data;
       this.httpClient.post(this.config.getAPILocation() + '/updateLastName', {lastName: this.lastName}, {headers: headers}).subscribe(data => {
+        this.response = data;
         if(this.response.success==true) {
           this.error_message = "";
           this.slides.lockSwipes(false);
@@ -153,9 +153,9 @@ export class SettingsPage implements OnInit {
       this.slides.slideTo(0, 0);
       this.slides.lockSwipes(true);
     } else {
-      this.response = data;
       this.httpClient.post(this.config.getAPILocation() + '/updateEmail', {email: this.email}, {headers: headers}).subscribe(data => {
-        if(data.success==true) {
+        this.response = data;
+        if(this.response.success==true) {
           this.error_message = "";
           this.slides.lockSwipes(false);
           this.slides.slideTo(0, 0);

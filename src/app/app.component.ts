@@ -29,9 +29,9 @@ export class MyApp {
       if(data) {
         this.response = data;
         console.log("Logged in");
-        localStorage.setItem('totalDistance', Math.round(this.response.user.totalDistance*100)/100);
-        localStorage.setItem('totalRideTime', Math.round(this.response.user.totalRideTime*100)/100);
-        localStorage.setItem('totalRides', this.response.user.pastRides.length);
+        localStorage.setItem('totalDistance', this.response.user.totalDistance.toFixed(2).toString());
+        localStorage.setItem('totalRideTime', this.response.user.totalRideTime.toFixed(2).toString());
+        localStorage.setItem('totalRides', this.response.user.pastRides.length.toString());
         this.rootPage = HomePage;
       }
     }, error => {
