@@ -1,14 +1,14 @@
 import { Component } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Http, Headers, Response, URLSearchParams } from '@angular/http';
-import { NavController, Slides, LoadingController, AlertController } from 'ionic-angular';
+import { ModalController, NavController, Slides, LoadingController, AlertController } from 'ionic-angular';
 
 import { ConfigService } from '../../services/config.service';
 import { IAMService } from '../../services/iam.service';
 
-import { LoginPage } from '../login/login';
 import { RegisterPage } from '../register/register';
 import { HomePage } from '../../pages/home/home';
+import { ResetPage } from '../../pages/reset/reset';
 
 @Component({
   selector: 'page-landing',
@@ -17,7 +17,7 @@ import { HomePage } from '../../pages/home/home';
 
 export class LandingPage {
 
-  constructor(private navCtrl: NavController, private httpClient: HttpClient, private alertCtrl: AlertController, private loadingCtrl: LoadingController, private config: ConfigService, private iam: IAMService,) {}
+  constructor(public modalCtrl: ModalController, private navCtrl: NavController, private httpClient: HttpClient, private alertCtrl: AlertController, private loadingCtrl: LoadingController, private config: ConfigService, private iam: IAMService,) {}
   error_message: string;
 
   email: string;
@@ -85,6 +85,8 @@ export class LandingPage {
 
   public forgot() {
     console.log("forgot");
+    const modal = this.modalCtrl.create(ResetPage);
+    modal.present();
   }
 
   public signup() {

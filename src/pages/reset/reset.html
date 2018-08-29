@@ -1,0 +1,31 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>
+      <div class="title">
+        Reset Password
+      </div>
+      <div class="close">
+        <ion-icon name="close" class="icon" (click)="dismiss()"></ion-icon>
+      </div>
+    </ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content padding>
+  <ion-slides>
+    <ion-slide>
+      <p>Please enter your email to reset your password.</p>
+      <input type="text" class="floating" [(ngModel)]="email" placeholder="Email">
+      <input type="button" class="rounded" style="padding:0px" value="Reset" (click)="reset()">
+      <p class="error">{{error_message}}</p>
+    </ion-slide>
+    <ion-slide>
+      <p>Check your email for a token to reset your password.</p>
+      <input type="text" class="floating" [(ngModel)]="token" placeholder="Token">
+      <input type="password" class="floating" [(ngModel)]="new_password1" placeholder="Password">
+      <input type="password" class="floating" [(ngModel)]="new_password2" placeholder="Confirm Password">
+      <input type="button" class="rounded" style="padding:0px" value="Reset" (click)="updatePassword()">
+      <p class="error">{{error_message}}</p>
+    </ion-slide>
+  </ion-slides>
+</ion-content>

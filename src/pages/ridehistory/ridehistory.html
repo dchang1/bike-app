@@ -9,24 +9,24 @@
   </ion-navbar>
 </ion-header>
 
-<ion-content padding>
+<ion-content padding *ngIf="rides">
 
   <ion-card *ngFor="let ride of rides">
-    <agm-map [latitude]="ride.currentLatitude" [longitude]="ride.currentLongitude" [zoom]="16" [clickableIcons]="false" [streetViewControl]="false">
+    <agm-map [latitude]="ride.endPosition[0]" [longitude]="ride.endPosition[1]" [zoom]="16" [clickableIcons]="false" [streetViewControl]="false">
       <agm-polyline>
-        <agm-polyline-point *ngFor="let data of ride.ridePath"
-          [latitude]="data.lat"
-          [longitude]="data.lng">
+        <agm-polyline-point *ngFor="let data of ride.route"
+          [latitude]="data[0]"
+          [longitude]="data[1]">
         </agm-polyline-point>
       </agm-polyline>
-      <agm-marker [latitude]="ride.currentLatitude" [longitude]="ride.currentLongitude" [iconUrl]="'assets/inride.png'"></agm-marker>
+      <agm-marker [latitude]="ride.endPosition[0]" [longitude]="ride.endPosition[1]" [iconUrl]="'assets/inride.png'"></agm-marker>
     </agm-map>
     <ion-item>
-      <h2 style="display: inline">{{ride.rideInfo.startTime}}</h2>
-      <p style="float: right; display: inline">{{ride.rideInfo.distance}} km</p>
+      <h2 style="display: inline">{{ride.startTime}}</h2>
+      <p style="float: right; display: inline">{{ride.distance}} km</p>
       <br>
-      <p style="display: inline">{{ride.rideInfo.time}} min</p>
-      <p style="float: right; display: inline">{{ride.rideInfo.calories}} cal</p>
+      <p style="display: inline">{{ride.time}} min</p>
+      <p style="float: right; display: inline">{{ride.calories}} cal</p>
     </ion-item>
 
   </ion-card>

@@ -6,7 +6,6 @@ import { NavController, Slides, LoadingController, AlertController, ViewControll
 import { ConfigService } from '../../services/config.service';
 import { IAMService } from '../../services/iam.service';
 
-import { LoginPage } from '../login/login';
 import { RegisterPage } from '../register/register';
 import { HomePage } from '../../pages/home/home';
 
@@ -35,7 +34,7 @@ export class BikeProfilePage implements OnInit {
       this.bikeProfile = this.bikeProfile.bike;
       if(this.bikeProfile) {
         console.log(this.bikeProfile);
-        this.bikeProfile.totalHours = Math.round(this.bikeProfile.totalHours/3600 * 100) / 100;
+        this.bikeProfile.totalHours = Math.round(this.bikeProfile.totalHours * 100) / 100;
         this.bikeProfile.totalDistance = Math.round(this.bikeProfile.totalDistance * 100) / 100;
         if(this.bikeProfile.owner && this.bikeProfile.owner != "") {
           this.header = this.bikeProfile.owner + "\'s Bike";

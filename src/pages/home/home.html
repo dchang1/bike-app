@@ -7,14 +7,14 @@
     <ion-icon name="options" menuToggle="right" style="color: black; font-size:40px; float: right;"></ion-icon>
   </div>
   -->
-  <img src="assets/qrcode.png" class="qr" (click)="scanQR()">
-  <agm-map [latitude]="39.905022" [longitude]="-75.354034" [zoom]="16" [streetViewControl]="false" [clickableIcons]="false" (mapClick)="closeProfiles(gm)" #gm>
+  <img src="assets/qrcode.png" class="qr" (click)="scanBarcode()">
+  <agm-map [latitude]="latitude" [longitude]="longitude" [zoom]="16" [streetViewControl]="false" [clickableIcons]="false" (mapClick)="closeProfiles(gm)" #gm>
     <!--<agm-marker [latitude]="39.905022" [longitude]="-75.354034"></agm-marker>-->
     <agm-polygon [paths]="paths" [fillOpacity]="0.1" [clickable]="false">
     </agm-polygon>
     <agm-marker [latitude]="latitude" [longitude]="longitude" [iconUrl]="'https://i.stack.imgur.com/VpVF8.png'"></agm-marker>
-    <agm-marker [latitude]="39.905022" [longitude]="-75.354034" [iconUrl]="'https://i.stack.imgur.com/VpVF8.png'" (markerClick)="bikeProfile(infoWindow, gm, 2)">
-    <agm-info-window [disableAutoPan]="false" #infoWindow>Title</agm-info-window></agm-marker>
+    <!--<agm-marker [latitude]="39.905022" [longitude]="-75.354034" [iconUrl]="'https://i.stack.imgur.com/VpVF8.png'" (markerClick)="bikeProfile(infoWindow, gm, 2)">
+    <agm-info-window [disableAutoPan]="false" #infoWindow>Title</agm-info-window></agm-marker>-->
     <agm-marker [visible]="!inRide" *ngFor="let bike of bikes" [latitude]="bike.currentPosition[0]" [longitude]="bike.currentPosition[1]" [iconUrl]="'assets/bike.png'" (markerClick)="bikeProfile(infoWindow, gm, bike.number)">
       <agm-info-window [disableAutoPan]="false" #infoWindow>
         <div class="rating">
@@ -28,8 +28,8 @@
     </agm-marker>
     <agm-polyline [visible]="inRide">
       <agm-polyline-point *ngFor="let data of ridePath"
-        [latitude]="data.lat"
-        [longitude]="data.lng">
+        [latitude]="data[0]"
+        [longitude]="data[1]">
       </agm-polyline-point>
     </agm-polyline>
     <agm-marker [visible]="inRide" [latitude]="currentLatitude" [longitude]="currentLongitude" [iconUrl]="'assets/inride.png'"></agm-marker>
@@ -80,15 +80,17 @@
         <button ion-item (click)="ridehistory()">Your Rides</button>
         <button ion-item (click)="payment()">Payment</button>
         <button ion-item (click)="help()">Help</button>
-        <!--<button ion-item (click)="setting()">Settings</button>-->
+        <button ion-item (click)="settings()">Settings</button>
         <button ion-item (click)="share()">Share a bike</button>
         <button ion-item (click)="logout()">Logout</button>
-        <button ion-item (click)="reset()">Reset</button>
+        <!--
+        <button ion-item (click)="reset()">Reset</button>-->
       </ion-list>
     </ion-content>
   </ion-menu>
   <ion-nav #menu style="display: none"></ion-nav>
 
+<!--
   <ion-menu [content]="filter" side="right" id="filter">
     <ion-header>
       <ion-toolbar>
@@ -106,5 +108,5 @@
   </ion-content>
   </ion-menu>
   <ion-nav #filter style="display: none"></ion-nav>
-
+-->
 </ion-content>

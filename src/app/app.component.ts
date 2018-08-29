@@ -14,7 +14,7 @@ import { IAMService } from '../services/iam.service';
 })
 export class MyApp {
   rootPage:any;
-
+  public response: any = {};
   constructor(private httpClient: HttpClient, private config: ConfigService, platform: Platform, statusBar: StatusBar, splashScreen: SplashScreen, iam: IAMService) {
     platform.ready().then(() => {
       // Okay, so the platform is ready and our plugins are available.
@@ -27,7 +27,11 @@ export class MyApp {
     });
     this.httpClient.get(this.config.getAPILocation() + '/user', {headers: headers}).subscribe(data => {
       if(data) {
+        this.response = data;
         console.log("Logged in");
+        localStorage.setItem('totalDistance', Math.round(this.response.user.totalDistance*100)/100);
+        localStorage.setItem('totalRideTime', Math.round(this.response.user.totalRideTime*100)/100);
+        localStorage.setItem('totalRides', this.response.user.pastRides.length);
         this.rootPage = HomePage;
       }
     }, error => {

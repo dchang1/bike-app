@@ -11,14 +11,12 @@ import { AgmCoreModule } from '@agm/core';
 import { MyApp } from './app.component';
 import { HomePage } from '../pages/home/home';
 import { LandingPage } from '../pages/landing/landing';
-import { LoginPage } from '../pages/login/login';
 import { RegisterPage } from '../pages/register/register';
-import { PaymentPage } from '../pages/payment/payment';
 import { RideHistoryPage } from '../pages/ridehistory/ridehistory';
 import { SettingsPage } from '../pages/settings/settings';
-import { HelpPage } from '../pages/help/help';
 import { BikeProfilePage } from '../pages/bike-profile/bike-profile';
 import { EndRidePage } from '../pages/end-ride/end-ride';
+import { ResetPage } from '../pages/reset/reset';
 
 import { IAMService } from '../services/iam.service';
 import { ConfigService } from '../services/config.service';
@@ -33,14 +31,12 @@ import  {BarcodeScanner } from '@ionic-native/barcode-scanner';
     MyApp,
     HomePage,
     LandingPage,
-    LoginPage,
     RegisterPage,
-    PaymentPage,
     RideHistoryPage,
     SettingsPage,
-    HelpPage,
     BikeProfilePage,
-    EndRidePage
+    EndRidePage,
+    ResetPage
   ],
   imports: [
     BrowserModule,
@@ -58,14 +54,12 @@ import  {BarcodeScanner } from '@ionic-native/barcode-scanner';
     MyApp,
     HomePage,
     LandingPage,
-    LoginPage,
     RegisterPage,
-    PaymentPage,
     RideHistoryPage,
     SettingsPage,
-    HelpPage,
     BikeProfilePage,
-    EndRidePage
+    EndRidePage,
+    ResetPage
   ],
   providers: [
     IAMService,

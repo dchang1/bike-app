@@ -7,7 +7,6 @@ import { ConfigService } from '../../services/config.service';
 import { IAMService } from '../../services/iam.service';
 
 import { HomePage } from '../../pages/home/home'
-import { LoginPage } from '../../pages/login/login'
 import { LandingPage } from '../../pages/landing/landing'
 
 @Component({

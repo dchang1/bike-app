@@ -48,30 +48,30 @@
       </div>
       <div class="stats">
         <p>
-          {{ride.startTime}}
+          {{startTime}}
         </p>
         <p>
-          {{ride.endTime}}
+          {{endTime}}
         </p>
         <p>
-          {{ride.time}}
+          {{time}} min
         </p>
         <p>
-          {{ride.distance}}
+          {{distance}} km
         </p>
         <p>
-          {{ride.calories}}
+          {{calories}} cal
         </p>
         <p>
-          {{ride.rating}}
+          {{rating}}
         </p>
       </div>
       <div class="map">
         <agm-map [latitude]="currentLatitude" [longitude]="currentLongitude" [zoom]="16" [clickableIcons]="false" [streetViewControl]="false">
           <agm-polyline>
             <agm-polyline-point *ngFor="let data of ridePath"
-              [latitude]="data.lat"
-              [longitude]="data.lng">
+              [latitude]="data[0]"
+              [longitude]="data[1]">
             </agm-polyline-point>
           </agm-polyline>
           <agm-marker [latitude]="currentLatitude" [longitude]="currentLongitude" [iconUrl]="'assets/inride.png'"></agm-marker>

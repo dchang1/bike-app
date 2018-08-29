@@ -33,8 +33,12 @@ page-landing {
     color: #ffffff;
   }
   .center {
-    margin: auto;
     width: 70vw;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    -webkit-transform: translate(-50%, -50%);
+    transform: translate(-50%, -50%);
   }
   .inputs {
     width: 50vw;

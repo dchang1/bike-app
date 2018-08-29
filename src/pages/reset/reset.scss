@@ -1,21 +1,14 @@
-page-settings {
+page-reset {
   ::-webkit-scrollbar{
     display:none;
   }
-  .name {
-    padding-bottom: 1px;
-    margin-top: 0px;
-    font-size: 16px;
+  .close {
+    float: right;
+    display: inline;
   }
-  .grey-label {
-    color: grey;
-  }
-  .grey-icon {
-    color: grey;
-  }
-  .button {
-    background-color: white;
-    color: #633bb7;
+  .title {
+    text-align: center;
+    display: inline;
   }
   .rounded {
     border-radius: 25px;
@@ -27,6 +20,7 @@ page-settings {
     margin-bottom: 10px;
     color: #ffffff;
     background-color: #633bb7;
+    margin-top: 20px;
   }
   p.error {
     color: map-get($colors, 'danger');
