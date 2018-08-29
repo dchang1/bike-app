@@ -174,7 +174,7 @@ export class EndRidePage implements OnInit {
       });
       this.httpClient.post(this.config.getAPILocation() + '/rating', {ride: localStorage.getItem('rideID'), rating: 2}, {headers: headers}).subscribe(data => {
         this.response = data;
-        if(this.this.response.success==true) {
+        if(this.response.success==true) {
           console.log("rating");
         } else {
           console.log("error");

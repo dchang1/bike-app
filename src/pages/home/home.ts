@@ -568,7 +568,7 @@ export class HomePage implements OnInit {
 
     return 12742 * Math.asin(Math.sqrt(a)); // 2 * R; R = 6371 km
   }
-
+/*
   public scanQR() {
     console.log("QR");
     const modal = this.modalCtrl.create(BikeProfilePage, {bikeNumber: 977500, reportBike: false, unlockBike: true});
@@ -607,7 +607,7 @@ export class HomePage implements OnInit {
       }
     });
   }
-
+*/
   async scanBarcode(){
 
     this.options = {
