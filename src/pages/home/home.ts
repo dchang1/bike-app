@@ -460,13 +460,13 @@ export class HomePage implements OnInit {
     "lng": -75.35516
   }
 ]
-    this.geolocation.getCurrentPosition(position => {
+    this.geolocation.getCurrentPosition().then((position) => {
       this.latitude = position.coords.latitude;
       this.longitude = position.coords.longitude;
       console.log(this.latitude);
       console.log(this.longitude);
-    }, error => {
-      console.log("error, cant get location");
+    }).catch((error) => {
+      console.log(error);
     });
     let headers = new HttpHeaders({
       'Authorization': localStorage.getItem('token')
