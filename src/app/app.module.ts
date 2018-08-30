@@ -24,7 +24,8 @@ import { ConfigService } from '../services/config.service';
 //QR scanner
 import { Component } from '@angular/core';
 import { NavController } from 'ionic-angular';
-import  {BarcodeScanner } from '@ionic-native/barcode-scanner';
+import { BarcodeScanner } from '@ionic-native/barcode-scanner';
+import { Geolocation } from '@ionic-native/geolocation';
 
 @NgModule({
   declarations: [
@@ -67,6 +68,7 @@ import  {BarcodeScanner } from '@ionic-native/barcode-scanner';
     StatusBar,
     SplashScreen,
     BarcodeScanner,
+    Geolocation,
     {provide: ErrorHandler, useClass: IonicErrorHandler}
   ]
 })
