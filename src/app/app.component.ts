@@ -4,10 +4,12 @@ import { StatusBar } from '@ionic-native/status-bar';
 import { SplashScreen } from '@ionic-native/splash-screen';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { ConfigService } from '../services/config.service';
+import { AlertController } from 'ionic-angular';
 
 import { HomePage } from '../pages/home/home';
 import { LandingPage } from '../pages/landing/landing';
 import { IAMService } from '../services/iam.service';
+import { Diagnostic } from '@ionic-native/diagnostic';
 
 @Component({
   templateUrl: 'app.html'
@@ -15,7 +17,7 @@ import { IAMService } from '../services/iam.service';
 export class MyApp {
   rootPage:any;
   public response: any = {};
-  constructor(private httpClient: HttpClient, private config: ConfigService, platform: Platform, statusBar: StatusBar, splashScreen: SplashScreen, iam: IAMService) {
+  constructor(private diagnostic: Diagnostic, private alertCtrl: AlertController, private httpClient: HttpClient, private config: ConfigService, platform: Platform, statusBar: StatusBar, splashScreen: SplashScreen, iam: IAMService) {
     platform.ready().then(() => {
       // Okay, so the platform is ready and our plugins are available.
       // Here you can do any higher level native things you might need.
@@ -32,7 +34,33 @@ export class MyApp {
         localStorage.setItem('totalDistance', this.response.user.totalDistance.toFixed(2).toString());
         localStorage.setItem('totalRideTime', this.response.user.totalRideTime.toFixed(2).toString());
         localStorage.setItem('totalRides', this.response.user.pastRides.length.toString());
-        this.rootPage = HomePage;
+        this.diagnostic.isGpsLocationEnabled().then(state => {
+          if (!state) {
+            let confirm = this.alertCtrl.create({
+              title: '<b>Location</b>',
+              message: 'Location information is unavaliable on this device. Go to Settings to enable Location.',
+              buttons: [
+                {
+                  text: 'cancel',
+                  role: 'Cancel',
+                  handler: () => {
+                      this.rootPage = LandingPage;
+                  }
+                },
+                {
+                  text: 'Go to settings',
+                  handler: () => {
+                    this.diagnostic.switchToLocationSettings()
+                  }
+                }
+              ]
+            });
+            confirm.present();
+          }
+          else {
+            this.rootPage = HomePage;
+          }
+        })
       }
     }, error => {
       console.log("Not logged in");

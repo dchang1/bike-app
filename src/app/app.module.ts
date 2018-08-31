@@ -26,6 +26,7 @@ import { Component } from '@angular/core';
 import { NavController } from 'ionic-angular';
 import { BarcodeScanner } from '@ionic-native/barcode-scanner';
 import { Geolocation } from '@ionic-native/geolocation';
+import { Diagnostic } from '@ionic-native/diagnostic';
 
 @NgModule({
   declarations: [
@@ -69,6 +70,7 @@ import { Geolocation } from '@ionic-native/geolocation';
     SplashScreen,
     BarcodeScanner,
     Geolocation,
+    Diagnostic,
     {provide: ErrorHandler, useClass: IonicErrorHandler}
   ]
 })
