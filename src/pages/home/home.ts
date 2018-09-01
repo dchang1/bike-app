@@ -472,13 +472,6 @@ export class HomePage implements OnInit {
             positionObject.coords.longitude = position.coords.longitude;
         }
     }
-    let alert = this.alertCtrl.create({
-      title: 'Test',
-      subTitle: JSON.stringify(positionObject),
-      buttons: ['Ok']
-    });
-    alert.present();
-
 //      this.latitude = position.coords.latitude;
 //      this.longitude = position.coords.longitude;
       this.latitude = positionObject.coords.latitude;
