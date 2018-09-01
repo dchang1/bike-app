@@ -699,7 +699,7 @@ export class HomePage implements OnInit {
         }
       });
     } else {
-      this.navCtrl.pop();
+      this.navCtrl.setRoot(HomePage);
     }
     /*
     let alert = this.alertCtrl.create({
