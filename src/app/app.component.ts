@@ -34,6 +34,8 @@ export class MyApp {
         localStorage.setItem('totalDistance', this.response.user.totalDistance.toFixed(2).toString());
         localStorage.setItem('totalRideTime', this.response.user.totalRideTime.toFixed(2).toString());
         localStorage.setItem('totalRides', this.response.user.pastRides.length.toString());
+        this.rootPage = HomePage;
+/*
         this.diagnostic.isGpsLocationEnabled().then(state => {
           if (!state) {
             let confirm = this.alertCtrl.create({
@@ -60,7 +62,7 @@ export class MyApp {
           else {
             this.rootPage = HomePage;
           }
-        })
+        })*/
       }
     }, error => {
       console.log("Not logged in");

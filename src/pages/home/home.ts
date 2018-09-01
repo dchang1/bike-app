@@ -461,8 +461,29 @@ export class HomePage implements OnInit {
   }
 ]
     this.geolocation.getCurrentPosition().then((position) => {
-      this.latitude = position.coords.latitude;
-      this.longitude = position.coords.longitude;
+      var positionObject = {};
+
+    if ('coords' in position) {
+        positionObject.coords = {};
+
+        if ('latitude' in position.coords) {
+            positionObject.coords.latitude = position.coords.latitude;
+        }
+        if ('longitude' in position.coords) {
+            positionObject.coords.longitude = position.coords.longitude;
+        }
+    }
+    let alert = this.alertCtrl.create({
+      title: 'Test',
+      subTitle: JSON.stringify(positionObject),
+      buttons: ['Ok']
+    });
+    alert.present();
+
+//      this.latitude = position.coords.latitude;
+//      this.longitude = position.coords.longitude;
+      this.latitude = positionObject.coords.latitude;
+      this.longitude = positionObject.coords.longitude;
       console.log(this.latitude);
       console.log(this.longitude);
     }).catch((error) => {
