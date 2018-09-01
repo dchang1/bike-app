@@ -461,7 +461,7 @@ export class HomePage implements OnInit {
   }
 ]
     this.geolocation.getCurrentPosition().then((position) => {
-      var positionObject = {};
+      var positionObject: any = {};
 
     if ('coords' in position) {
         positionObject.coords = {};
