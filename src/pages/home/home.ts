@@ -698,6 +698,8 @@ export class HomePage implements OnInit {
           })
         }
       });
+    } else {
+      this.navCtrl.pop();
     }
     /*
     let alert = this.alertCtrl.create({
