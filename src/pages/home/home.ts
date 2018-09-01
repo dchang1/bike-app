@@ -461,10 +461,9 @@ export class HomePage implements OnInit {
   }
 ]
     this.geolocation.getCurrentPosition().then((position) => {
-      var positionObject: any = {};
+      var positionObject: any = {"coords": {"latitude": 100, "longitude": 100}};
 
     if ('coords' in position) {
-        positionObject.coords = {};
 
         if ('latitude' in position.coords) {
             positionObject.coords.latitude = position.coords.latitude;
