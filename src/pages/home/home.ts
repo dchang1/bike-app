@@ -629,6 +629,88 @@ export class HomePage implements OnInit {
     this.options = {
       prompt: "Scan a QR code!"
     }
+    this.barcode.scan().then(results => {
+      this.results = results;
+      if(this.results.cancelled == false) {
+        const modal = this.modalCtrl.create(BikeProfilePage, {bikeNumber: this.results.text, reportBike: false, unlockBike: true});
+        modal.present();
+        modal.onDidDismiss(data => {
+          console.log(data);
+          if(data.unlock==true) {
+            let headers = new HttpHeaders({
+              'Authorization': localStorage.getItem('token')
+            });
+            let loading = this.loadingCtrl.create({
+              content: 'Unlocking Bike...'
+            });
+            loading.present();
+            this.httpClient.post(this.config.getAPILocation() + '/newRide', {bike: this.results}, {headers: headers}).subscribe(data => {
+              this.response = data;
+              if(this.response.success==true) {
+                loading.dismiss();
+                localStorage.setItem('inRide', "true");
+                this.inRide=true;
+                localStorage.setItem('rideID', this.response.rideID);
+                localStorage.setItem('bikeNumber', this.response.bike);
+                var currentRide = setInterval(() => {
+                  if(localStorage.getItem('inRide')=="true") {
+                    let headers = new HttpHeaders({
+                      'Content-Type': 'application/x-www-form-urlencoded',
+                      'Authorization': localStorage.getItem('token')
+                    });
+                    this.httpClient.get(this.config.getAPILocation() + '/ride/' + localStorage.getItem('rideID'), {headers: headers}).subscribe(data => {
+                      this.rideInfo = data;
+                      if (this.rideInfo.ride.inRide==false) {
+                        clearInterval(currentRide);
+                        localStorage.setItem('inRide', "false");
+                        this.inRide=false;
+                        const modal = this.modalCtrl.create(EndRidePage);
+                        modal.present();
+                      } else {
+                          this.currentLatitude = this.rideInfo.ride.route[this.rideInfo.ride.route.length-1][0];
+                          this.currentLongitude = this.rideInfo.ride.route[this.rideInfo.ride.route.length-1][1];
+                          this.ridePath = this.rideInfo.ride.route;
+                          this.rideTime = Math.round((Date.now()-this.rideInfo.ride.startTime)/60000 * 100)/100;
+                          this.rideCalories = Math.round(650*this.rideTime / 60 * 100)/100;
+                          this.rideDistance = (this.distance(this.rideInfo.ride.startPosition[0], this.rideInfo.ride.startPosition[1], this.currentLatitude, this.currentLongitude));
+                          console.log("still in ride");
+                      }
+                    });
+                  }
+                }, 1000);
+              } else {
+                loading.dismiss();
+                let alert = this.alertCtrl.create({
+                  title: 'Error',
+                  subTitle: 'Bike does not exist or it could not be unlock.',
+                  buttons: ['OK']
+                });
+                alert.present();
+              }
+            }, error => {
+              loading.dismiss();
+              let alert = this.alertCtrl.create({
+                title: 'Error',
+                subTitle: 'Could not connect to server.',
+                buttons: ['OK']
+              });
+              alert.present();
+            })
+          }
+        });
+      } else {
+        this.viewCtrl.dismiss();
+      }
+    }).catch(err => {
+      let alert = this.alertCtrl.create({
+        title: 'Error',
+        subTitle: 'Scanning failed: ' + err,
+        buttons: ['OK']
+      });
+      alert.present();
+    }) 
+
+    /*
     this.results = await this.barcode.scan();
     console.log(this.results);
     if(this.results.cancelled == false) {
@@ -699,8 +781,9 @@ export class HomePage implements OnInit {
         }
       });
     } else {
-      this.navCtrl.setRoot(HomePage);
+      this.viewCtrl.dismiss();
     }
+    */
     /*
     let alert = this.alertCtrl.create({
       title: 'New ride',

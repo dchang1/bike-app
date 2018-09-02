@@ -31,8 +31,8 @@ export class BikeProfilePage implements OnInit {
     this.unlockBike = this.params.get('unlockBike')
     this.httpClient.get(this.config.getAPILocation() + '/bike/' + this.params.get('bikeNumber'), {headers: headers}).subscribe(data => {
       this.bikeProfile = data;
-      this.bikeProfile = this.bikeProfile.bike;
-      if(this.bikeProfile) {
+      if(this.bikeProfile.success==true) {
+        this.bikeProfile = this.bikeProfile.bike;
         console.log(this.bikeProfile);
         this.bikeProfile.totalHours = Math.round(this.bikeProfile.totalHours * 100) / 100;
         this.bikeProfile.totalDistance = Math.round(this.bikeProfile.totalDistance * 100) / 100;
@@ -41,9 +41,14 @@ export class BikeProfilePage implements OnInit {
         } else {
           this.header = "Bike Details";
         }
-      }
-      else {
-        console.log("nothing");
+      } else {
+        let alert = this.alertCtrl.create({
+          title: 'Invalid QR Code',
+          subTitle: 'Bike is not registered or does not exist.',
+          buttons: ['OK']
+        });
+        alert.present();
+        this.viewCtrl.dismiss({"unlock": false});
       }
     }, error => {
       console.log("ERROR");
