@@ -13,7 +13,8 @@ import { BikeProfilePage } from '../../pages/bike-profile/bike-profile'
 import { EndRidePage } from '../../pages/end-ride/end-ride'
 
 import { Geolocation } from '@ionic-native/geolocation';
-import {BarcodeScanner,BarcodeScannerOptions} from '@ionic-native/barcode-scanner';
+import { BarcodeScanner,BarcodeScannerOptions } from '@ionic-native/barcode-scanner';
+import { QRScanner, QRScannerStatus } from '@ionic-native/qr-scanner';
 
 @Component({
   selector: 'page-home',
@@ -49,7 +50,7 @@ export class HomePage implements OnInit {
   public rideCost = '0.00';
   lat: number = 0;
   lng: number = 0;
-  constructor(public geolocation: Geolocation, public modalCtrl: ModalController, private navCtrl: NavController, private httpClient: HttpClient, private alertCtrl: AlertController, private loadingCtrl: LoadingController, private config: ConfigService, private iam: IAMService, private barcode: BarcodeScanner) {
+  constructor(private qrScanner: QRScanner, public geolocation: Geolocation, public modalCtrl: ModalController, private navCtrl: NavController, private httpClient: HttpClient, private alertCtrl: AlertController, private loadingCtrl: LoadingController, private config: ConfigService, private iam: IAMService, private barcode: BarcodeScanner) {
   }
   ngOnInit() {
     this.firstName = localStorage.getItem("firstName");
@@ -59,6 +60,8 @@ export class HomePage implements OnInit {
     this.totalRideTime = localStorage.getItem("totalRideTime");
     this.totalRides = localStorage.getItem("totalRides");
     this.bikeScore = 1;
+    this.latitude = Number(localStorage.getItem('latitude'));
+    this.longitude = Number(localStorage.getItem('longitude'));
     if(localStorage.getItem("inRide")=="true") {
       this.inRide=true;
     } else {
@@ -476,6 +479,8 @@ export class HomePage implements OnInit {
 //      this.longitude = position.coords.longitude;
       this.latitude = positionObject.coords.latitude;
       this.longitude = positionObject.coords.longitude;
+      localStorage.setItem('latitude', positionObject.coords.latitude);
+      localStorage.setItem('longitude', positionObject.coords.latitude);
       console.log(this.latitude);
       console.log(this.longitude);
     }).catch((error) => {
@@ -498,6 +503,8 @@ export class HomePage implements OnInit {
       this.geolocation.getCurrentPosition(position => {
         this.latitude = position.coords.latitude;
         this.longitude = position.coords.longitude;
+        localStorage.setItem('latitude', positionObject.coords.latitude);
+        localStorage.setItem('longitude', positionObject.coords.latitude);
         console.log(this.latitude);
         console.log(this.longitude);
       });
@@ -624,6 +631,94 @@ export class HomePage implements OnInit {
     });
   }
 */
+
+  scanQR() {
+    this.qrScanner.prepare().then((status: QRScannerStatus) => {
+       if (status.authorized) {
+         let scanSub = this.qrScanner.scan().subscribe((text: string) => {
+           console.log('Scanned something', text);
+           this.qrScanner.hide(); // hide camera preview
+           scanSub.unsubscribe(); // stop scanning
+           const modal = this.modalCtrl.create(BikeProfilePage, {bikeNumber: text, reportBike: false, unlockBike: true});
+           modal.present();
+           modal.onDidDismiss(data => {
+             console.log(data);
+             if(data.unlock==true) {
+               let headers = new HttpHeaders({
+                 'Authorization': localStorage.getItem('token')
+               });
+               let loading = this.loadingCtrl.create({
+                 content: 'Unlocking Bike...'
+               });
+               loading.present();
+               this.httpClient.post(this.config.getAPILocation() + '/newRide', {bike: text}, {headers: headers}).subscribe(data => {
+                 this.response = data;
+                 if(this.response.success==true) {
+                   loading.dismiss();
+                   localStorage.setItem('inRide', "true");
+                   this.inRide=true;
+                   localStorage.setItem('rideID', this.response.rideID);
+                   localStorage.setItem('bikeNumber', this.response.bike);
+                   var currentRide = setInterval(() => {
+                     if(localStorage.getItem('inRide')=="true") {
+                       let headers = new HttpHeaders({
+                         'Content-Type': 'application/x-www-form-urlencoded',
+                         'Authorization': localStorage.getItem('token')
+                       });
+                       this.httpClient.get(this.config.getAPILocation() + '/ride/' + localStorage.getItem('rideID'), {headers: headers}).subscribe(data => {
+                         this.rideInfo = data;
+                         if (this.rideInfo.ride.inRide==false) {
+                           clearInterval(currentRide);
+                           localStorage.setItem('inRide', "false");
+                           this.inRide=false;
+                           const modal = this.modalCtrl.create(EndRidePage);
+                           modal.present();
+                         } else {
+                             this.currentLatitude = this.rideInfo.ride.route[this.rideInfo.ride.route.length-1][0];
+                             this.currentLongitude = this.rideInfo.ride.route[this.rideInfo.ride.route.length-1][1];
+                             this.ridePath = this.rideInfo.ride.route;
+                             this.rideTime = Math.round((Date.now()-this.rideInfo.ride.startTime)/60000 * 100)/100;
+                             this.rideCalories = Math.round(650*this.rideTime / 60 * 100)/100;
+                             this.rideDistance = (this.distance(this.rideInfo.ride.startPosition[0], this.rideInfo.ride.startPosition[1], this.currentLatitude, this.currentLongitude));
+                             console.log("still in ride");
+                         }
+                       });
+                     }
+                   }, 1000);
+                 } else {
+                   loading.dismiss();
+                   let alert = this.alertCtrl.create({
+                     title: 'Error',
+                     subTitle: 'Bike does not exist or it could not be unlock.',
+                     buttons: ['OK']
+                   });
+                   alert.present();
+                 }
+               }, error => {
+                 loading.dismiss();
+                 let alert = this.alertCtrl.create({
+                   title: 'Error',
+                   subTitle: 'Could not connect to server.',
+                   buttons: ['OK']
+                 });
+                 alert.present();
+               })
+             }
+           });
+         });
+       } else if (status.denied) {
+         // camera permission was permanently denied
+         // you must use QRScanner.openSettings() method to guide the user to the settings page
+         // then they can grant the permission from there
+         this.qrScanner.openSettings();
+       } else {
+         this.qrScanner.openSettings();
+         // permission was denied, but not permanently. You can ask for permission again at a later time.
+       }
+    })
+    .catch((e: any) => console.log('Error is', e));
+  }
+
   async scanBarcode(){
 
     this.options = {
@@ -698,8 +793,6 @@ export class HomePage implements OnInit {
             })
           }
         });
-      } else {
-        this.viewCtrl.dismiss();
       }
     }).catch(err => {
       let alert = this.alertCtrl.create({
@@ -708,7 +801,7 @@ export class HomePage implements OnInit {
         buttons: ['OK']
       });
       alert.present();
-    }) 
+    })
 
     /*
     this.results = await this.barcode.scan();
