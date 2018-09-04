@@ -50,6 +50,7 @@ export class HomePage implements OnInit {
   public rideCost = '0.00';
   lat: number = 0;
   lng: number = 0;
+  protected map: any;
   constructor(private qrScanner: QRScanner, public geolocation: Geolocation, public modalCtrl: ModalController, private navCtrl: NavController, private httpClient: HttpClient, private alertCtrl: AlertController, private loadingCtrl: LoadingController, private config: ConfigService, private iam: IAMService, private barcode: BarcodeScanner) {
   }
   ngOnInit() {
@@ -581,6 +582,15 @@ export class HomePage implements OnInit {
   reset() {
     localStorage.setItem('inRide', "false");
     this.inRide=false;
+  }
+  protected mapReady(map) {
+    this.map = map;
+  }
+  center() {
+    if (this.map) {
+      this.map.setCenter({ lat: this.latitude, lng: this.longitude });
+      this.map.setZoom(16);
+    }
   }
   public distance(lat1, lon1, lat2, lon2) {
     var p = 0.017453292519943295;    // Math.PI / 180

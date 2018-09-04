@@ -8,7 +8,10 @@
   </div>
   -->
   <img src="assets/qrcode.png" class="qr" (click)="scanQR()">
-  <agm-map [latitude]="latitude" [longitude]="longitude" [zoom]="16" [streetViewControl]="false" [clickableIcons]="false" (mapClick)="closeProfiles(gm)" #gm>
+  <div class="circle" (click)="center()">
+    <ion-icon name="locate" class="icon locate"></ion-icon>
+  </div>
+  <agm-map (mapReady)="mapReady($event)" [latitude]="latitude" [longitude]="longitude" [zoom]="16" [streetViewControl]="false" [clickableIcons]="false" (mapClick)="closeProfiles(gm)" #gm>
     <!--<agm-marker [latitude]="39.905022" [longitude]="-75.354034"></agm-marker>-->
     <agm-polygon [paths]="paths" [fillOpacity]="0.1" [clickable]="false">
     </agm-polygon>
