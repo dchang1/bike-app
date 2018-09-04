@@ -502,8 +502,17 @@ export class HomePage implements OnInit {
 
     setInterval(() => {
       this.geolocation.getCurrentPosition(position => {
-        this.latitude = position.coords.latitude;
-        this.longitude = position.coords.longitude;
+        if ('coords' in position) {
+
+            if ('latitude' in position.coords) {
+                positionObject.coords.latitude = position.coords.latitude;
+            }
+            if ('longitude' in position.coords) {
+                positionObject.coords.longitude = position.coords.longitude;
+            }
+        }
+        this.latitude = positionObject.coords.latitude;
+        this.longitude = positionObject.coords.longitude;
         localStorage.setItem('latitude', positionObject.coords.latitude);
         localStorage.setItem('longitude', positionObject.coords.latitude);
         console.log(this.latitude);
