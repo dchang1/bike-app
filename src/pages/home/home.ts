@@ -502,6 +502,7 @@ export class HomePage implements OnInit {
 
     setInterval(() => {
       this.geolocation.getCurrentPosition(position => {
+        var positionObject: any = {"coords": {"latitude": 100, "longitude": 100}};
         if ('coords' in position) {
 
             if ('latitude' in position.coords) {
