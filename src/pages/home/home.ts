@@ -51,7 +51,7 @@ export class HomePage implements OnInit {
   lat: number = 0;
   lng: number = 0;
   protected map: any;
-  constructor(private qrScanner: QRScanner, public geolocation: Geolocation, public modalCtrl: ModalController, private navCtrl: NavController, private httpClient: HttpClient, private alertCtrl: AlertController, private loadingCtrl: LoadingController, private config: ConfigService, private iam: IAMService, private barcode: BarcodeScanner) {
+  constructor(public geolocation: Geolocation, public modalCtrl: ModalController, private navCtrl: NavController, private httpClient: HttpClient, private alertCtrl: AlertController, private loadingCtrl: LoadingController, private config: ConfigService, private iam: IAMService, private barcode: BarcodeScanner) {
   }
   ngOnInit() {
     this.firstName = localStorage.getItem("firstName");
