@@ -34,6 +34,7 @@ export class BikeProfilePage implements OnInit {
       if(this.bikeProfile.success==true) {
         this.bikeProfile = this.bikeProfile.bike;
         console.log(this.bikeProfile);
+        this.bikeProfile.rides = this.bikeProfile.rides.length;
         this.bikeProfile.totalHours = Math.round(this.bikeProfile.totalHours * 100) / 100;
         this.bikeProfile.totalDistance = Math.round(this.bikeProfile.totalDistance * 100) / 100;
         if(this.bikeProfile.owner && this.bikeProfile.owner != "") {

@@ -94,5 +94,4 @@
         <variable name="GEOLOCATION_USAGE_DESCRIPTION" value="To locate you" />
     </plugin>
     <plugin name="cordova.plugins.diagnostic" spec="^4.0.9" />
-    <plugin name="cordova-plugin-qrscanner" spec="^2.6.0" />
 </widget>
