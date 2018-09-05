@@ -25,7 +25,6 @@ import { ConfigService } from '../services/config.service';
 import { Component } from '@angular/core';
 import { NavController } from 'ionic-angular';
 import { BarcodeScanner } from '@ionic-native/barcode-scanner';
-import { QRScanner } from '@ionic-native/qr-scanner';
 import { Geolocation } from '@ionic-native/geolocation';
 import { Diagnostic } from '@ionic-native/diagnostic';
 
@@ -72,7 +71,6 @@ import { Diagnostic } from '@ionic-native/diagnostic';
     BarcodeScanner,
     Geolocation,
     Diagnostic,
-    QRScanner,
     {provide: ErrorHandler, useClass: IonicErrorHandler}
   ]
 })

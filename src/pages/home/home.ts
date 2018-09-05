@@ -14,7 +14,6 @@ import { EndRidePage } from '../../pages/end-ride/end-ride'
 
 import { Geolocation } from '@ionic-native/geolocation';
 import { BarcodeScanner,BarcodeScannerOptions } from '@ionic-native/barcode-scanner';
-import { QRScanner, QRScannerStatus } from '@ionic-native/qr-scanner';
 
 @Component({
   selector: 'page-home',
