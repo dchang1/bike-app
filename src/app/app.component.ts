@@ -23,6 +23,8 @@ export class MyApp {
         let nav = this.app.getActiveNav();
         if(nav.canGoBack()) {
           nav.pop();
+        } else if (typeof nav.instance.backButtonAction === 'function') {
+          nav.instance.back();
         } else {
           nav.setRoot(HomePage);
         }
