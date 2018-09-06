@@ -37,7 +37,7 @@ export class SettingsPage implements OnInit {
 
   back() {
     if(this.slides.getActiveIndex() == 0) {
-      this.navCtrl.setRoot(HomePage);
+      this.navCtrl.pop();
     } else {
       this.slides.lockSwipes(false);
       this.slides.slideTo(0, 0);

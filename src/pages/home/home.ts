@@ -586,10 +586,10 @@ export class HomePage implements OnInit {
     alert.present();
   }
   settings() {
-    this.navCtrl.setRoot(SettingsPage);
+    this.navCtrl.push(SettingsPage);
   }
   ridehistory() {
-    this.navCtrl.setRoot(RideHistoryPage);
+    this.navCtrl.push(RideHistoryPage);
   }
   logout() {
     this.iam.setCurrentUser(null);

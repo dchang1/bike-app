@@ -39,7 +39,7 @@ export class RideHistoryPage implements OnInit {
   }
 
   back() {
-    this.navCtrl.setRoot(HomePage);
+    this.navCtrl.pop();
   }
 
 }
