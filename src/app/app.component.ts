@@ -17,13 +17,11 @@ import { Diagnostic } from '@ionic-native/diagnostic';
 export class MyApp {
   rootPage:any;
   public response: any = {};
-  constructor(private diagnostic: Diagnostic, private alertCtrl: AlertController, private httpClient: HttpClient, private config: ConfigService, platform: Platform, statusBar: StatusBar, splashScreen: SplashScreen, iam: IAMService) {
+  constructor(public app: MyApp, private diagnostic: Diagnostic, private alertCtrl: AlertController, private httpClient: HttpClient, private config: ConfigService, platform: Platform, statusBar: StatusBar, splashScreen: SplashScreen, iam: IAMService) {
     platform.ready().then(() => {
       platform.registerBackButtonAction(() => {
-        console.log("HERE");
         let nav = this.app.getActiveNav();
         if(nav.canGoBack()) {
-          console.log("Pop");
           nav.pop();
         } else {
           nav.setRoot(HomePage);
