@@ -21,10 +21,11 @@ export class MyApp {
     platform.ready().then(() => {
       platform.registerBackButtonAction(() => {
         let nav = this.app.getActiveNav();
+        let activeView = nav.getActive();
         if(nav.canGoBack()) {
           nav.pop();
-        } else if (typeof nav.instance.backButtonAction === 'function') {
-          nav.instance.back();
+        } else if (typeof activeView.instance.backButtonAction === 'function') {
+          activeView.instance.back();
         } else {
           nav.setRoot(HomePage);
         }
