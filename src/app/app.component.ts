@@ -4,7 +4,7 @@ import { StatusBar } from '@ionic-native/status-bar';
 import { SplashScreen } from '@ionic-native/splash-screen';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { ConfigService } from '../services/config.service';
-import { AlertController } from 'ionic-angular';
+import { AlertController, IonicApp } from 'ionic-angular';
 
 import { HomePage } from '../pages/home/home';
 import { LandingPage } from '../pages/landing/landing';
@@ -17,7 +17,7 @@ import { Diagnostic } from '@ionic-native/diagnostic';
 export class MyApp {
   rootPage:any;
   public response: any = {};
-  constructor(public app: MyApp, private diagnostic: Diagnostic, private alertCtrl: AlertController, private httpClient: HttpClient, private config: ConfigService, platform: Platform, statusBar: StatusBar, splashScreen: SplashScreen, iam: IAMService) {
+  constructor(public app: IonicApp, private diagnostic: Diagnostic, private alertCtrl: AlertController, private httpClient: HttpClient, private config: ConfigService, platform: Platform, statusBar: StatusBar, splashScreen: SplashScreen, iam: IAMService) {
     platform.ready().then(() => {
       platform.registerBackButtonAction(() => {
         let nav = this.app.getActiveNav();
