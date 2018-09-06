@@ -20,15 +20,13 @@ export class MyApp {
   constructor(private diagnostic: Diagnostic, private alertCtrl: AlertController, private httpClient: HttpClient, private config: ConfigService, platform: Platform, statusBar: StatusBar, splashScreen: SplashScreen, iam: IAMService) {
     platform.ready().then(() => {
       platform.registerBackButtonAction(() => {
-        let nav = app.getActiveNav();
-        let activeView: ViewController = nav.getActive();
-
-        if(activeView != null){
-          if(nav.canGoBack()) {
-            nav.pop();
-          } else {
-            nav.setRoot(HomePage);
-          }
+        console.log("HERE");
+        let nav = this.app.getActiveNav();
+        if(nav.canGoBack()) {
+          console.log("Pop");
+          nav.pop();
+        } else {
+          nav.setRoot(HomePage);
         }
       });
       // Okay, so the platform is ready and our plugins are available.
