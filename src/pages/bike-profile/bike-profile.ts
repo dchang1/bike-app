@@ -52,7 +52,13 @@ export class BikeProfilePage implements OnInit {
         this.viewCtrl.dismiss({"unlock": false});
       }
     }, error => {
-      console.log("ERROR");
+      let alert = this.alertCtrl.create({
+        title: 'Invalid QR Code',
+        subTitle: 'Bike is not registered or does not exist.',
+        buttons: ['OK']
+      });
+      alert.present();
+      this.viewCtrl.dismiss({"unlock": false});
     });
   }
 
