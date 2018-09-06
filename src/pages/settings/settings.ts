@@ -1,7 +1,7 @@
 import { Component, ViewChild, OnInit } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Http, Headers, Response, URLSearchParams } from '@angular/http';
-import { NavController, Slides, LoadingController, AlertController } from 'ionic-angular';
+import { Navbar, NavController, Slides, LoadingController, AlertController } from 'ionic-angular';
 import { ConfigService } from '../../services/config.service';
 
 import { HomePage } from '../../pages/home/home';
@@ -12,6 +12,7 @@ import { HomePage } from '../../pages/home/home';
 })
 export class SettingsPage implements OnInit {
   @ViewChild(Slides) slides: Slides;
+  @ViewChild(Navbar) navBar: Navbar;
   firstName = "";
   lastName = "";
   email = "";
@@ -33,6 +34,18 @@ export class SettingsPage implements OnInit {
     this.campus = localStorage.getItem('campus');
     this.campuses = new Array<string>();
     this.campuses.push("Swarthmore");
+  }
+
+  ionViewDidLoad() {
+    this.navBar.backButtonClick = (e:UIEvent)=>{
+      if(this.slides.getActiveIndex() == 0) {
+        this.navCtrl.pop();
+      } else {
+        this.slides.lockSwipes(false);
+        this.slides.slideTo(0, 0);
+        this.slides.lockSwipes(true);
+      }
+    }
   }
 
   back() {
