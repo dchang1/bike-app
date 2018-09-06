@@ -685,7 +685,7 @@ export class HomePage implements OnInit {
               content: 'Unlocking Bike...'
             });
             loading.present();
-            this.httpClient.post(this.config.getAPILocation() + '/newRide', {bike: this.results}, {headers: headers}).subscribe(data => {
+            this.httpClient.post(this.config.getAPILocation() + '/newRide', {bike: this.results.text}, {headers: headers}).subscribe(data => {
               this.response = data;
               if(this.response.success==true) {
                 loading.dismiss();
