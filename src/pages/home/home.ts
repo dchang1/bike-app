@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Http, Headers, Response, URLSearchParams } from '@angular/http';
-import { App, ModalController, NavController, Slides, LoadingController, AlertController } from 'ionic-angular';
+import { Platform, App, ModalController, NavController, Slides, LoadingController, AlertController } from 'ionic-angular';
 
 import { ConfigService } from '../../services/config.service';
 import { IAMService } from '../../services/iam.service';
@@ -52,7 +52,7 @@ export class HomePage implements OnInit {
   lng: number = 0;
   protected map: any;
   public unregisterBackButtonAction: any;
-  constructor(public app: App, public geolocation: Geolocation, public modalCtrl: ModalController, private navCtrl: NavController, private httpClient: HttpClient, private alertCtrl: AlertController, private loadingCtrl: LoadingController, private config: ConfigService, private iam: IAMService, private barcode: BarcodeScanner) {
+  constructor(public platform: Platform, public app: App, public geolocation: Geolocation, public modalCtrl: ModalController, private navCtrl: NavController, private httpClient: HttpClient, private alertCtrl: AlertController, private loadingCtrl: LoadingController, private config: ConfigService, private iam: IAMService, private barcode: BarcodeScanner) {
   }
   ngOnInit() {
     this.firstName = localStorage.getItem("firstName");
