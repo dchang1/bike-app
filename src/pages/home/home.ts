@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Http, Headers, Response, URLSearchParams } from '@angular/http';
-import { ModalController, NavController, Slides, LoadingController, AlertController } from 'ionic-angular';
+import { App, ModalController, NavController, Slides, LoadingController, AlertController } from 'ionic-angular';
 
 import { ConfigService } from '../../services/config.service';
 import { IAMService } from '../../services/iam.service';
@@ -51,7 +51,8 @@ export class HomePage implements OnInit {
   lat: number = 0;
   lng: number = 0;
   protected map: any;
-  constructor(public geolocation: Geolocation, public modalCtrl: ModalController, private navCtrl: NavController, private httpClient: HttpClient, private alertCtrl: AlertController, private loadingCtrl: LoadingController, private config: ConfigService, private iam: IAMService, private barcode: BarcodeScanner) {
+  public unregisterBackButtonAction: any;
+  constructor(public app: App, public geolocation: Geolocation, public modalCtrl: ModalController, private navCtrl: NavController, private httpClient: HttpClient, private alertCtrl: AlertController, private loadingCtrl: LoadingController, private config: ConfigService, private iam: IAMService, private barcode: BarcodeScanner) {
   }
   ngOnInit() {
     this.firstName = localStorage.getItem("firstName");
@@ -624,6 +625,30 @@ export class HomePage implements OnInit {
             (1 - c((lon2 - lon1) * p))/2;
 
     return 12742 * Math.asin(Math.sqrt(a)); // 2 * R; R = 6371 km
+  }
+
+  ionViewDidEnter() {
+        this.initializeBackButtonCustomHandler();
+    }
+  ionViewWillLeave() {
+        // Unregister the custom back button action for this page
+      this.unregisterBackButtonAction && this.unregisterBackButtonAction();
+  }
+
+  public initializeBackButtonCustomHandler(): void {
+      this.unregisterBackButtonAction = this.platform.registerBackButtonAction(() => {
+          this.customHandleBackButton();
+      }, 10);
+  }
+
+  private customHandleBackButton(): void {
+    let nav = this.app.getActiveNav();
+    let activeView = nav.getActive();
+    if(nav.canGoBack()) {
+      nav.pop();
+    } else {
+      nav.setRoot(HomePage);
+    }
   }
 /*
   public scanQR() {
