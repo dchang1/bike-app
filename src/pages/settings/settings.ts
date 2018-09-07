@@ -64,14 +64,12 @@ export class SettingsPage implements OnInit {
   }
 
   private customHandleBackButton(): void {
-    this.navBar.backButtonClick = (e:UIEvent)=>{
-      if(this.slides.getActiveIndex() == 0) {
-        this.navCtrl.pop();
-      } else {
-        this.slides.lockSwipes(false);
-        this.slides.slideTo(0, 0);
-        this.slides.lockSwipes(true);
-      }
+    if(this.slides.getActiveIndex() == 0) {
+      this.navCtrl.pop();
+    } else {
+      this.slides.lockSwipes(false);
+      this.slides.slideTo(0, 0);
+      this.slides.lockSwipes(true);
     }
   }
 
