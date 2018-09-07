@@ -1,7 +1,7 @@
 import { Component, ViewChild, OnInit } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Http, Headers, Response, URLSearchParams } from '@angular/http';
-import { NavController, Slides, LoadingController, AlertController, ViewController } from 'ionic-angular';
+import { Platform, NavController, Slides, LoadingController, AlertController, ViewController } from 'ionic-angular';
 
 import { IAMService } from '../../services/iam.service';
 import { ConfigService } from '../../services/config.service';
@@ -16,7 +16,26 @@ import  moment from 'moment';
 export class RideHistoryPage implements OnInit {
   public rides = [];
   public response: any = {};
-  constructor(public viewCtrl: ViewController, private navCtrl: NavController, private httpClient: HttpClient, private config: ConfigService, private iam: IAMService) {}
+  public unregisterBackButtonAction: any;
+  constructor(public platform: Platform, public viewCtrl: ViewController, private navCtrl: NavController, private httpClient: HttpClient, private config: ConfigService, private iam: IAMService) {}
+
+  ionViewDidEnter() {
+        this.initializeBackButtonCustomHandler();
+    }
+  ionViewWillLeave() {
+        // Unregister the custom back button action for this page
+      this.unregisterBackButtonAction && this.unregisterBackButtonAction();
+  }
+
+  public initializeBackButtonCustomHandler(): void {
+      this.unregisterBackButtonAction = this.platform.registerBackButtonAction(() => {
+          this.customHandleBackButton();
+      }, 10);
+  }
+
+  private customHandleBackButton(): void {
+    this.navCtrl.pop();
+  }
 
   ngOnInit() {
     // for(var i=0; i<5; i++) {

@@ -1,7 +1,7 @@
 import { Component, ViewChild, OnInit } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Http, Headers, Response, URLSearchParams } from '@angular/http';
-import { Navbar, NavController, Slides, LoadingController, AlertController } from 'ionic-angular';
+import { Navbar, NavController, Slides, LoadingController, AlertController, Platform, } from 'ionic-angular';
 import { ConfigService } from '../../services/config.service';
 
 import { HomePage } from '../../pages/home/home';
@@ -23,7 +23,8 @@ export class SettingsPage implements OnInit {
   new_password2: string;
   error_message: string;
   public response: any = {};
-  constructor(private navCtrl: NavController, private httpClient: HttpClient, private config: ConfigService) {}
+  public unregisterBackButtonAction: any;
+  constructor(public platform: Platform, private navCtrl: NavController, private httpClient: HttpClient, private config: ConfigService) {}
 
   ngOnInit() {
     // lock the slides so the user can't swipe them
@@ -37,6 +38,32 @@ export class SettingsPage implements OnInit {
   }
 
   ionViewDidLoad() {
+    this.navBar.backButtonClick = (e:UIEvent)=>{
+      if(this.slides.getActiveIndex() == 0) {
+        this.navCtrl.pop();
+      } else {
+        this.slides.lockSwipes(false);
+        this.slides.slideTo(0, 0);
+        this.slides.lockSwipes(true);
+      }
+    }
+  }
+
+  ionViewDidEnter() {
+        this.initializeBackButtonCustomHandler();
+    }
+  ionViewWillLeave() {
+        // Unregister the custom back button action for this page
+      this.unregisterBackButtonAction && this.unregisterBackButtonAction();
+  }
+
+  public initializeBackButtonCustomHandler(): void {
+      this.unregisterBackButtonAction = this.platform.registerBackButtonAction(() => {
+          this.customHandleBackButton();
+      }, 10);
+  }
+
+  private customHandleBackButton(): void {
     this.navBar.backButtonClick = (e:UIEvent)=>{
       if(this.slides.getActiveIndex() == 0) {
         this.navCtrl.pop();
