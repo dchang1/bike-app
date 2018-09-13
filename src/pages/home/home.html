@@ -8,7 +8,7 @@
   </div>
   -->
   <img src="assets/qrcode.png" class="qr" (click)="scanBarcode()">
-  <div class="circle" (click)="center()">
+  <div class="circle" (click)="center()" *ngIf="!inRide">
     <ion-icon name="locate" class="icon locate"></ion-icon>
   </div>
   <agm-map (mapReady)="mapReady($event)" [latitude]="latitude" [longitude]="longitude" [zoom]="16" [streetViewControl]="false" [clickableIcons]="false" (mapClick)="closeProfiles(gm)" #gm>
@@ -52,7 +52,7 @@
         <br>
         <ion-icon name="flame" class="icon"></ion-icon>{{this.rideCalories}} cal
       </div>
-      <input type="button" class="rounded" value="Help" (click)="moreDetails(bike.number)" style="background-color:#ffffff; color: #633bb7; padding:0px; border: 1px solid #633bb7">
+      <input type="button" class="rounded" value="Help" (click)="help()" style="background-color:#ffffff; color: #633bb7; padding:0px; border: 1px solid #633bb7">
     </ion-card-content>
   </ion-card>
 
@@ -86,8 +86,7 @@
         <button ion-item (click)="settings()">Settings</button>
         <button ion-item (click)="share()">Share a bike</button>
         <button ion-item (click)="logout()">Logout</button>
-        <!--
-        <button ion-item (click)="reset()">Reset</button>-->
+        <button ion-item (click)="reset()">Reset</button>
       </ion-list>
     </ion-content>
   </ion-menu>
