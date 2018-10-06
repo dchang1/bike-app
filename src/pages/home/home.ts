@@ -603,7 +603,9 @@ export class HomePage implements OnInit {
     this.bikePreviewClass = "slideOutUp";
     setTimeout(function() {
       this.bikePreviewClass = "hide";
+    }, 1000);
   }
+
   public bikeProfile(infoWindow, gm, number) {
     console.log("bike");
     console.log(number);
@@ -705,7 +707,7 @@ export class HomePage implements OnInit {
       nav.setRoot(HomePage);
     }
   }
-/*
+
   public scanQR() {
     console.log("QR");
     const modal = this.modalCtrl.create(BikeProfilePage, {bikeNumber: 977500, reportBike: false, unlockBike: true});
@@ -744,7 +746,7 @@ export class HomePage implements OnInit {
       }
     });
   }
-*/
+
   async scanBarcode(){
 
     this.options = {
