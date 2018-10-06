@@ -730,8 +730,8 @@ export class HomePage implements OnInit {
           this.currentLongitude = this.lines[test].lng;
           this.ridePath.push(this.lines[test]);
           this.rideTime = Math.round((Date.now()-rideStartTime)/60000 * 100)/100;
-          this.rideDistance = (this.distance(this.lines[0].lat, this.lines[1].lng, this.lines[test].lat, this.lines[test].lng));
-          this.rideCalories = 134*Math.exp(0.0725*(this.rideDistance/this.rideTime)) * this.rideTime;
+          this.rideDistance = Math.round((this.distance(this.lines[0].lat, this.lines[1].lng, this.lines[test].lat, this.lines[test].lng))*100)/100;
+          this.rideCalories = Math.round(134*Math.exp(0.0725*(this.rideDistance/this.rideTime)) * this.rideTime * 100)/100;
           test++;
           console.log(test);
           if(test==20) {
@@ -793,8 +793,8 @@ export class HomePage implements OnInit {
                           this.currentLongitude = this.rideInfo.ride.route[this.rideInfo.ride.route.length-1][1];
                           this.ridePath = this.rideInfo.ride.route;
                           this.rideTime = Math.round((Date.now()-this.rideInfo.ride.startTime)/60000 * 100)/100;
-                          this.rideDistance = (this.distance(this.rideInfo.ride.startPosition[0], this.rideInfo.ride.startPosition[1], this.currentLatitude, this.currentLongitude));
-                          this.rideCalories = 134*Math.exp(0.0725*(this.rideDistance/this.rideTime)) * this.rideTime;
+                          this.rideDistance = Math.round((this.distance(this.rideInfo.ride.startPosition[0], this.rideInfo.ride.startPosition[1], this.currentLatitude, this.currentLongitude)*100)/100;
+                          this.rideCalories = Math.round(134*Math.exp(0.0725*(this.rideDistance/this.rideTime)) * this.rideTime*100)/100;
                           console.log("still in ride");
                       }
                     });
