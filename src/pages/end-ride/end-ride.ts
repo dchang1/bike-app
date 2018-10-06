@@ -109,13 +109,14 @@ export class EndRidePage implements OnInit {
 }];
   public currentLatitude = this.ridePath[19].lat;
   public currentLongitude = this.ridePath[19].lng;
-  public ride = {startTime: '1:00', endTime: '2:00', time: '1:00', distance: 2.53, calories: 200, rating: 4};
   startTime = this.ride.startTime;
   endTime = this.ride.endTime;
   time = this.ride.time;
   distance = this.ride.distance;
   calories = this.ride.calories;
   rating = this.ride.rating;
+  public response: any = {};
+
   /*
   public rideInfo: any = {};
   public response: any = {};
