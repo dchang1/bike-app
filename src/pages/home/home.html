@@ -31,7 +31,7 @@
       </div>
     </div>
   </ion-card>
-  <img src="assets/QR_2.png" class="qr" (click)="scanBarcode()">
+  <img src="assets/QR_2.png" class="qr" (click)="scanBarcode()" *ngIf="!inRide">
   <div class="circle" (click)="center()" *ngIf="!inRide">
     <ion-icon name="locate" class="icon locate"></ion-icon>
   </div>

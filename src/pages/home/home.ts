@@ -729,10 +729,9 @@ export class HomePage implements OnInit {
           this.currentLatitude = this.lines[test].lat;
           this.currentLongitude = this.lines[test].lng;
           this.ridePath.push(this.lines[test]);
-          let time = (Date.now() - rideStartTime)/60000;
-          this.rideTime = time.toFixed(2);
-          this.rideCalories = (650 * time / 60).toFixed(2);
-          this.rideDistance = (this.distance(this.lines[0].lat, this.lines[1].lng, this.lines[test].lat, this.lines[test].lng)).toFixed(2);
+          this.rideTime = Math.round((Date.now()-rideStartTime)/60000 * 100)/100;
+          this.rideDistance = (this.distance(this.lines[0].lat, this.lines[1].lng, this.lines[test].lat, this.lines[test].lng));
+          this.rideCalories = 134*Math.exp(0.0725*(this.rideDistance/this.rideTime)) * this.rideTime;
           test++;
           console.log(test);
           if(test==20) {
