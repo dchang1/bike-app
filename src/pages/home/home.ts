@@ -1,4 +1,4 @@
-import { Component, ViewChild, OnInit } from '@angular/core';
+import { Component, ViewChild, OnInit, NgZone } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Http, Headers, Response, URLSearchParams } from '@angular/http';
 import { Platform, App, ModalController, NavController, Slides, LoadingController, AlertController } from 'ionic-angular';
@@ -14,6 +14,7 @@ import { EndRidePage } from '../../pages/end-ride/end-ride'
 
 import { Geolocation } from '@ionic-native/geolocation';
 import { BarcodeScanner,BarcodeScannerOptions } from '@ionic-native/barcode-scanner';
+import { BLE } from '@ionic-native/ble';
 
 @Component({
   selector: 'page-home',
@@ -57,7 +58,11 @@ export class HomePage implements OnInit {
   public world;
   public color;
   public bikePreviewClass;
-  constructor(public platform: Platform, public app: App, public geolocation: Geolocation, public modalCtrl: ModalController, private navCtrl: NavController, private httpClient: HttpClient, private alertCtrl: AlertController, private loadingCtrl: LoadingController, private config: ConfigService, private iam: IAMService, private barcode: BarcodeScanner) {
+  public devices: any[] = [];
+  public statusMessage: string;
+  public bleMAC;
+  public peripheral;
+  constructor(private ble: BLE, private ngZone: NgZonepublic platform: Platform, public app: App, public geolocation: Geolocation, public modalCtrl: ModalController, private navCtrl: NavController, private httpClient: HttpClient, private alertCtrl: AlertController, private loadingCtrl: LoadingController, private config: ConfigService, private iam: IAMService, private barcode: BarcodeScanner) {
   }
   ngOnInit() {
     this.firstName = localStorage.getItem("firstName");
@@ -704,6 +709,56 @@ export class HomePage implements OnInit {
     } else {
       nav.setRoot(HomePage);
     }
+  }
+
+  scan() {
+    this.devices = [];
+    this.ble.startScan([]).subscribe(
+      device => this.onDeviceDiscovered(device),
+      error => this.scanError(error)
+    );
+    this.options = {
+      prompt: "Scan a QR code!"
+    }
+    this.barcode.scan().then(results => {
+      this.results = results;
+      if(this.results.cancelled == false) {
+        let headers = new HttpHeaders({
+          'Authorization': localStorage.getItem('token')
+        });
+        this.httpClient.get(this.config.getAPILocation() + '/bleMAC/' + this.results.text, {headers: headers}).subscribe(data => {
+          this.response = data;
+          if(this.response.success==true) {
+            this.bleMAC = this.response.bleMAC;
+            this.ble.stopScan();
+            const modal = this.modalCtrl.create(BikeProfilePage, {bikeNumber: this.results.text, reportBike: false, unlockBike: true});
+            modal.present();
+            modal.onDidDismiss(data => {
+              this.ble.connect(this.bleMAC).subscribe(
+                peripheral => this.onConnected(peripheral),
+                peripheral => this.onDeviceDisconnected(peripheral);
+              );
+            })
+          }
+        })
+      }
+    })
+  }
+
+  onConnected(peripheral) {
+    this.ngZone.run(() => {
+      this.peripheral = peripheral;
+    })
+  }
+  onDeviceDiscovered(device) {
+    console.log('Discovered ' + JSON.stringify(device, null, 2));
+    this.ngZone.run(() => {
+      this.devices.push(device);
+    })
+  }
+
+  scanError(error) {
+    console.log("ERROR", error);
   }
 
   async scanQR() {

@@ -101,4 +101,7 @@
         <variable name="DEEPLINK_HOST" value="taiga.bike" />
         <variable name="ANDROID_PATH_PREFIX" value="/" />
     </plugin>
+    <plugin name="cordova-plugin-ble-central" spec="^1.2.2">
+        <variable name="BLUETOOTH_USAGE_DESCRIPTION" value=" " />
+    </plugin>
 </widget>
