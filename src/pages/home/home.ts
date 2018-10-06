@@ -44,6 +44,7 @@ export class HomePage implements OnInit {
   public currentLongitude;
   public bikeNumber;
   public data;
+  public geofence;
   public rideTime = 0;
   public rideDistance = 0;
   public rideCalories = 0;
@@ -64,6 +65,8 @@ export class HomePage implements OnInit {
     this.bikeScore = 1;
     this.latitude = Number(localStorage.getItem('latitude'));
     this.longitude = Number(localStorage.getItem('longitude'));
+    this.geofence = JSON.parse(localStorage.getItem('geofence'));
+    console.log("geofence", this.geofence);
     if(localStorage.getItem("inRide")=="true") {
       this.inRide=true;
       var currentRide = setInterval(() => {
@@ -100,6 +103,7 @@ export class HomePage implements OnInit {
     this.totalDistance = localStorage.getItem("totalDistance");
     this.totalRides = localStorage.getItem("totalRides");
     */
+    /*
     this.paths = [{lng: -75.3547847, lat: 39.8953987},
                 {lng: -75.3531325,lat: 39.8952259},
                 {lng: -75.352875,lat: 39.8986007},
@@ -120,7 +124,7 @@ export class HomePage implements OnInit {
                 {lng: -75.3565979,lat: 39.9038271},
                 {lng: -75.3576386,lat: 39.9039917},
                 {lng: -75.3578639,lat: 39.9034567},
-                {lng: -75.3574991,lat: 39.9027983}];
+                {lng: -75.3574991,lat: 39.9027983}];*/
     this.lines = [
   {
     "lat": 39.90668,
@@ -763,8 +767,8 @@ export class HomePage implements OnInit {
                           this.currentLongitude = this.rideInfo.ride.route[this.rideInfo.ride.route.length-1][1];
                           this.ridePath = this.rideInfo.ride.route;
                           this.rideTime = Math.round((Date.now()-this.rideInfo.ride.startTime)/60000 * 100)/100;
-                          this.rideCalories = Math.round(650*this.rideTime / 60 * 100)/100;
                           this.rideDistance = (this.distance(this.rideInfo.ride.startPosition[0], this.rideInfo.ride.startPosition[1], this.currentLatitude, this.currentLongitude));
+                          this.rideCalories = 134*Math.exp(0.0725*(this.rideDistance/this.rideTime)) * this.rideTime;
                           console.log("still in ride");
                       }
                     });

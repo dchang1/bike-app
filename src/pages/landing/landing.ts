@@ -44,13 +44,36 @@ export class LandingPage {
         console.log(this.response);
 
         // if there is a successful response
-        if (this.response.success==true) {
-          // remove surrounding quotes
-          //data = data.substring(1, data.length - 1);
-          // set the current user in localstorage to this user
+        if (this.response.success==true && this.response.verified==true) {
+
           this.iam.setCurrentUser(this.response);
-          // move to the main page
-          this.navCtrl.setRoot(HomePage);
+          let headers = new HttpHeaders({
+            'Content-Type': 'application/x-www-form-urlencoded',
+            'Authorization': localStorage.getItem('token')
+          });
+          this.httpClient.get(this.config.getAPILocation() + '/campus/' + localStorage.getItem('campus'), {headers: headers}).subscribe(data => {
+            this.response = data;
+            if(this.response) {
+              localStorage.setItem('geofence', JSON.stringify(this.response.geofence));
+              this.navCtrl.setRoot(HomePage);
+            }
+          })
+        } else if(this.response.verified==false) {
+          let alert = this.alertCtrl.create({
+            title: 'Email not verified.',
+            subTitle: 'Please click on the link provided in the email we sent.',
+            buttons: [{text: 'Ok'},
+                      {text: 'Resend',
+                       handler: () => {
+                         let headers = new HttpHeaders({
+                           'Authorization': localStorage.getItem('token')
+                         });
+                         this.httpClient.get(this.config.getAPILocation() + '/resend', {headers: headers}).subscribe(data => {
+                           console.log("sent");
+                         })
+                       }}] //resend email button
+          });
+          alert.present();
         } else {
           // display error that login was unsuccessful
           let alert = this.alertCtrl.create({
@@ -84,7 +107,6 @@ export class LandingPage {
   }
 
   public forgot() {
-    console.log("forgot");
     const modal = this.modalCtrl.create(ResetPage);
     modal.present();
   }

@@ -94,4 +94,11 @@
         <variable name="GEOLOCATION_USAGE_DESCRIPTION" value="To locate you" />
     </plugin>
     <plugin name="cordova.plugins.diagnostic" spec="^4.0.9" />
+    <plugin name="cordova-plugin-screen-orientation" spec="^3.0.1" />
+    <plugin name="ionic-plugin-deeplinks" spec="^1.0.17">
+        <variable name="URL_SCHEME" value="taiga" />
+        <variable name="DEEPLINK_SCHEME" value="https" />
+        <variable name="DEEPLINK_HOST" value="taiga.bike" />
+        <variable name="ANDROID_PATH_PREFIX" value="/" />
+    </plugin>
 </widget>

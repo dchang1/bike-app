@@ -49,9 +49,12 @@
     <p>
       {{bikeProfile.color}}
     </p>
-    <p>
+    <p *ngIf="bikeProfile.rating; else noRating">
       {{bikeProfile.rating}}
     </p>
+    <ng-template #noRating>
+      N/A
+    </ng-template>
     <p>
       {{bikeProfile.rides}}
     </p>

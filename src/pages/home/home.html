@@ -13,14 +13,14 @@
   </div>
   <agm-map (mapReady)="mapReady($event)" [latitude]="latitude" [longitude]="longitude" [zoom]="16" [streetViewControl]="false" [clickableIcons]="false" (mapClick)="closeProfiles(gm)" #gm>
     <!--<agm-marker [latitude]="39.905022" [longitude]="-75.354034"></agm-marker>-->
-    <agm-polygon [paths]="paths" [fillOpacity]="0.1" [clickable]="false">
+    <agm-polygon [paths]="geofence" [fillOpacity]="0.1" [clickable]="false">
     </agm-polygon>
     <agm-marker [latitude]="latitude" [longitude]="longitude" [iconUrl]="'https://i.stack.imgur.com/VpVF8.png'"></agm-marker>
     <!--<agm-marker [latitude]="39.905022" [longitude]="-75.354034" [iconUrl]="'https://i.stack.imgur.com/VpVF8.png'" (markerClick)="bikeProfile(infoWindow, gm, 2)">
     <agm-info-window [disableAutoPan]="false" #infoWindow>Title</agm-info-window></agm-marker>-->
     <agm-marker [visible]="!inRide" *ngFor="let bike of bikes" [latitude]="bike.currentPosition[0]" [longitude]="bike.currentPosition[1]" [iconUrl]="'assets/bike.png'" (markerClick)="bikeProfile(infoWindow, gm, bike.number)">
       <agm-info-window [disableAutoPan]="false" #infoWindow>
-        <div class="rating">
+        <div *ngIf="bike.rating" class="rating">
           {{bike.rating}}★
         </div>
         <div class="profile">

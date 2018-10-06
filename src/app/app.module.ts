@@ -27,6 +27,8 @@ import { NavController } from 'ionic-angular';
 import { BarcodeScanner } from '@ionic-native/barcode-scanner';
 import { Geolocation } from '@ionic-native/geolocation';
 import { Diagnostic } from '@ionic-native/diagnostic';
+import { ScreenOrientation } from '@ionic-native/screen-orientation';
+import { Deeplinks } from '@ionic-native/deeplinks';
 
 @NgModule({
   declarations: [
@@ -71,6 +73,8 @@ import { Diagnostic } from '@ionic-native/diagnostic';
     BarcodeScanner,
     Geolocation,
     Diagnostic,
+    ScreenOrientation,
+    Deeplinks,
     {provide: ErrorHandler, useClass: IonicErrorHandler}
   ]
 })
