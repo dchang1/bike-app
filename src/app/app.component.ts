@@ -80,29 +80,11 @@ export class MyApp {
     this.httpClient.get(this.config.getAPILocation() + '/user', {headers: headers}).subscribe(data => {
       if(data) {
         this.response = data;
-        if(this.response.user.verified==true) {
           console.log("Logged in");
           localStorage.setItem('totalDistance', this.response.user.totalDistance.toFixed(2).toString());
           localStorage.setItem('totalRideTime', this.response.user.totalRideTime.toFixed(2).toString());
           localStorage.setItem('totalRides', this.response.user.pastRides.length.toString());
           this.rootPage = HomePage;
-        } else {
-          let alert = this.alertCtrl.create({
-            title: 'Email not verified.',
-            subTitle: 'Please click on the link provided in the email we sent.',
-            buttons: [{text: 'Ok'},
-                      {text: 'Resend',
-                       handler: () => {
-                         let headers = new HttpHeaders({
-                           'Authorization': localStorage.getItem('token')
-                         });
-                         this.httpClient.get(this.config.getAPILocation() + '/resend', {headers: headers}).subscribe(data => {
-                           console.log("sent");
-                         })
-                       }}] //resend email button
-          });
-          alert.present();
-          this.rootPage = LandingPage;
         }
 /*
         this.diagnostic.isGpsLocationEnabled().then(state => {
@@ -132,7 +114,7 @@ export class MyApp {
             this.rootPage = HomePage;
           }
         })*/
-      }
+
     }, error => {
       console.log("Not logged in");
       this.rootPage = LandingPage;
