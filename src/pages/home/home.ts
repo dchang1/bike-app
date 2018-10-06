@@ -736,7 +736,7 @@ export class HomePage implements OnInit {
             modal.onDidDismiss(data => {
               this.ble.connect(this.bleMAC).subscribe(
                 peripheral => this.onConnected(peripheral),
-                peripheral => this.onDeviceDisconnected(peripheral)
+                peripheral => this.onDeviceDiscovered(peripheral)
               );
             })
           }
