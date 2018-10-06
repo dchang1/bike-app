@@ -1,14 +1,21 @@
 <ion-content padding class="background">
-  <div class="center">
+  <div class="container">
     <img src="assets/logo.png" class="logo">
+  </div>
+  <div class="center">
       <div class="inputs">
         <input type="text" class="rounded" [(ngModel)]="email" placeholder="Email"/>
         <input type="password" class="rounded" [(ngModel)]="password" placeholder="Password"/>
-        <input type="button" class="rounded button" style="background-color:#ffffff; color: #633bb7; padding:0px" value="Login" (click)="login()">
-        <a class="text-button" (click)="forgot()">Forgot password?</a>
-        <br>
-        <a class="text-button" (click)="signup()">New to Renecycle? Sign up now!</a>
+        <input type="button" class="rounded button" style="background-color:#ffffff; color: #FECA51; padding:0px" value="Login" (click)="login()">
+        <div style="margin-bottom:5px;">
+          <a class="text-button" (click)="forgot()">Forgot your password?</a>
+        </div>
+        <div>
+          <a class="text-button" (click)="signup()"><b>Create Account</b></a>
+        </div>
         <p class="error">{{ error_message }}</p>
       </div>
   </div>
+  <img src="assets/text-logo.png" class="text-logo">
+
 </ion-content>

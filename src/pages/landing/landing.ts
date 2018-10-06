@@ -107,8 +107,9 @@ export class LandingPage {
   }
 
   public forgot() {
-    const modal = this.modalCtrl.create(ResetPage);
-    modal.present();
+    this.navCtrl.push(ResetPage);
+    //const modal = this.modalCtrl.create(ResetPage);
+    //modal.present();
   }
 
   public signup() {

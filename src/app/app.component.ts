@@ -72,7 +72,7 @@ export class MyApp {
          console.error('Got a deeplink that didn\'t match', nomatch);
        });*/
 
-      this.screenOrientation.lock(this.screenOrientation.ORIENTATIONS.PORTRAIT);
+      //this.screenOrientation.lock(this.screenOrientation.ORIENTATIONS.PORTRAIT);
     });
     let headers = new HttpHeaders({
       'Authorization': localStorage.getItem('token')

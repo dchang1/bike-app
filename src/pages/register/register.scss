@@ -2,15 +2,16 @@ page-register {
   p.error {
     color: map-get($colors, 'danger');
   }
-  .logo {
-    display: block;
-    margin-left: auto;
-    margin-right: auto;
+  .text-logo {
     width: 100%;
-    margin-bottom: 0px;
+    position: fixed;
+    top: 90%;
+    left: 50%;
+    -webkit-transform: translate(-50%, -50%);
+    transform: translate(-50%, -50%);
   }
   .background {
-    background-color: #633bb7;
+    background-color: #FECA51;
     overflow-y: auto;
   }
   ::-webkit-scrollbar{
@@ -29,7 +30,7 @@ page-register {
     border-radius: 10px;
     margin-bottom: 10px;
     color: #ffffff;
-    background-color: #633bb7;
+    background-color: #FECA51;
   }
 
   ::placeholder {
@@ -37,11 +38,11 @@ page-register {
   }
   .center {
     margin: auto;
-    padding-top: 10vh;
+    padding-top: 15vh;
     width: 70vw;
   }
   .inputs {
-    width: 50vw;
+    width: 60vw;
     margin: auto;
     text-align: center;
   }

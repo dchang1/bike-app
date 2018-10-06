@@ -22,6 +22,9 @@ export class IAMService {
       localStorage.setItem('session', "true");
       localStorage.setItem('campus', data.campus);
       localStorage.setItem('userType', data.userType);
+      localStorage.setItem('totalDistance', data.totalDistance.toFixed(2).toString());
+      localStorage.setItem('totalRideTime', data.totalRideTime.toFixed(2).toString());
+      localStorage.setItem('totalRides', data.totalRides.toString());
       /*
       localStorage.setItem('totalRideTime', data.totalRideTime);
       localStorage.setItem('totalDistance', data.totalDistance);

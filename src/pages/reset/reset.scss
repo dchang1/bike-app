@@ -2,13 +2,13 @@ page-reset {
   ::-webkit-scrollbar{
     display:none;
   }
-  .close {
-    float: right;
-    display: inline;
+  .background {
+    background-color: #FECA51;
+    overflow-y: auto;
   }
-  .title {
-    text-align: center;
-    display: inline;
+  .button {
+    background-color: white;
+    color: #77D1F6;
   }
   .rounded {
     border-radius: 25px;
@@ -19,8 +19,25 @@ page-reset {
     border-radius: 10px;
     margin-bottom: 10px;
     color: #ffffff;
-    background-color: #633bb7;
-    margin-top: 20px;
+    background-color: #FECA51;
+    font-size: 1.4rem;
+  }
+  p.text {
+    color: white;
+  }
+  ::placeholder {
+    color: #ffffff;
+  }
+  .center {
+    width: 70vw;
+    //position: fixed;
+    margin: auto;
+
+  }
+  .inputs {
+    width: 60vw;
+    margin: auto;
+    text-align: center;
   }
   p.error {
     color: map-get($colors, 'danger');

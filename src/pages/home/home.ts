@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, ViewChild, OnInit } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Http, Headers, Response, URLSearchParams } from '@angular/http';
 import { Platform, App, ModalController, NavController, Slides, LoadingController, AlertController } from 'ionic-angular';
@@ -45,6 +45,7 @@ export class HomePage implements OnInit {
   public bikeNumber;
   public data;
   public geofence;
+  public hubs: any = [];
   public rideTime = 0;
   public rideDistance = 0;
   public rideCalories = 0;
@@ -53,6 +54,9 @@ export class HomePage implements OnInit {
   lng: number = 0;
   protected map: any;
   public unregisterBackButtonAction: any;
+  public world;
+  public color;
+  public bikePreviewClass;
   constructor(public platform: Platform, public app: App, public geolocation: Geolocation, public modalCtrl: ModalController, private navCtrl: NavController, private httpClient: HttpClient, private alertCtrl: AlertController, private loadingCtrl: LoadingController, private config: ConfigService, private iam: IAMService, private barcode: BarcodeScanner) {
   }
   ngOnInit() {
@@ -66,7 +70,17 @@ export class HomePage implements OnInit {
     this.latitude = Number(localStorage.getItem('latitude'));
     this.longitude = Number(localStorage.getItem('longitude'));
     this.geofence = JSON.parse(localStorage.getItem('geofence'));
-    console.log("geofence", this.geofence);
+    this.color = "#31b2f7";
+    this.bikePreviewClass = "hide";
+    let headers1 = new HttpHeaders({
+      'Content-Type': 'application/x-www-form-urlencoded',
+      'Authorization': localStorage.getItem('token')
+    });
+    this.httpClient.get(this.config.getAPILocation() + '/hubs', {headers: headers1}).subscribe(data => {
+      this.hubs = data;
+      this.hubs = this.hubs.hubs;
+      console.log(this.hubs);
+    });
     if(localStorage.getItem("inRide")=="true") {
       this.inRide=true;
       var currentRide = setInterval(() => {
@@ -104,7 +118,8 @@ export class HomePage implements OnInit {
     this.totalRides = localStorage.getItem("totalRides");
     */
     /*
-    this.paths = [{lng: -75.3547847, lat: 39.8953987},
+    this.paths =
+                [{lng: -75.3547847, lat: 39.8953987},
                 {lng: -75.3531325,lat: 39.8952259},
                 {lng: -75.352875,lat: 39.8986007},
                 {lng: -75.3512871,lat: 39.8991357},
@@ -125,6 +140,8 @@ export class HomePage implements OnInit {
                 {lng: -75.3576386,lat: 39.9039917},
                 {lng: -75.3578639,lat: 39.9034567},
                 {lng: -75.3574991,lat: 39.9027983}];*/
+    this.world = [{"lat": 90, "lng": 90}, {"lat": 90, "lng": -90}, {"lat": 0, "lng": 90}, {"lat": 0, "lng": -90}]
+    this.paths = [this.world, this.geofence];
     this.lines = [
   {
     "lat": 39.90668,
@@ -578,6 +595,14 @@ export class HomePage implements OnInit {
         console.log("ERROR");
       });
     }, 5000);
+  }
+  public bikePreview(number) {
+    this.bikePreviewClass = "slideInDown";
+  }
+  public closeBikePreview() {
+    this.bikePreviewClass = "slideOutUp";
+    setTimeout(function() {
+      this.bikePreviewClass = "hide";
   }
   public bikeProfile(infoWindow, gm, number) {
     console.log("bike");

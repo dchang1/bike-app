@@ -1,13 +1,27 @@
 page-landing {
   .logo {
-    display: block;
-    margin-left: auto;
-    margin-right: auto;
+    display: absolute;
     width: 100%;
-    margin-bottom: -30px;
+    z-index:-1;
+  }
+  .container {
+    width:200%;
+    position: fixed;
+    top: 45%;
+    left: 50%;
+    -webkit-transform: translate(-50%, -50%);
+    transform: translate(-50%, -50%);
+  }
+  .text-logo {
+    width: 100%;
+    position: fixed;
+    top: 90%;
+    left: 50%;
+    -webkit-transform: translate(-50%, -50%);
+    transform: translate(-50%, -50%);
   }
   .background {
-    background-color: #633bb7;
+    background-color: #FECA51;
     overflow-y: auto;
   }
   ::-webkit-scrollbar{
@@ -15,7 +29,7 @@ page-landing {
   }
   .button {
     background-color: white;
-    color: #633bb7;
+    color: #77D1F6;
   }
   .rounded {
     border-radius: 25px;
@@ -26,9 +40,8 @@ page-landing {
     border-radius: 10px;
     margin-bottom: 10px;
     color: #ffffff;
-    background-color: #633bb7;
+    background-color: #FECA51;
   }
-
   ::placeholder {
     color: #ffffff;
   }
@@ -41,7 +54,7 @@ page-landing {
     transform: translate(-50%, -50%);
   }
   .inputs {
-    width: 50vw;
+    width: 60vw;
     margin: auto;
     text-align: center;
   }

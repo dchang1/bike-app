@@ -24,7 +24,7 @@ export class ResetPage implements OnInit {
   error_message: string;
   public response: any = {};
 
-  constructor(private loadingCtrl: LoadingController, private alertCtrl: AlertController, private httpClient: HttpClient, private config: ConfigService, private iam: IAMService, public viewCtrl: ViewController, public params: NavParams) {
+  constructor(private navCtrl: NavController, private loadingCtrl: LoadingController, private alertCtrl: AlertController, private httpClient: HttpClient, private config: ConfigService, private iam: IAMService, public viewCtrl: ViewController, public params: NavParams) {
   }
 
   ngOnInit() {
@@ -32,7 +32,7 @@ export class ResetPage implements OnInit {
   }
 
   public dismiss() {
-    this.viewCtrl.dismiss();
+    this.navCtrl.pop();
   }
 
   public reset() {
@@ -66,7 +66,7 @@ export class ResetPage implements OnInit {
           buttons: ['OK']
         });
         alert.present();
-        this.viewCtrl.dismiss();
+        this.navCtrl.pop();
         this.error_message = "";
       } else {
         this.error_message = this.response.message;

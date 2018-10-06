@@ -1,33 +1,53 @@
+<ion-header>
+  <ion-toolbar>
+    <button ion-button menuToggle="left" start>
+      <ion-icon name="menu" style="font-size:37px; color: white"></ion-icon>
+    </button>
+    <ion-title><img src="assets/text-logo.png" class="logo"></ion-title>
+    <button ion-button menuToggle="right" end>
+      <ion-icon name="search" style="font-size:37px; color: white"></ion-icon>
+    </button>
+  </ion-toolbar>
+</ion-header>
+
 <ion-content class="background">
-  <div class="menu">
-    <ion-icon name="menu" menuToggle="left" style="color: black; font-size:40px; float: left;"></ion-icon>
-  </div>
-  <!--
-  <div class="filter">
-    <ion-icon name="options" menuToggle="right" style="color: black; font-size:40px; float: right;"></ion-icon>
-  </div>
-  -->
-  <img src="assets/qrcode.png" class="qr" (click)="scanBarcode()">
+  <ion-card style="position: absolute; top: 0; z-index: 4;" [ngClass]="bikePreviewClass">
+    <ion-card-header style="text-align: center; font-size: 20px; font-weight: bold">
+      Hunter's Bike
+    </ion-card-header>
+    <img src="assets/bike-profile.png" class="bikePreview">
+    <div class="bikePreviewStats">
+      <div style="display: inline-block; height: 100%; margin: auto; padding-right: 10px">
+        <p>Size</p>
+        <br><br>
+        <p>Rating</p>
+        <br><br>
+        <p>Rides</p>
+      </div>
+      <div style="display: inline-block; float: right; height: 100%; margin-top: -18px; margin-right: -30px">
+        <b style="color: gray; font-size:47px;">S</b><br>
+        <b style="color: gray; font-size:47px;">4.9</b><br>
+        <b style="color: gray; font-size:47px;">25</b>
+      </div>
+    </div>
+  </ion-card>
+  <img src="assets/QR_2.png" class="qr" (click)="scanBarcode()">
   <div class="circle" (click)="center()" *ngIf="!inRide">
     <ion-icon name="locate" class="icon locate"></ion-icon>
   </div>
-  <agm-map (mapReady)="mapReady($event)" [latitude]="latitude" [longitude]="longitude" [zoom]="16" [streetViewControl]="false" [clickableIcons]="false" (mapClick)="closeProfiles(gm)" #gm>
+  <agm-map (mapReady)="mapReady($event)" [latitude]="39.905022" [longitude]="-75.354034" [zoom]="16" [streetViewControl]="false" [clickableIcons]="false" (mapClick)="closeBikePreview()" #gm>
     <!--<agm-marker [latitude]="39.905022" [longitude]="-75.354034"></agm-marker>-->
-    <agm-polygon [paths]="geofence" [fillOpacity]="0.1" [clickable]="false">
-    </agm-polygon>
-    <agm-marker [latitude]="latitude" [longitude]="longitude" [iconUrl]="'https://i.stack.imgur.com/VpVF8.png'"></agm-marker>
-    <!--<agm-marker [latitude]="39.905022" [longitude]="-75.354034" [iconUrl]="'https://i.stack.imgur.com/VpVF8.png'" (markerClick)="bikeProfile(infoWindow, gm, 2)">
-    <agm-info-window [disableAutoPan]="false" #infoWindow>Title</agm-info-window></agm-marker>-->
-    <agm-marker [visible]="!inRide" *ngFor="let bike of bikes" [latitude]="bike.currentPosition[0]" [longitude]="bike.currentPosition[1]" [iconUrl]="'assets/bike.png'" (markerClick)="bikeProfile(infoWindow, gm, bike.number)">
-      <agm-info-window [disableAutoPan]="false" #infoWindow>
-        <div *ngIf="bike.rating" class="rating">
-          {{bike.rating}}★
-        </div>
-        <div class="profile">
-          <b>Name:</b> {{bike.name}} <br><b>Type:</b> {{bike.type}} <br><b>Color:</b> {{bike.color}}<br>
-          <input type="button" class="rounded" value="Show more details" (click)="moreDetails(bike.number)">
-        </div>
-      </agm-info-window>
+    <!--<agm-polygon [paths]="geofence" [zIndex]="2" [fillOpacity]="0" [strokeWeight]="1" [strokeOpacity]="0.1" [clickable]="false">
+    </agm-polygon>-->
+    <agm-polygon [paths]="paths" [fillOpacity]="0.2" [clickable]="false" [strokeWeight]="0"></agm-polygon>
+    <!--<agm-marker [latitude]="latitude" [longitude]="longitude" [iconUrl]="'https://i.stack.imgur.com/VpVF8.png'"></agm-marker>-->
+    <agm-marker [zIndex]="3" [latitude]="39.905022" [longitude]="-75.354034" [iconUrl]="'assets/location.png'">
+    </agm-marker>
+    <!--<agm-marker [visible]="!inRide" *ngFor="let bike of bikes" [zIndex]="2" [latitude]="bike.currentPosition[0]" [longitude]="bike.currentPosition[1]" [iconUrl]="'assets/bike-icon.png'" (markerClick)="bikeProfile(infoWindow, gm, bike.number)">-->
+    <agm-marker [visible]="!inRide" *ngFor="let bike of bikes" [zIndex]="2" [latitude]="bike.currentPosition[0]" [longitude]="bike.currentPosition[1]" [iconUrl]="'assets/bike-icon.png'" (markerClick)="bikePreview(bike.number)">
+    </agm-marker>
+    <agm-marker *ngFor="let hub of hubs" [zIndex]="1" [latitude]="hub.location[0]" [longitude]="hub.location[1]" [iconUrl]="'assets/hub-icon.png'">
+      <agm-circle [latitude]="hub.location[0]" [longitude]="hub.location[1]" [radius]="hub.radius*1000" [fillColor]="color" [fillOpacity]="0.3" [strokeWeight]="0"></agm-circle>
     </agm-marker>
     <agm-polyline [visible]="inRide">
       <agm-polyline-point *ngFor="let data of ridePath"

@@ -1,7 +1,6 @@
 <ion-content padding class="background">
   <ion-icon name="arrow-back" style="color: white; font-size:30px" (click)="back()"></ion-icon>
   <div class="center">
-    <img src="assets/text-logo.png" class="logo">
       <div class="inputs">
         <input type="text" class="rounded" [(ngModel)]="firstName" placeholder="First Name"/>
         <input type="text" class="rounded" [(ngModel)]="lastName" placeholder="Last Name"/>
@@ -12,8 +11,9 @@
           <option value="" selected disabled>Campus</option>
           <option *ngFor="let name of campuses" [value]="name">{{name}}</option>
         </select>
-        <input type="button" class="rounded button" style="background-color:#ffffff; color: #633bb7; padding:0px" value="Sign up" (click)="signUp()">
+        <input type="button" class="rounded button" style="background-color:#ffffff; color: #FECA51; padding:0px" value="Sign up" (click)="signUp()">
         <p class="error">{{ error_message }}</p>
       </div>
+      <img src="assets/text-logo.png" class="text-logo">
   </div>
 </ion-content>
