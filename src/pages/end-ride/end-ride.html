@@ -68,10 +68,16 @@
       </div>
       <div class="map">
         <agm-map [latitude]="currentLatitude" [longitude]="currentLongitude" [zoom]="16" [clickableIcons]="false" [streetViewControl]="false">
-          <agm-polyline>
+          <!--<agm-polyline>
             <agm-polyline-point *ngFor="let data of ridePath"
               [latitude]="data[0]"
               [longitude]="data[1]">
+            </agm-polyline-point>
+          </agm-polyline>-->
+          <agm-polyline>
+            <agm-polyline-point *ngFor="let data of ridePath"
+              [latitude]="data.lat"
+              [longitude]="data.lng">
             </agm-polyline-point>
           </agm-polyline>
           <agm-marker [latitude]="currentLatitude" [longitude]="currentLongitude" [iconUrl]="'assets/inride.png'"></agm-marker>

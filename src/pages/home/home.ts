@@ -600,10 +600,8 @@ export class HomePage implements OnInit {
     this.bikePreviewClass = "slideInDown";
   }
   public closeBikePreview() {
-    this.bikePreviewClass = "slideOutUp";
-    setTimeout(function() {
-      this.bikePreviewClass = "hide";
-    }, 1000);
+    //this.bikePreviewClass = "slideOutUp";
+    this.bikePreviewClass = "hide";
   }
 
   public bikeProfile(infoWindow, gm, number) {
@@ -708,42 +706,50 @@ export class HomePage implements OnInit {
     }
   }
 
-  public scanQR() {
+  async scanQR() {
     console.log("QR");
-    const modal = this.modalCtrl.create(BikeProfilePage, {bikeNumber: 977500, reportBike: false, unlockBike: true});
-    modal.present();
-    modal.onDidDismiss(data => {
-      console.log(data);
-      if(data.unlock==true) {
-        let loading = this.loadingCtrl.create({
-          content: 'Unlocking Bike...'
-        });
-        loading.present();
-        localStorage.setItem('inRide', "true");
-        this.inRide=true;
-        loading.dismiss();
-        let test = 0;
-        this.ridePath = [];
-        let rideStartTime = Date.now();
-        var currentRide = setInterval(() => {
-          this.currentLatitude = this.lines[test].lat;
-          this.currentLongitude = this.lines[test].lng;
-          this.ridePath.push(this.lines[test]);
-          this.rideTime = Math.round((Date.now()-rideStartTime)/60000 * 100)/100;
-          this.rideDistance = Math.round((this.distance(this.lines[0].lat, this.lines[1].lng, this.lines[test].lat, this.lines[test].lng))*100)/100;
-          this.rideCalories = Math.round(134*Math.exp(0.0725*(this.rideDistance/this.rideTime)) * this.rideTime * 100)/100;
-          test++;
-          console.log(test);
-          if(test==20) {
-            clearInterval(currentRide);
-            localStorage.setItem('inRide', "false");
-            this.inRide=false;
-            const modal = this.modalCtrl.create(EndRidePage);
-            modal.present();
+    this.options = {
+      prompt: "Scan a QR code!"
+    }
+    this.barcode.scan().then(results => {
+      this.results = results;
+      if(this.results.cancelled == false) {
+        const modal = this.modalCtrl.create(BikeProfilePage, {bikeNumber: 977500, reportBike: false, unlockBike: true});
+        modal.present();
+        modal.onDidDismiss(data => {
+          console.log(data);
+          if(data.unlock==true) {
+            let loading = this.loadingCtrl.create({
+              content: 'Unlocking Bike...'
+            });
+            loading.present();
+            localStorage.setItem('inRide', "true");
+            this.inRide=true;
+            loading.dismiss();
+            let test = 0;
+            this.ridePath = [];
+            let rideStartTime = Date.now();
+            var currentRide = setInterval(() => {
+              this.currentLatitude = this.lines[test].lat;
+              this.currentLongitude = this.lines[test].lng;
+              this.ridePath.push(this.lines[test]);
+              this.rideTime = Math.round((Date.now()-rideStartTime)/60000 * 100)/100;
+              this.rideDistance = Math.round((this.distance(this.lines[0].lat, this.lines[1].lng, this.lines[test].lat, this.lines[test].lng))*100)/100;
+              this.rideCalories = Math.round(134*Math.exp(0.0725*(this.rideDistance/this.rideTime)) * this.rideTime * 100)/100;
+              test++;
+              console.log(test);
+              if(test==20) {
+                clearInterval(currentRide);
+                localStorage.setItem('inRide', "false");
+                this.inRide=false;
+                const modal = this.modalCtrl.create(EndRidePage);
+                modal.present();
+              }
+            }, 1000);
           }
-        }, 1000);
+        });
       }
-    });
+    })
   }
 
   async scanBarcode(){

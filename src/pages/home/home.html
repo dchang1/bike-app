@@ -31,7 +31,7 @@
       </div>
     </div>
   </ion-card>
-  <img src="assets/QR_2.png" class="qr" (click)="scanBarcode()" *ngIf="!inRide">
+  <img src="assets/QR_2.png" class="qr" (click)="scanQR()" *ngIf="!inRide">
   <div class="circle" (click)="center()" *ngIf="!inRide">
     <ion-icon name="locate" class="icon locate"></ion-icon>
   </div>
@@ -49,10 +49,17 @@
     <agm-marker *ngFor="let hub of hubs" [zIndex]="1" [latitude]="hub.location[0]" [longitude]="hub.location[1]" [iconUrl]="'assets/hub-icon.png'">
       <agm-circle [latitude]="hub.location[0]" [longitude]="hub.location[1]" [radius]="hub.radius*1000" [fillColor]="color" [fillOpacity]="0.3" [strokeWeight]="0"></agm-circle>
     </agm-marker>
+    <!--
     <agm-polyline [visible]="inRide">
       <agm-polyline-point *ngFor="let data of ridePath"
         [latitude]="data[0]"
         [longitude]="data[1]">
+      </agm-polyline-point>
+    </agm-polyline>-->
+    <agm-polyline [visible]="inRide">
+      <agm-polyline-point *ngFor="let data of ridePath"
+        [latitude]="data.lat"
+        [longitude]="data.lng">
       </agm-polyline-point>
     </agm-polyline>
     <agm-marker [visible]="inRide" [latitude]="currentLatitude" [longitude]="currentLongitude" [iconUrl]="'assets/inride.png'"></agm-marker>
