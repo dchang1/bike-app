@@ -44,7 +44,7 @@ export class LandingPage {
         console.log(this.response);
 
         // if there is a successful response
-        if (this.response.success==true && this.response.verified==true) {
+        if (this.response.success==true) { //&& this.response.verified==true) {
 
           this.iam.setCurrentUser(this.response);
           let headers = new HttpHeaders({
@@ -58,7 +58,7 @@ export class LandingPage {
               this.navCtrl.setRoot(HomePage);
             }
           })
-        } else if(this.response.verified==false) {
+        } /*else if(this.response.verified==false) {
           let alert = this.alertCtrl.create({
             title: 'Email not verified.',
             subTitle: 'Please click on the link provided in the email we sent.',
@@ -74,7 +74,7 @@ export class LandingPage {
                        }}] //resend email button
           });
           alert.present();
-        } else {
+        } */else {
           // display error that login was unsuccessful
           let alert = this.alertCtrl.create({
             title: 'Error',

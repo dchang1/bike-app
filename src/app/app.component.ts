@@ -37,6 +37,7 @@ export class MyApp {
       // Here you can do any higher level native things you might need.
       statusBar.styleDefault();
       splashScreen.hide();
+      /*
       this.deeplinks.route({
          '/verify/:token': LandingPage
        }).subscribe(match => {
@@ -69,8 +70,9 @@ export class MyApp {
        }, nomatch => {
          // nomatch.$link - the full link data
          console.error('Got a deeplink that didn\'t match', nomatch);
-       });
-      //this.screenOrientation.lock(this.screenOrientation.ORIENTATIONS.PORTRAIT);
+       });*/
+
+      this.screenOrientation.lock(this.screenOrientation.ORIENTATIONS.PORTRAIT);
     });
     let headers = new HttpHeaders({
       'Authorization': localStorage.getItem('token')
