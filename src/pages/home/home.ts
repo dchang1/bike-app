@@ -711,6 +711,7 @@ export class HomePage implements OnInit {
     }
   }
 
+/*
   scan() {
     this.devices = [];
     this.ble.startScan([]).subscribe(
@@ -760,7 +761,7 @@ export class HomePage implements OnInit {
   scanError(error) {
     console.log("ERROR", error);
   }
-
+*/
   async scanQR() {
     console.log("QR");
     this.options = {
