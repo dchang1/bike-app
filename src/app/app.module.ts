@@ -29,6 +29,7 @@ import { Geolocation } from '@ionic-native/geolocation';
 import { Diagnostic } from '@ionic-native/diagnostic';
 import { ScreenOrientation } from '@ionic-native/screen-orientation';
 import { Deeplinks } from '@ionic-native/deeplinks';
+import { BLE } from '@ionic-native/ble';
 
 @NgModule({
   declarations: [
@@ -75,6 +76,7 @@ import { Deeplinks } from '@ionic-native/deeplinks';
     Diagnostic,
     ScreenOrientation,
     Deeplinks,
+    BLE,
     {provide: ErrorHandler, useClass: IonicErrorHandler}
   ]
 })
