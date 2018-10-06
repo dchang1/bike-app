@@ -62,7 +62,7 @@ export class HomePage implements OnInit {
   public statusMessage: string;
   public bleMAC;
   public peripheral;
-  constructor(private ble: BLE, private ngZone: NgZonepublic platform: Platform, public app: App, public geolocation: Geolocation, public modalCtrl: ModalController, private navCtrl: NavController, private httpClient: HttpClient, private alertCtrl: AlertController, private loadingCtrl: LoadingController, private config: ConfigService, private iam: IAMService, private barcode: BarcodeScanner) {
+  constructor(private ble: BLE, private ngZone: NgZonepublic, platform: Platform, public app: App, public geolocation: Geolocation, public modalCtrl: ModalController, private navCtrl: NavController, private httpClient: HttpClient, private alertCtrl: AlertController, private loadingCtrl: LoadingController, private config: ConfigService, private iam: IAMService, private barcode: BarcodeScanner) {
   }
   ngOnInit() {
     this.firstName = localStorage.getItem("firstName");
