@@ -752,6 +752,30 @@ export class HomePage implements OnInit {
       device => this.onDeviceDiscovered(device),
       error => this.scanError(error)
     );
+    let headers = new HttpHeaders({
+      'Authorization': localStorage.getItem('token')
+    });
+    this.httpClient.get(this.config.getAPILocation() + '/bleMAC/' + 977500, {headers: headers}).subscribe(data => {
+      this.response = data;
+      if(this.response.success==true) {
+        this.bleMAC = this.response.bleMAC;
+        this.ble.stopScan();
+        const modal = this.modalCtrl.create(BikeProfilePage, {bikeNumber: this.results.text, reportBike: false, unlockBike: true});
+        modal.present();
+        modal.onDidDismiss(data => {
+          let test = this.ble.connect(this.bleMAC).subscribe(
+            peripheral => this.onConnected(peripheral),
+            peripheral => this.onDeviceDiscovered(peripheral)
+          );
+          let alert = this.alertCtrl.create({
+            title: 'Test',
+            subTitle: JSON.stringify(test),
+            buttons: ['OK']
+          });
+          alert.present();
+        })
+      }
+    })
   }
 
   onConnected(peripheral) {
@@ -761,12 +785,6 @@ export class HomePage implements OnInit {
   }
   onDeviceDiscovered(device) {
     console.log('Discovered ' + JSON.stringify(device, null, 2));
-    let alert = this.alertCtrl.create({
-      title: 'Test',
-      subTitle: 'Discovered ' + JSON.stringify(device, null, 2),
-      buttons: ['OK']
-    });
-    alert.present();
     this.ngZone.run(() => {
       this.devices.push(device);
     })
