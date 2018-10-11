@@ -711,8 +711,8 @@ export class HomePage implements OnInit {
     }
   }
 
-/*
-  scan() {
+
+  /*scan() {
     this.devices = [];
     this.ble.startScan([]).subscribe(
       device => this.onDeviceDiscovered(device),
@@ -744,6 +744,14 @@ export class HomePage implements OnInit {
         })
       }
     })
+  }*/
+
+  testBLE() {
+    this.devices = [];
+    this.ble.startScan([]).subscribe(
+      device => this.onDeviceDiscovered(device),
+      error => this.scanError(error)
+    );
   }
 
   onConnected(peripheral) {
@@ -753,6 +761,12 @@ export class HomePage implements OnInit {
   }
   onDeviceDiscovered(device) {
     console.log('Discovered ' + JSON.stringify(device, null, 2));
+    let alert = this.alertCtrl.create({
+      title: 'Test',
+      subTitle: 'Discovered ' + JSON.stringify(device, null, 2),
+      buttons: ['OK']
+    });
+    alert.present();
     this.ngZone.run(() => {
       this.devices.push(device);
     })
@@ -761,7 +775,7 @@ export class HomePage implements OnInit {
   scanError(error) {
     console.log("ERROR", error);
   }
-*/
+
   async scanQR() {
     console.log("QR");
     this.options = {
