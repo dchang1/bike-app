@@ -803,23 +803,40 @@ export class HomePage implements OnInit {
       e => {
         let alert = this.alertCtrl.create({
           title: 'ERROR',
-          message: 'Couldnt write' + e,
+          message: 'Couldnt write ' + e,
           buttons: ['OK']
         });
         alert.present();
       }
     );
-    this.ble.read(this.peripheral.id, '6E400001-B5A3-F393-E0A9-E50E24DCCA9E', '6E400003-B5A3-F393-E0A9-E50E24DCCA9E').then(
-      buffer => {
-        let bleResponse = this.arrayBufferToString(buffer)
-        let alert = this.alertCtrl.create({
-          title: 'Test2',
-          message: JSON.stringify(bleResponse),
-          buttons: ['OK']
-        });
-        alert.present();
+    var readTimeout = 0;
+    var readInterval = setInterval(() => {
+      this.ble.read(this.peripheral.id, '6E400001-B5A3-F393-E0A9-E50E24DCCA9E', '6E400003-B5A3-F393-E0A9-E50E24DCCA9E').then(
+        buffer => {
+          let bleResponse = this.arrayBufferToString(buffer)
+          let alert = this.alertCtrl.create({
+            title: 'Test2',
+            message: JSON.stringify(bleResponse),
+            buttons: ['OK']
+          });
+          alert.present();
+          clearInterval(readInterval);
+        },
+        e => {
+          let alert = this.alertCtrl.create({
+            title: 'ERROR',
+            message: 'Couldnt read ' + e,
+            buttons: ['OK']
+          });
+          alert.present();
+        }
+      );
+      readTimeout++;
+      if(readTimeout == 20) {
+        clearInterval(readInterval);
       }
-    );
+    }, 500)
+
     /*this.ngZone.run(() => {
       this.peripheral = peripheral;
     })*/
