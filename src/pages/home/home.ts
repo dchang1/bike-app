@@ -760,10 +760,25 @@ export class HomePage implements OnInit {
       if(this.response.success==true) {
         this.bleMAC = this.response.bleMAC;
         this.ble.stopScan();
-          this.ble.connect(this.bleMAC).subscribe(
-            peripheral => this.onConnected(peripheral),
-            peripheral => this.onDeviceDiscovered(peripheral)
-          );
+        this.ble.connect(this.bleMAC).subscribe(
+          peripheral => this.onConnected(peripheral),
+          peripheral => this.onDeviceDiscovered(peripheral)
+        );
+        /*
+        this.ble.write(this.bleMAC, '', '', 'davidchang').then(
+          () => console.log("success write"),
+          e => console.log("error");
+        );
+        this.ble.read(this.bleMAC, , ).then(
+          buffer => {
+            let alert = this.alertCtrl.create({
+              title: 'Test',
+              subTitle: JSON.stringify(buffer),
+              buttons: ['OK']
+            });
+            alert.present();
+          }
+        );*/
       }
     })
   }
