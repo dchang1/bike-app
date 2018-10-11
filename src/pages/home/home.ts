@@ -760,9 +760,6 @@ export class HomePage implements OnInit {
       if(this.response.success==true) {
         this.bleMAC = this.response.bleMAC;
         this.ble.stopScan();
-        const modal = this.modalCtrl.create(BikeProfilePage, {bikeNumber: this.results.text, reportBike: false, unlockBike: true});
-        modal.present();
-        modal.onDidDismiss(data => {
           let test = this.ble.connect(this.bleMAC).subscribe(
             peripheral => this.onConnected(peripheral),
             peripheral => this.onDeviceDiscovered(peripheral)
@@ -773,7 +770,6 @@ export class HomePage implements OnInit {
             buttons: ['OK']
           });
           alert.present();
-        })
       }
     })
   }
