@@ -772,7 +772,7 @@ export class HomePage implements OnInit {
     this.ngZone.run(() => {
       let alert = this.alertCtrl.create({
         title: 'Test',
-        subTitle: JSON.stringify(test),
+        subTitle: JSON.stringify(peripheral),
         buttons: ['OK']
       });
       alert.present();
