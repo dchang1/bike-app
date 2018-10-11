@@ -746,7 +746,7 @@ export class HomePage implements OnInit {
     })
   }*/
 
-  async testBLE() {
+  testBLE() {
     this.devices = [];
     this.ble.startScan([]).subscribe(
       device => this.onDeviceDiscovered(device),
@@ -764,15 +764,17 @@ export class HomePage implements OnInit {
           peripheral => this.onConnected(peripheral),
           peripheral => this.onDeviceDiscovered(peripheral)
         );
-        this.ble.write(this.bleMAC, '6e4000001-b5a3-f393-e0a9-e50e24dcca9e', '6e4000001-b5a3-f393-e0a9-e50e24dcca9e', 'davidchang').then(
+        let buffer = new TextEncoder().encode("davidchang");
+        this.ble.write(this.bleMAC, '6e4000001-b5a3-f393-e0a9-e50e24dcca9e', '6e4000001-b5a3-f393-e0a9-e50e24dcca9e', buffer).then(
           () => console.log("success write"),
-          e => console.log("error");
+          e => console.log("error")
         );
         this.ble.read(this.bleMAC, '6e4000001-b5a3-f393-e0a9-e50e24dcca9e', '6e4000001-b5a3-f393-e0a9-e50e24dcca9e').then(
           buffer => {
+            let bleResponse = new TextEncoder().decode(buffer);
             let alert = this.alertCtrl.create({
               title: 'Test2s',
-              subTitle: JSON.stringify(buffer),
+              message: JSON.stringify(bleResponse),
               buttons: ['OK']
             });
             alert.present();
