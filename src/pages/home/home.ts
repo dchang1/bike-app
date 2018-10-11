@@ -786,14 +786,28 @@ export class HomePage implements OnInit {
         );
         let buffer = this.stringToArrayBuffer("davidchang");
         this.ble.write(this.bleMAC, '6e4000001-b5a3-f393-e0a9-e50e24dcca9e', '6e4000001-b5a3-f393-e0a9-e50e24dcca9e', buffer).then(
-          () => console.log("success write"),
-          e => console.log("error")
+          () => {
+            let alert = this.alertCtrl.create({
+              title: 'success',
+              message: 'success write',
+              buttons: ['OK']
+            });
+            alert.present();
+          },
+          e => {
+            let alert = this.alertCtrl.create({
+              title: 'ERROR',
+              message: 'Couldnt write' + e,
+              buttons: ['OK']
+            });
+            alert.present();
+          }
         );
         this.ble.read(this.bleMAC, '6e4000001-b5a3-f393-e0a9-e50e24dcca9e', '6e4000001-b5a3-f393-e0a9-e50e24dcca9e').then(
           buffer => {
             let bleResponse = this.arrayBufferToString(buffer)
             let alert = this.alertCtrl.create({
-              title: 'Test2s',
+              title: 'Test2',
               message: JSON.stringify(bleResponse),
               buttons: ['OK']
             });
@@ -806,12 +820,6 @@ export class HomePage implements OnInit {
 
   onConnected(peripheral) {
     this.ngZone.run(() => {
-      let alert = this.alertCtrl.create({
-        title: 'Test1',
-        message: JSON.stringify(peripheral),
-        buttons: ['OK']
-      });
-      alert.present();
       this.peripheral = peripheral;
     })
   }
