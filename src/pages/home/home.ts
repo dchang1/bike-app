@@ -630,6 +630,7 @@ export class HomePage implements OnInit {
     const modal = this.modalCtrl.create(BikeProfilePage, {bikeNumber: bike, reportBike: true, unlockBike: false});
     modal.present();
   }
+
   payment() {
     let alert = this.alertCtrl.create({
       title: 'Free Rides!',
@@ -746,6 +747,25 @@ export class HomePage implements OnInit {
     })
   }*/
 
+  public stringToArrayBuffer(str){
+      if(/[\u0080-\uffff]/.test(str)){
+          throw new Error("this needs encoding, like UTF-8");
+      }
+      var arr = new Uint8Array(str.length);
+      for(var i=str.length; i--; )
+          arr[i] = str.charCodeAt(i);
+      return arr.buffer;
+  }
+
+  public arrayBufferToString(buffer){
+      var arr = new Uint8Array(buffer);
+      var str = String.fromCharCode.apply(String, arr);
+      if(/[\u0080-\uffff]/.test(str)){
+          throw new Error("this string seems to contain (still encoded) multibytes");
+      }
+      return str;
+  }
+
   testBLE() {
     this.devices = [];
     this.ble.startScan([]).subscribe(
@@ -764,14 +784,14 @@ export class HomePage implements OnInit {
           peripheral => this.onConnected(peripheral),
           peripheral => this.onDeviceDiscovered(peripheral)
         );
-        let buffer = new TextEncoder().encode("davidchang");
+        let buffer = this.stringToArrayBuffer("davidchang");
         this.ble.write(this.bleMAC, '6e4000001-b5a3-f393-e0a9-e50e24dcca9e', '6e4000001-b5a3-f393-e0a9-e50e24dcca9e', buffer).then(
           () => console.log("success write"),
           e => console.log("error")
         );
         this.ble.read(this.bleMAC, '6e4000001-b5a3-f393-e0a9-e50e24dcca9e', '6e4000001-b5a3-f393-e0a9-e50e24dcca9e').then(
           buffer => {
-            let bleResponse = new TextEncoder().decode(buffer);
+            let bleResponse = this.arrayBufferToString(buffer)
             let alert = this.alertCtrl.create({
               title: 'Test2s',
               message: JSON.stringify(bleResponse),
