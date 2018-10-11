@@ -765,6 +765,126 @@ export class HomePage implements OnInit {
       }
       return str;
   }
+  async bleScan() {
+    this.options = {
+      prompt: "Scan a QR code!"
+    }
+    this.barcode.scan().then(results => {
+      this.results = results;
+      if(this.results.cancelled == false) {
+        const modal = this.modalCtrl.create(BikeProfilePage, {bikeNumber: this.results.text, reportBike: false, unlockBike: true});
+        modal.present();
+
+        this.devices = [];
+        this.ble.startScan([]).subscribe(
+          device => this.onDeviceDiscovered(device),
+          error => this.scanError(error)
+        );
+        let headers = new HttpHeaders({
+          'Authorization': localStorage.getItem('token')
+        });
+        this.httpClient.get(this.config.getAPILocation() + '/bleMAC/' + 977500, {headers: headers}).subscribe(data => {
+          this.response = data;
+          if(this.response.success==true) {
+            this.bleMAC = this.response.bleMAC;
+            this.ble.stopScan();
+          }
+        })
+        modal.onDidDismiss(data => {
+          console.log(data);
+          if(data.unlock==true) {
+            let headers = new HttpHeaders({
+              'Authorization': localStorage.getItem('token')
+            });
+            let loading = this.loadingCtrl.create({
+              content: 'Unlocking Bike...'
+            });
+            loading.present();
+            this.ble.connect(this.bleMAC).subscribe(
+              peripheral => this.connected(peripheral),
+              peripheral => this.onDeviceDiscovered(peripheral)
+            );
+          }
+        });
+      }
+    }).catch(err => {
+      let alert = this.alertCtrl.create({
+        title: 'Error',
+        subTitle: 'Scanning failed: ' + err,
+        buttons: ['OK']
+      });
+      alert.present();
+    })
+  }
+
+  connected(peripheral) {
+    this.peripheral = peripheral;
+    let buffer = this.stringToArrayBuffer("davidchang");
+    this.ble.write(this.peripheral.id, '6E400001-B5A3-F393-E0A9-E50E24DCCA9E', '6E400002-B5A3-F393-E0A9-E50E24DCCA9E', buffer).then(
+      () => {
+        this.httpClient.post(this.config.getAPILocation() + '/newRide', {bike: this.results.text}, {headers: headers}).subscribe(data => {
+          this.response = data;
+          if(this.response.success==true) {
+            loading.dismiss();
+            localStorage.setItem('inRide', "true");
+            this.inRide=true;
+            localStorage.setItem('rideID', this.response.rideID);
+            localStorage.setItem('bikeNumber', this.response.bike);
+            var currentRide = setInterval(() => {
+              if(localStorage.getItem('inRide')=="true") {
+                let headers = new HttpHeaders({
+                  'Content-Type': 'application/x-www-form-urlencoded',
+                  'Authorization': localStorage.getItem('token')
+                });
+                this.httpClient.get(this.config.getAPILocation() + '/ride/' + localStorage.getItem('rideID'), {headers: headers}).subscribe(data => {
+                  this.rideInfo = data;
+                  if (this.rideInfo.ride.inRide==false) {
+                    clearInterval(currentRide);
+                    localStorage.setItem('inRide', "false");
+                    this.inRide=false;
+                    const modal = this.modalCtrl.create(EndRidePage);
+                    modal.present();
+                  } else {
+                      this.currentLatitude = this.rideInfo.ride.route[this.rideInfo.ride.route.length-1][0];
+                      this.currentLongitude = this.rideInfo.ride.route[this.rideInfo.ride.route.length-1][1];
+                      this.ridePath = this.rideInfo.ride.route;
+                      this.rideTime = Math.round((Date.now()-this.rideInfo.ride.startTime)/60000 * 100)/100;
+                      this.rideDistance = Math.round(this.distance(this.rideInfo.ride.startPosition[0], this.rideInfo.ride.startPosition[1], this.currentLatitude, this.currentLongitude)*100)/100;
+                      this.rideCalories = Math.round(134*Math.exp(0.0725*(this.rideDistance/this.rideTime)) * this.rideTime*100)/100;
+                      console.log("still in ride");
+                  }
+                });
+              }
+            }, 1000);
+          } else {
+            loading.dismiss();
+            let alert = this.alertCtrl.create({
+              title: 'Error',
+              subTitle: 'Bike does not exist or it could not be unlock.',
+              buttons: ['OK']
+            });
+            alert.present();
+          }
+        }, error => {
+          loading.dismiss();
+          let alert = this.alertCtrl.create({
+            title: 'Error',
+            subTitle: 'Could not connect to server.',
+            buttons: ['OK']
+          });
+          alert.present();
+        })
+      },
+      e => {
+        let alert = this.alertCtrl.create({
+          title: 'ERROR',
+          message: 'Couldnt write ' + e,
+          buttons: ['OK']
+        });
+        alert.present();
+      }
+    );
+  }
 
   testBLE() {
     this.devices = [];
@@ -809,38 +929,8 @@ export class HomePage implements OnInit {
         alert.present();
       }
     );
-    var readTimeout = 0;
-    var readInterval = setInterval(() => {
-      this.ble.read(this.peripheral.id, '6E400001-B5A3-F393-E0A9-E50E24DCCA9E', '6E400003-B5A3-F393-E0A9-E50E24DCCA9E').then(
-        buffer => {
-          let bleResponse = this.arrayBufferToString(buffer)
-          let alert = this.alertCtrl.create({
-            title: 'Test2',
-            message: JSON.stringify(bleResponse),
-            buttons: ['OK']
-          });
-          alert.present();
-          clearInterval(readInterval);
-        },
-        e => {
-          let alert = this.alertCtrl.create({
-            title: 'ERROR',
-            message: 'Couldnt read ' + e,
-            buttons: ['OK']
-          });
-          alert.present();
-        }
-      );
-      readTimeout++;
-      if(readTimeout == 20) {
-        clearInterval(readInterval);
-      }
-    }, 500)
-
-    /*this.ngZone.run(() => {
-      this.peripheral = peripheral;
-    })*/
   }
+
   onDeviceDiscovered(device) {
     console.log('Discovered ' + JSON.stringify(device, null, 2));
     this.ngZone.run(() => {
@@ -849,7 +939,12 @@ export class HomePage implements OnInit {
   }
 
   scanError(error) {
-    console.log("ERROR", error);
+    let alert = this.alertCtrl.create({
+      title: 'ERROR',
+      message: error,
+      buttons: ['OK']
+    });
+    alert.present();
   }
 
   async scanQR() {
@@ -899,7 +994,6 @@ export class HomePage implements OnInit {
   }
 
   async scanBarcode(){
-
     this.options = {
       prompt: "Scan a QR code!"
     }
@@ -981,156 +1075,6 @@ export class HomePage implements OnInit {
       });
       alert.present();
     })
-
-    /*
-    this.results = await this.barcode.scan();
-    console.log(this.results);
-    if(this.results.cancelled == false) {
-      const modal = this.modalCtrl.create(BikeProfilePage, {bikeNumber: this.results.text, reportBike: false, unlockBike: true});
-      modal.present();
-      modal.onDidDismiss(data => {
-        console.log(data);
-        if(data.unlock==true) {
-          let headers = new HttpHeaders({
-            'Authorization': localStorage.getItem('token')
-          });
-          let loading = this.loadingCtrl.create({
-            content: 'Unlocking Bike...'
-          });
-          loading.present();
-          this.httpClient.post(this.config.getAPILocation() + '/newRide', {bike: this.results}, {headers: headers}).subscribe(data => {
-            this.response = data;
-            if(this.response.success==true) {
-              loading.dismiss();
-              localStorage.setItem('inRide', "true");
-              this.inRide=true;
-              localStorage.setItem('rideID', this.response.rideID);
-              localStorage.setItem('bikeNumber', this.response.bike);
-              var currentRide = setInterval(() => {
-                if(localStorage.getItem('inRide')=="true") {
-                  let headers = new HttpHeaders({
-                    'Content-Type': 'application/x-www-form-urlencoded',
-                    'Authorization': localStorage.getItem('token')
-                  });
-                  this.httpClient.get(this.config.getAPILocation() + '/ride/' + localStorage.getItem('rideID'), {headers: headers}).subscribe(data => {
-                    this.rideInfo = data;
-                    if (this.rideInfo.ride.inRide==false) {
-                      clearInterval(currentRide);
-                      localStorage.setItem('inRide', "false");
-                      this.inRide=false;
-                      const modal = this.modalCtrl.create(EndRidePage);
-                      modal.present();
-                    } else {
-                        this.currentLatitude = this.rideInfo.ride.route[this.rideInfo.ride.route.length-1][0];
-                        this.currentLongitude = this.rideInfo.ride.route[this.rideInfo.ride.route.length-1][1];
-                        this.ridePath = this.rideInfo.ride.route;
-                        this.rideTime = Math.round((Date.now()-this.rideInfo.ride.startTime)/60000 * 100)/100;
-                        this.rideCalories = Math.round(650*this.rideTime / 60 * 100)/100;
-                        this.rideDistance = (this.distance(this.rideInfo.ride.startPosition[0], this.rideInfo.ride.startPosition[1], this.currentLatitude, this.currentLongitude));
-                        console.log("still in ride");
-                    }
-                  });
-                }
-              }, 1000);
-            } else {
-              loading.dismiss();
-              let alert = this.alertCtrl.create({
-                title: 'Error',
-                subTitle: 'Bike does not exist or it could not be unlock.',
-                buttons: ['OK']
-              });
-              alert.present();
-            }
-          }, error => {
-            loading.dismiss();
-            let alert = this.alertCtrl.create({
-              title: 'Error',
-              subTitle: 'Could not connect to server.',
-              buttons: ['OK']
-            });
-            alert.present();
-          })
-        }
-      });
-    } else {
-      this.viewCtrl.dismiss();
-    }
-    */
-    /*
-    let alert = this.alertCtrl.create({
-      title: 'New ride',
-      message: 'Do you want to unlock bike #' + this.results.text + '?',
-      buttons: [
-        {
-          text: 'Confirm',
-          handler: () => {
-            let headers = new HttpHeaders({
-              'Authorization': localStorage.getItem('token')
-            });
-            let loading = this.loadingCtrl.create({
-              content: 'Unlocking Bike...'
-            });
-            loading.present();
-            this.httpClient.post(this.config.getAPILocation() + '/newRide', {bike: 977500}, {headers: headers}).subscribe(data => {
-              this.response = data;
-              if(this.response.success==true) {
-                loading.dismiss();
-                localStorage.setItem('inRide', "true");
-                localStorage.setItem('rideID', this.response.rideID);
-                localStorage.setItem('bikeNumber', this.response.bike);
-                var currentRide = setInterval(() => {
-                  if(localStorage.getItem('inRide')=="true") {
-                    let headers = new HttpHeaders({
-                      'Content-Type': 'application/x-www-form-urlencoded',
-                      'Authorization': localStorage.getItem('token')
-                    });
-                    this.httpClient.get(this.config.getAPILocation() + '/ride/' + localStorage.getItem('rideID'), {headers: headers}).subscribe(data => {
-                      this.rideInfo = data;
-                      if (this.rideInfo.ride.inRide==false) {
-                        clearInterval(currentRide);
-                        localStorage.setItem('inRide', "false");
-                        let alert = this.alertCtrl.create({
-                          title: 'Ride finished!',
-                          buttons: ['OK']
-                        });
-                        alert.present();
-                      } else {
-                          console.log("still in ride");
-                      }
-                    });
-                  }
-                }, 1000);
-              } else {
-                loading.dismiss();
-                let alert = this.alertCtrl.create({
-                  title: 'Error',
-                  subTitle: 'Bike does not exist or it could not be unlock.',
-                  buttons: ['OK']
-                });
-                alert.present();
-              }
-            }, error => {
-              loading.dismiss();
-              let alert = this.alertCtrl.create({
-                title: 'Error',
-                subTitle: 'Could not connect to server.',
-                buttons: ['OK']
-              });
-              alert.present();
-            })
-          }
-        },
-        {
-          text: 'Cancel',
-          role: 'cancel',
-          handler: () => {
-            console.log('cancel clicked');
-          }
-        }
-      ]
-    });
-    alert.present();
-    */
   }
 
   newRide() {
