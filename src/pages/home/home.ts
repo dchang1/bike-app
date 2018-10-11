@@ -793,15 +793,12 @@ export class HomePage implements OnInit {
         modal.onDidDismiss(data => {
           console.log(data);
           if(data.unlock==true) {
-            let headers = new HttpHeaders({
-              'Authorization': localStorage.getItem('token')
-            });
             let loading = this.loadingCtrl.create({
               content: 'Unlocking Bike...'
             });
             loading.present();
             this.ble.connect(this.bleMAC).subscribe(
-              peripheral => this.connected(peripheral),
+              peripheral => this.connected(peripheral, loading),
               peripheral => this.onDeviceDiscovered(peripheral)
             );
           }
@@ -817,11 +814,14 @@ export class HomePage implements OnInit {
     })
   }
 
-  connected(peripheral) {
+  connected(peripheral, loading) {
     this.peripheral = peripheral;
     let buffer = this.stringToArrayBuffer("davidchang");
     this.ble.write(this.peripheral.id, '6E400001-B5A3-F393-E0A9-E50E24DCCA9E', '6E400002-B5A3-F393-E0A9-E50E24DCCA9E', buffer).then(
       () => {
+        let headers = new HttpHeaders({
+          'Authorization': localStorage.getItem('token')
+        });
         this.httpClient.post(this.config.getAPILocation() + '/newRide', {bike: this.results.text}, {headers: headers}).subscribe(data => {
           this.response = data;
           if(this.response.success==true) {
