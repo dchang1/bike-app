@@ -764,21 +764,20 @@ export class HomePage implements OnInit {
           peripheral => this.onConnected(peripheral),
           peripheral => this.onDeviceDiscovered(peripheral)
         );
-        /*
-        this.ble.write(this.bleMAC, '', '', 'davidchang').then(
+        this.ble.write(this.bleMAC, '6e4000001-b5a3-f393-e0a9-e50e24dcca9e', '6e4000001-b5a3-f393-e0a9-e50e24dcca9e', 'davidchang').then(
           () => console.log("success write"),
           e => console.log("error");
         );
-        this.ble.read(this.bleMAC, , ).then(
+        this.ble.read(this.bleMAC, '6e4000001-b5a3-f393-e0a9-e50e24dcca9e', '6e4000001-b5a3-f393-e0a9-e50e24dcca9e').then(
           buffer => {
             let alert = this.alertCtrl.create({
-              title: 'Test',
+              title: 'Test2s',
               subTitle: JSON.stringify(buffer),
               buttons: ['OK']
             });
             alert.present();
           }
-        );*/
+        );
       }
     })
   }
@@ -786,7 +785,7 @@ export class HomePage implements OnInit {
   onConnected(peripheral) {
     this.ngZone.run(() => {
       let alert = this.alertCtrl.create({
-        title: 'Test',
+        title: 'Test1',
         message: JSON.stringify(peripheral),
         buttons: ['OK']
       });
