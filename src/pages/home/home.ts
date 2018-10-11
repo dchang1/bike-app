@@ -746,7 +746,7 @@ export class HomePage implements OnInit {
     })
   }*/
 
-  testBLE() {
+  async testBLE() {
     this.devices = [];
     this.ble.startScan([]).subscribe(
       device => this.onDeviceDiscovered(device),
@@ -760,22 +760,22 @@ export class HomePage implements OnInit {
       if(this.response.success==true) {
         this.bleMAC = this.response.bleMAC;
         this.ble.stopScan();
-          let test = this.ble.connect(this.bleMAC).subscribe(
+          this.ble.connect(this.bleMAC).subscribe(
             peripheral => this.onConnected(peripheral),
             peripheral => this.onDeviceDiscovered(peripheral)
           );
-          let alert = this.alertCtrl.create({
-            title: 'Test',
-            subTitle: JSON.stringify(test),
-            buttons: ['OK']
-          });
-          alert.present();
       }
     })
   }
 
   onConnected(peripheral) {
     this.ngZone.run(() => {
+      let alert = this.alertCtrl.create({
+        title: 'Test',
+        subTitle: JSON.stringify(test),
+        buttons: ['OK']
+      });
+      alert.present();
       this.peripheral = peripheral;
     })
   }
