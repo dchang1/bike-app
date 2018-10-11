@@ -791,7 +791,7 @@ export class HomePage implements OnInit {
   onConnected(peripheral) {
     this.peripheral = peripheral;
     let buffer = this.stringToArrayBuffer("davidchang");
-    this.ble.write(this.peripheral.id, '6e4000001-b5a3-f393-e0a9-e50e24dcca9e', '6e4000001-b5a3-f393-e0a9-e50e24dcca9e', buffer).then(
+    this.ble.write(this.peripheral.id, '6E400001-B5A3-F393-E0A9-E50E24DCCA9E', '6E400001-B5A3-F393-E0A9-E50E24DCCA9E', buffer).then(
       () => {
         let alert = this.alertCtrl.create({
           title: 'success',
@@ -809,7 +809,7 @@ export class HomePage implements OnInit {
         alert.present();
       }
     );
-    this.ble.read(this.peripheral.id, '6e4000001-b5a3-f393-e0a9-e50e24dcca9e', '6e4000001-b5a3-f393-e0a9-e50e24dcca9e').then(
+    this.ble.read(this.peripheral.id, '6E400001-B5A3-F393-E0A9-E50E24DCCA9E', '6E400001-B5A3-F393-E0A9-E50E24DCCA9E').then(
       buffer => {
         let bleResponse = this.arrayBufferToString(buffer)
         let alert = this.alertCtrl.create({
