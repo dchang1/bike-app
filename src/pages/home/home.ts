@@ -784,44 +784,45 @@ export class HomePage implements OnInit {
           peripheral => this.onConnected(peripheral),
           peripheral => this.onDeviceDiscovered(peripheral)
         );
-        let buffer = this.stringToArrayBuffer("davidchang");
-        this.ble.write(this.bleMAC, '6e4000001-b5a3-f393-e0a9-e50e24dcca9e', '6e4000001-b5a3-f393-e0a9-e50e24dcca9e', buffer).then(
-          () => {
-            let alert = this.alertCtrl.create({
-              title: 'success',
-              message: 'success write',
-              buttons: ['OK']
-            });
-            alert.present();
-          },
-          e => {
-            let alert = this.alertCtrl.create({
-              title: 'ERROR',
-              message: 'Couldnt write' + e,
-              buttons: ['OK']
-            });
-            alert.present();
-          }
-        );
-        this.ble.read(this.bleMAC, '6e4000001-b5a3-f393-e0a9-e50e24dcca9e', '6e4000001-b5a3-f393-e0a9-e50e24dcca9e').then(
-          buffer => {
-            let bleResponse = this.arrayBufferToString(buffer)
-            let alert = this.alertCtrl.create({
-              title: 'Test2',
-              message: JSON.stringify(bleResponse),
-              buttons: ['OK']
-            });
-            alert.present();
-          }
-        );
       }
     })
   }
 
   onConnected(peripheral) {
-    this.ngZone.run(() => {
+    this.peripheral = peripheral;
+    let buffer = this.stringToArrayBuffer("davidchang");
+    this.ble.write(this.peripheral.id, '6e4000001-b5a3-f393-e0a9-e50e24dcca9e', '6e4000001-b5a3-f393-e0a9-e50e24dcca9e', buffer).then(
+      () => {
+        let alert = this.alertCtrl.create({
+          title: 'success',
+          message: 'success write',
+          buttons: ['OK']
+        });
+        alert.present();
+      },
+      e => {
+        let alert = this.alertCtrl.create({
+          title: 'ERROR',
+          message: 'Couldnt write' + e,
+          buttons: ['OK']
+        });
+        alert.present();
+      }
+    );
+    this.ble.read(this.peripheral.id, '6e4000001-b5a3-f393-e0a9-e50e24dcca9e', '6e4000001-b5a3-f393-e0a9-e50e24dcca9e').then(
+      buffer => {
+        let bleResponse = this.arrayBufferToString(buffer)
+        let alert = this.alertCtrl.create({
+          title: 'Test2',
+          message: JSON.stringify(bleResponse),
+          buttons: ['OK']
+        });
+        alert.present();
+      }
+    );
+    /*this.ngZone.run(() => {
       this.peripheral = peripheral;
-    })
+    })*/
   }
   onDeviceDiscovered(device) {
     console.log('Discovered ' + JSON.stringify(device, null, 2));
