@@ -765,6 +765,8 @@ export class HomePage implements OnInit {
       }
       return str;
   }
+
+  //WORKING WITH BLUETOOTH
   async bleScan() {
     this.options = {
       prompt: "Scan a QR code!"
@@ -947,6 +949,7 @@ export class HomePage implements OnInit {
     alert.present();
   }
 
+  //DEMO WITH FAKE DATA
   async scanQR() {
     console.log("QR");
     this.options = {
@@ -993,6 +996,7 @@ export class HomePage implements OnInit {
     })
   }
 
+  //WORKING WITHOUT BLUETOOTH
   async scanBarcode(){
     this.options = {
       prompt: "Scan a QR code!"
