@@ -112,20 +112,48 @@ page-home {
     max-height:250px;
     max-width: 250px;
   }
+  .avatar {
+    width: 45%;
+    padding-top: 3%;
+    padding-right: 5%;
+    display: inline-block;
+    vertical-align: middle;
+  }
+  .name {
+    width: 50%;
+    display: inline-block;
+    vertical-align: middle;
+    color: white;
+  }
+  .userStat {
+    float: none !important;
+    background-color: #EE4469;
+    padding: 7px !important;
+    border-radius: 7px;
+    font-size: 25px !important;
+  }
   .menu-items {
     width: 100%;
-    display: block;
-    border-bottom: 1px solid black;
+    padding: 0px;
+    background-color: #FECA51;
+    padding-left: 5%;
+  }
+  .menu-items .label-md {
+    margin: 5px 0px 5px 0px;
+  }
+  .userMenu {
+    background-color: #FECA51;
+  }
+  .menuOptions {
+    background-color: #FECA51;
+  }
+  .menuOptions button {
+    background-color: #FECA51;
+    color: white;
   }
   ::-webkit-scrollbar{
     display:none;
   }
-  .name {
-    width:100%;
-    font-size:5vw;
-    height:20%;
-  }
-
   .button {
     background-color: white;
     color: #633bb7;
@@ -156,10 +184,6 @@ page-home {
   .gm-style-iw + div {
     display: none;
   }
-  .inRide-stats {
-    font-size:20px;
-    text-align: center;
-  }
   .rating {
     float: right;
     position: absolute;
@@ -184,5 +208,51 @@ page-home {
     width: 50px;
     height: 50px;
     background: white;
+  }
+  .bikeName {
+    background-color: #DB3364;
+    color: white;
+    padding: 5px 0px 5px 10px;
+  }
+  .inRide-stats {
+    font-size: 20px;
+    background-color: #EE4469;
+    color: white;
+    padding: 0px 0px 0px 5px;
+  }
+  .inRide-text {
+    font-size: 10px;
+    display: inline-block;
+    vertical-align: middle;
+  }
+  .inRide-stat {
+    float: right;
+    padding: 0px;
+    color: white;
+    font-size: 35px;
+    display: inline-block;
+    vertical-align: middle;
+  }
+  .inRide-stats .label-md {
+    margin: 10px 0px 0px 0px;
+  }
+  .last .label-md {
+    margin: 10px 0px 10px 0px;
+  }
+  .big {
+    height: 100%;
+    background: linear-gradient(0deg, #F7FAFB 50%, #EAEBE9 50%);
+    color: black;
+    border-radius: 10px;
+    padding-left: 8px;
+    padding-right: 8px;
+  }
+  .no-border {
+    padding-left: 7px;
+    padding-right: 7px;
+    font-weight: bold;
+    font-size: 40px;
+    line-height: 35px;
+    margin: 0px;
   }
 }

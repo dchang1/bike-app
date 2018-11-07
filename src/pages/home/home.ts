@@ -34,8 +34,10 @@ export class HomePage implements OnInit {
   public firstName: string;
   public lastName: string;
   public campus: string;
-  public totalDistance;
-  public totalRideTime;
+  public totalRideHours = '0';
+  public totalRideMinutes = '00';
+  public totalRideDistance = '0';
+  public totalRideDistanceDecimal = '00';
   public totalRides;
   public bikeScore: number;
   public inRide: boolean = false;
@@ -50,7 +52,11 @@ export class HomePage implements OnInit {
   public rideTime = 0;
   public rideDistance = 0;
   public rideCalories = 0;
+  public rideHours;
+  public rideMinutes = '00';
+  public rideSeconds = '00';
   public rideCost = '0.00';
+  public rideDistanceDecimal = '00';
   lat: number = 0;
   lng: number = 0;
   protected map: any;
@@ -62,15 +68,34 @@ export class HomePage implements OnInit {
   public statusMessage: string;
   public bleMAC;
   public peripheral;
+  public startPosition;
   constructor(private ble: BLE, private ngZone: NgZone, public platform: Platform, public app: App, public geolocation: Geolocation, public modalCtrl: ModalController, private navCtrl: NavController, private httpClient: HttpClient, private alertCtrl: AlertController, private loadingCtrl: LoadingController, private config: ConfigService, private iam: IAMService, private barcode: BarcodeScanner) {
   }
   ngOnInit() {
+    let headers = new HttpHeaders({
+      'Authorization': localStorage.getItem('token')
+    });
+    this.httpClient.get(this.config.getAPILocation() + '/user', {headers: headers}).subscribe(data => {
+      if(data) {
+        this.iam.updateCurrentUser(data);
+      }
+    });
     this.firstName = localStorage.getItem("firstName");
     this.lastName = localStorage.getItem("lastName");
     this.campus = localStorage.getItem("campus");
-    this.totalDistance = localStorage.getItem("totalDistance");
-    this.totalRideTime = localStorage.getItem("totalRideTime");
     this.totalRides = localStorage.getItem("totalRides");
+    this.totalRideHours = localStorage.getItem("totalRideHours");
+    this.totalRideMinutes = localStorage.getItem("totalRideMinutes");
+    this.totalRideDistance = localStorage.getItem("totalRideDistance");
+    this.totalRideDistanceDecimal = localStorage.getItem("totalRideDistanceDecimal");
+    /*
+    this.rideDistance = Math.round((this.distance(this.lines[0].lat, this.lines[1].lng, this.lines[test].lat, this.lines[test].lng))*100)/100;
+    this.rideDistanceDecimal = (this.rideDistance.toString().split(".")[1]);
+    if(this.rideDistanceDecimal.length == 1) {
+      this.rideDistanceDecimal += "0";
+    }
+    this.rideDistance = Math.floor(this.rideDistance);
+    */
     this.bikeScore = 1;
     this.latitude = Number(localStorage.getItem('latitude'));
     this.longitude = Number(localStorage.getItem('longitude'));
@@ -145,7 +170,7 @@ export class HomePage implements OnInit {
                 {lng: -75.3576386,lat: 39.9039917},
                 {lng: -75.3578639,lat: 39.9034567},
                 {lng: -75.3574991,lat: 39.9027983}];*/
-    this.world = [{"lat": 90, "lng": 90}, {"lat": 90, "lng": -90}, {"lat": 0, "lng": 90}, {"lat": 0, "lng": -90}]
+    this.world = [{"lat": 90, "lng": 90}, {"lat": 90, "lng": -90}, {"lat": 0, "lng": 90}, {"lat": 0, "lng": -90}];
     this.paths = [this.world, this.geofence];
     this.lines = [
   {
@@ -542,6 +567,7 @@ export class HomePage implements OnInit {
       console.log(error);
     });
     */
+    this.startPosition = this.lines[0];
     let watch = this.geolocation.watchPosition();
     watch.subscribe((data) => {
      // data can be a set of coordinates, or an error (if an error occurred).
@@ -551,9 +577,6 @@ export class HomePage implements OnInit {
      localStorage.setItem('latitude', data.coords.latitude.toString());
      localStorage.setItem('longitude', data.coords.longitude.toString());
      // data.coords.longitude
-    });
-    let headers = new HttpHeaders({
-      'Authorization': localStorage.getItem('token')
     });
     this.httpClient.get(this.config.getAPILocation() + '/allCampusBikes', {headers: headers}).subscribe(data => {
       this.bikes = data;
@@ -766,22 +789,30 @@ export class HomePage implements OnInit {
       return str;
   }
 
+  public pad(num) {
+    var s = "0" + num;
+    return s.substr(s.length-2);
+  }
+
+  public padAfter(num) {
+    var s = num + "0";
+    return s.substr(s.length-2);
+  }
   //WORKING WITH BLUETOOTH
   async bleScan() {
     this.options = {
       prompt: "Scan a QR code!"
     }
+    this.devices = [];
+    this.ble.startScan([]).subscribe(
+      device => this.onDeviceDiscovered(device),
+      error => this.scanError(error)
+    );
     this.barcode.scan().then(results => {
       this.results = results;
       if(this.results.cancelled == false) {
         const modal = this.modalCtrl.create(BikeProfilePage, {bikeNumber: this.results.text, reportBike: false, unlockBike: true});
         modal.present();
-
-        this.devices = [];
-        this.ble.startScan([]).subscribe(
-          device => this.onDeviceDiscovered(device),
-          error => this.scanError(error)
-        );
         let headers = new HttpHeaders({
           'Authorization': localStorage.getItem('token')
         });
@@ -824,7 +855,7 @@ export class HomePage implements OnInit {
         let headers = new HttpHeaders({
           'Authorization': localStorage.getItem('token')
         });
-        this.httpClient.post(this.config.getAPILocation() + '/newRide', {bike: this.results.text}, {headers: headers}).subscribe(data => {
+        this.httpClient.post(this.config.getAPILocation() + '/newBLERide', {bike: this.results.text}, {headers: headers}).subscribe(data => {
           this.response = data;
           if(this.response.success==true) {
             loading.dismiss();
@@ -1081,81 +1112,55 @@ export class HomePage implements OnInit {
     })
   }
 
-  newRide() {
-    let headers = new HttpHeaders({
-      'Authorization': localStorage.getItem('token')
-    });
-    let loading = this.loadingCtrl.create({
-      content: 'Unlocking Bike...'
-    });
-    loading.present();
-    this.httpClient.post(this.config.getAPILocation() + '/newRide', {bike: 977500}, {headers: headers}).subscribe(data => {
-      this.response = data;
-      if(this.response.success==true) {
-        loading.dismiss();
-        localStorage.setItem('inRide', "true");
-        localStorage.setItem('rideID', this.response.rideID);
-        localStorage.setItem('bikeNumber', this.response.bike);
-        setInterval(() => {
-          if(localStorage.getItem('inRide')=="true") {
-            let headers = new HttpHeaders({
-              'Content-Type': 'application/x-www-form-urlencoded',
-              'Authorization': localStorage.getItem('token')
+  //WITHOUT HAVING TO SCAN
+  async test() {
+    console.log("QR");
+        const modal = this.modalCtrl.create(BikeProfilePage, {bikeNumber: 977500, reportBike: false, unlockBike: true});
+        modal.present();
+        modal.onDidDismiss(data => {
+          console.log(data);
+          if(data.unlock==true) {
+            let loading = this.loadingCtrl.create({
+              content: 'Unlocking Bike...'
             });
-            this.httpClient.get(this.config.getAPILocation() + '/ride/' + localStorage.getItem('rideID'), {headers: headers}).subscribe(data => {
-              this.rideInfo = data;
-              if (this.rideInfo.ride.inRide==false) {
-                localStorage.setItem('inRide', "true");
-                let alert = this.alertCtrl.create({
-                  title: 'Ride finished!',
-                  buttons: ['OK']
-                });
-                alert.present();
-              } else {
-                  console.log("still in ride");
+            loading.present();
+            localStorage.setItem('inRide', "true");
+            this.inRide=true;
+            loading.dismiss();
+            let test = 0;
+            this.ridePath = [];
+            let rideStartTime = Date.now();
+            var currentRide = setInterval(() => {
+              this.currentLatitude = this.lines[test].lat;
+              this.currentLongitude = this.lines[test].lng;
+              this.ridePath.push(this.lines[test]);
+              //this.rideSeconds = (Math.round((Date.now()-rideStartTime)/1000 * 100)/100) % 60;
+              this.rideSeconds = this.pad(Math.floor((Date.now() - rideStartTime)/1000) % 60);
+              this.rideMinutes = this.pad(Math.floor(parseInt(this.rideSeconds)/60) % 60);
+              this.rideHours = Math.floor(parseInt(this.rideMinutes)/60);
+              this.rideDistance = Math.round((this.distance(this.lines[0].lat, this.lines[1].lng, this.lines[test].lat, this.lines[test].lng))*100)/100;
+              this.rideDistanceDecimal = (this.rideDistance.toString().split(".")[1]);
+              if(this.rideDistanceDecimal.length == 1) {
+                this.rideDistanceDecimal += "0";
               }
-            });
+              this.rideDistance = Math.floor(this.rideDistance);
+              this.rideCalories = Math.round(134*Math.exp(0.0725*(this.rideDistance/this.rideTime)) * this.rideTime * 100)/100;
+              test++;
+              if(test==20) {
+                clearInterval(currentRide);
+                localStorage.setItem('inRide', "false");
+                this.inRide=false;
+                this.rideSeconds = '00';
+                this.rideMinutes = '00';
+                this.rideHours = 0;
+                this.rideDistance = 0;
+                this.rideDistanceDecimal = '00';
+                const modal = this.modalCtrl.create(EndRidePage);
+                modal.present();
+              }
+            }, 1000);
           }
-        }, 1000);
-      } else {
-        loading.dismiss();
-        let alert = this.alertCtrl.create({
-          title: 'Error',
-          subTitle: 'Bike did not unlock.',
-          buttons: ['OK']
         });
-        alert.present();
       }
-    })
-  }
-
-  unlockBike() {
-    let loading = this.loadingCtrl.create({
-      content: 'Please wait...'
-    });
-    loading.present();
-    let headers = new HttpHeaders({
-      'Content-Type': 'application/x-www-form-urlencoded',
-    });
-    let body = "arg=" + localStorage.getItem('rideID') + "&access_token" + localStorage.getItem('particleToken');
-    this.httpClient.post("https://api.particle.io/v1/devices/" + JSON.parse(localStorage.getItem('bike')).lockId + "/u", body, {headers: headers}).subscribe(data => {
-      console.log(data);
-      loading.dismiss();
-      let alert = this.alertCtrl.create({
-        title: 'Bike is unlocked',
-        subTitle: 'Begin riding!',
-        buttons: ['OK']
-      });
-
-    }, error => {
-      loading.dismiss();
-      let alert = this.alertCtrl.create({
-        title: 'Error',
-        subTitle: 'Did not unlock bike',
-        buttons: ['OK']
-      });
-      alert.present();
-    })
-  }
 
 }

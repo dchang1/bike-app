@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Http, Headers, Response, URLSearchParams } from '@angular/http';
 import { ModalController, NavController, Slides, LoadingController, AlertController } from 'ionic-angular';
@@ -15,14 +15,84 @@ import { ResetPage } from '../../pages/reset/reset';
   templateUrl: 'landing.html'
 })
 
-export class LandingPage {
+export class LandingPage implements OnInit{
 
-  constructor(public modalCtrl: ModalController, private navCtrl: NavController, private httpClient: HttpClient, private alertCtrl: AlertController, private loadingCtrl: LoadingController, private config: ConfigService, private iam: IAMService,) {}
+  constructor(public modalCtrl: ModalController, private navCtrl: NavController, private httpClient: HttpClient, private alertCtrl: AlertController, private loadingCtrl: LoadingController, private config: ConfigService, private iam: IAMService) {}
   error_message: string;
 
   email: string;
   password: string;
   public response: any = {};
+  error: string = "";
+
+  ngOnInit() {
+    if(!this.iam.checkVerified() && this.iam.checkUser()) {
+      let alert = this.alertCtrl.create({
+        title: 'Verify your account',
+        message: 'We sent a 4-digit verification code to ' + localStorage.getItem('email') + '. Please enter it in to verify your account.',
+        inputs: [
+          {
+            name: 'verifyPIN',
+            placeholder: '4-digit Code',
+            type: 'number'
+          }
+        ],
+        buttons: [
+          {
+            text: 'Verify',
+            handler: data => {
+              let headers = new HttpHeaders({
+                'Authorization': localStorage.getItem('token')
+              });
+              this.httpClient.post(this.config.getAPILocation() + '/verify', {verifyPIN: data.verifyPIN}, {headers: headers}).subscribe(data => {
+                this.response = data;
+                console.log(this.response);
+                if(this.response.success==true) {
+                  console.log("CODE IS GOOD");
+                  this.navCtrl.setRoot(HomePage);
+                  alert.dismiss();
+                  let secondAlert = this.alertCtrl.create({
+                    title: "Account Verified!",
+                    buttons: ['OK']
+                  })
+                  secondAlert.present();
+                } else {
+                  let secondAlert = this.alertCtrl.create({
+                    title: "Wrong Code",
+                    buttons: ['OK']
+                  })
+                  secondAlert.present();
+                }
+              });
+              return false;
+            }
+          },
+          {
+            text: 'Resend',
+            handler: () => {
+              let headers = new HttpHeaders({
+                'Content-Type': 'application/x-www-form-urlencoded',
+                'Authorization': localStorage.getItem('token')
+              });
+              this.httpClient.get(this.config.getAPILocation() + '/resend', {headers: headers}).subscribe(data => {
+                let secondAlert = this.alertCtrl.create({
+                  title: "Sent to " + localStorage.getItem('email'),
+                  buttons: ['OK']
+                })
+                secondAlert.present();
+              })
+              return false;
+            }
+          },
+          {
+            text: 'Cancel',
+            role: 'cancel'
+          }
+        ]
+      });
+      alert.present();
+    }
+  }
 
   login() {
     // if the inputs are not blank
@@ -44,8 +114,7 @@ export class LandingPage {
         console.log(this.response);
 
         // if there is a successful response
-        if (this.response.success==true) { //&& this.response.verified==true) {
-
+        if (this.response.success==true && this.response.verified==true) { //&& this.response.verified==true) {
           this.iam.setCurrentUser(this.response);
           let headers = new HttpHeaders({
             'Content-Type': 'application/x-www-form-urlencoded',
@@ -58,23 +127,83 @@ export class LandingPage {
               this.navCtrl.setRoot(HomePage);
             }
           })
-        } /*else if(this.response.verified==false) {
+        } else if(this.response.verified==false) {
+          this.iam.setCurrentUser(this.response);
+          let headers = new HttpHeaders({
+            'Content-Type': 'application/x-www-form-urlencoded',
+            'Authorization': localStorage.getItem('token')
+          });
+          this.httpClient.get(this.config.getAPILocation() + '/campus/' + localStorage.getItem('campus'), {headers: headers}).subscribe(data => {
+            this.response = data;
+            if(this.response) {
+              localStorage.setItem('geofence', JSON.stringify(this.response.geofence));
+            }
+          })
           let alert = this.alertCtrl.create({
-            title: 'Email not verified.',
-            subTitle: 'Please click on the link provided in the email we sent.',
-            buttons: [{text: 'Ok'},
-                      {text: 'Resend',
-                       handler: () => {
-                         let headers = new HttpHeaders({
-                           'Authorization': localStorage.getItem('token')
-                         });
-                         this.httpClient.get(this.config.getAPILocation() + '/resend', {headers: headers}).subscribe(data => {
-                           console.log("sent");
-                         })
-                       }}] //resend email button
+            title: 'Verify your account',
+            message: 'We sent a 4-digit verification code to ' + localStorage.getItem('email') + '. Please enter it in to verify your account.',
+            inputs: [
+              {
+                name: 'verifyPIN',
+                placeholder: '4-digit Code',
+                type: 'number'
+              }
+            ],
+            buttons: [
+              {
+                text: 'Verify',
+                handler: data => {
+                  let headers = new HttpHeaders({
+                    'Authorization': localStorage.getItem('token')
+                  });
+                  this.httpClient.post(this.config.getAPILocation() + '/verify', {verifyPIN: data.verifyPIN}, {headers: headers}).subscribe(data => {
+                    this.response = data;
+                    console.log(this.response);
+                    if(this.response.success==true) {
+                      console.log("CODE IS GOOD");
+                      this.navCtrl.setRoot(HomePage);
+                      alert.dismiss();
+                      let secondAlert = this.alertCtrl.create({
+                        title: "Account Verified!",
+                        buttons: ['OK']
+                      })
+                      secondAlert.present();
+                    } else {
+                      let secondAlert = this.alertCtrl.create({
+                        title: "Wrong Code",
+                        buttons: ['OK']
+                      })
+                      secondAlert.present();
+                    }
+                  });
+                  return false;
+                }
+              },
+              {
+                text: 'Resend',
+                handler: () => {
+                  let headers = new HttpHeaders({
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                    'Authorization': localStorage.getItem('token')
+                  });
+                  this.httpClient.get(this.config.getAPILocation() + '/resend', {headers: headers}).subscribe(data => {
+                    let secondAlert = this.alertCtrl.create({
+                      title: "Sent to " + localStorage.getItem('email'),
+                      buttons: ['OK']
+                    })
+                    secondAlert.present();
+                  })
+                  return false;
+                }
+              },
+              {
+                text: 'Cancel',
+                role: 'cancel'
+              }
+            ]
           });
           alert.present();
-        } */else {
+        } else {
           // display error that login was unsuccessful
           let alert = this.alertCtrl.create({
             title: 'Error',

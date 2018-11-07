@@ -5,12 +5,13 @@
     </button>
     <ion-title><img src="assets/text-logo.png" class="logo"></ion-title>
     <button ion-button menuToggle="right" end>
-      <ion-icon name="search" style="font-size:37px; color: white"></ion-icon>
+      <ion-icon name="search" style="font-size:37px; color: white; visibility: hidden"></ion-icon>
     </button>
   </ion-toolbar>
 </ion-header>
 
 <ion-content class="background">
+
   <ion-card style="position: absolute; top: 0; z-index: 4;" [ngClass]="bikePreviewClass">
     <ion-card-header style="text-align: center; font-size: 20px; font-weight: bold">
       Hunter's Bike
@@ -31,90 +32,84 @@
       </div>
     </div>
   </ion-card>
-  <img src="assets/QR_2.png" class="qr" (click)="scanBarcode()" *ngIf="!inRide">
+
+  <img src="assets/QR_2.png" class="qr" (click)="bleScan()" *ngIf="!inRide">
+
   <div class="circle" (click)="center()" *ngIf="!inRide">
     <ion-icon name="locate" class="icon locate"></ion-icon>
   </div>
+
   <agm-map (mapReady)="mapReady($event)" [latitude]="39.905022" [longitude]="-75.354034" [zoom]="16" [streetViewControl]="false" [clickableIcons]="false" (mapClick)="closeBikePreview()" #gm>
-    <!--<agm-marker [latitude]="39.905022" [longitude]="-75.354034"></agm-marker>-->
-    <!--<agm-polygon [paths]="geofence" [zIndex]="2" [fillOpacity]="0" [strokeWeight]="1" [strokeOpacity]="0.1" [clickable]="false">
-    </agm-polygon>-->
-    <agm-polygon [paths]="paths" [fillOpacity]="0.2" [clickable]="false" [strokeWeight]="0"></agm-polygon>
-    <!--<agm-marker [latitude]="latitude" [longitude]="longitude" [iconUrl]="'https://i.stack.imgur.com/VpVF8.png'"></agm-marker>-->
-    <agm-marker [zIndex]="3" [latitude]="39.905022" [longitude]="-75.354034" [iconUrl]="'assets/location.png'">
-    </agm-marker>
-    <!--<agm-marker [visible]="!inRide" *ngFor="let bike of bikes" [zIndex]="2" [latitude]="bike.currentPosition[0]" [longitude]="bike.currentPosition[1]" [iconUrl]="'assets/bike-icon.png'" (markerClick)="bikeProfile(infoWindow, gm, bike.number)">-->
-    <agm-marker [visible]="!inRide" *ngFor="let bike of bikes" [zIndex]="2" [latitude]="bike.currentPosition[0]" [longitude]="bike.currentPosition[1]" [iconUrl]="'assets/bike-icon.png'" (markerClick)="bikePreview(bike.number)">
-    </agm-marker>
+    <agm-polygon *ngIf="paths" [paths]="paths" [fillOpacity]="0.2" [clickable]="false" [strokeWeight]="0"></agm-polygon>
+
+    <agm-marker [visible]="!inRide" [zIndex]="3" [latitude]="39.905022" [longitude]="-75.354034" [iconUrl]="'assets/location.png'"></agm-marker>
+
+    <agm-marker [visible]="!inRide" *ngFor="let bike of bikes" [zIndex]="2" [latitude]="bike.currentPosition[0]" [longitude]="bike.currentPosition[1]" [iconUrl]="'assets/bike-icon.png'" (markerClick)="bikePreview(bike.number)"></agm-marker>
+
     <agm-marker *ngFor="let hub of hubs" [zIndex]="1" [latitude]="hub.location[0]" [longitude]="hub.location[1]" [iconUrl]="'assets/hub-icon.png'">
       <agm-circle [latitude]="hub.location[0]" [longitude]="hub.location[1]" [radius]="hub.radius*1000" [fillColor]="color" [fillOpacity]="0.3" [strokeWeight]="0"></agm-circle>
     </agm-marker>
-    <!--
-    <agm-polyline [visible]="inRide">
-      <agm-polyline-point *ngFor="let data of ridePath"
-        [latitude]="data[0]"
-        [longitude]="data[1]">
-      </agm-polyline-point>
-    </agm-polyline>-->
-    <agm-polyline [visible]="inRide">
+
+    <agm-polyline [visible]="inRide" [clickable]="false" [geodesic]="true" [strokeColor]="'#EE4469'">
+      <agm-marker [visible]="inRide" [zIndex]="3" [latitude]="startPosition.lat" [longitude]="startPosition.lng" [iconUrl]="'assets/location.png'"></agm-marker>
       <agm-polyline-point *ngFor="let data of ridePath"
         [latitude]="data.lat"
         [longitude]="data.lng">
       </agm-polyline-point>
     </agm-polyline>
     <agm-marker [visible]="inRide" [latitude]="currentLatitude" [longitude]="currentLongitude" [iconUrl]="'assets/inride.png'"></agm-marker>
+
   </agm-map>
+
   <ion-card [hidden]="!inRide" style="z-index: 1; position: absolute; bottom: 0">
-    <ion-card-header style="text-align: center; font-size: 20px">
-      You are currently in a ride.
+    <ion-card-header class="bikeName">
+      Hunter's Bike
     </ion-card-header>
     <ion-card-content class="inRide-stats">
-      <div style="float: left">
-        <ion-icon name="time" class="icon"></ion-icon>{{this.rideTime}} min
-        <br>
-        <ion-icon name="card" class="icon"></ion-icon>${{this.rideCost}}
-      </div>
-      <div>
-        <ion-icon name="speedometer" class="icon"></ion-icon>{{this.rideDistance}} km
-        <br>
-        <ion-icon name="flame" class="icon"></ion-icon>{{this.rideCalories}} cal
-      </div>
-      <input type="button" class="rounded" value="Help" (click)="help()" style="background-color:#ffffff; color: #633bb7; padding:0px; border: 1px solid #633bb7">
+      <ion-item class="inRide-stats">
+        <span class="inRide-text" padding-vertical>Total Time Traveled</span>
+        <span class="inRide-stat"><span class="big" *ngIf="rideHours">{{rideHours}}</span><span class="no-border" *ngIf="rideHours">:</span><span class="big">{{rideMinutes}}</span><span class="no-border">:</span><span class="big">{{rideSeconds}}</span></span>
+      </ion-item>
+      <ion-item class="inRide-stats">
+        <span class="inRide-text" padding-vertical>Total distance traveled</span>
+        <span class="inRide-stat"><span class="big">{{rideDistance}}</span><span class="no-border">.</span><span class="big">{{rideDistanceDecimal}}</span> km</span>
+      </ion-item>
+      <ion-item class="inRide-stats last">
+        <span class="inRide-text" padding-vertical>Total Cost</span>
+        <span class="inRide-stat">$ <span class="big">0</span><span class="no-border">.</span><span class="big">00</span></span>
+      </ion-item>
     </ion-card-content>
   </ion-card>
 
-  <ion-menu [content]="menu" side="left" id="menu">
-    <ion-content>
-      <ion-item class="menu-items" text-wrap>
-        <div class="name">
-          {{firstName}} {{lastName}}
-        </div>
-        <div class="name">
-          {{campus}} College
-        </div>
-        <br>
-        <div style="display: inline-block">
-          <ion-icon name="bicycle" class="icon"></ion-icon>
-          <p class="stats">{{totalRides}} Rides</p>
-        </div>
-        <div style="display: inline-block">
-          <ion-icon name="speedometer" class="icon"></ion-icon>
-          <p class="stats">{{totalDistance}} km</p>
-        </div>
-        <div style="display: inline-block">
-          <ion-icon name="time" class="icon"></ion-icon>
-          <p class="stats">{{totalRideTime}} h</p>
-        </div>
+  <ion-menu [content]="menu" side="left">
+    <ion-content class="userMenu">
+      <ion-item class="menu-items" no-lines text-wrap>
+        <span class="avatar">
+        <img src="assets/avatar.png">
+        </span>
+        <span class="name" padding-vertical>
+          <h1 style="width: 100%">{{firstName}} {{lastName}}</h1>
+          <h2 style="width: 100%">{{campus}} College</h2>
+        </span>
       </ion-item>
-      <ion-list>
+      <ion-item class="menu-items" no-lines>
+        <span class="inRide-stat userStat"><span class="big">{{totalRideHours}}</span> h <span class="big">{{totalRideMinutes}}</span> m</span>
+      </ion-item>
+      <ion-item class="menu-items" no-lines>
+        <span class="inRide-stat userStat"><span class="big">{{totalRideDistance}}</span> <span style="font-weight: bold">.</span> <span class="big">{{totalRideDistanceDecimal}}</span> km</span>
+      </ion-item>
+      <ion-item class="menu-items" no-lines>
+        <span class="inRide-stat userStat"><span class="big">{{totalRides}}</span> rides</span>
+      </ion-item>
+      <ion-list class="menuOptions" no-lines>
         <button ion-item (click)="ridehistory()">Your Rides</button>
         <button ion-item (click)="payment()">Payment</button>
         <button ion-item (click)="help()">Help</button>
         <button ion-item (click)="settings()">Settings</button>
         <button ion-item (click)="share()">Share a bike</button>
         <button ion-item (click)="logout()">Logout</button>
+        <button ion-item (click)="test()">DEMO</button>
         <button ion-item (click)="reset()">Reset</button>
-        <button ion-item (click)="testBLE()">BLE</button>
       </ion-list>
     </ion-content>
   </ion-menu>

@@ -11,7 +11,6 @@ import { LandingPage } from '../pages/landing/landing';
 import { IAMService } from '../services/iam.service';
 import { Diagnostic } from '@ionic-native/diagnostic';
 import { ScreenOrientation } from '@ionic-native/screen-orientation';
-import { Deeplinks } from '@ionic-native/deeplinks';
 
 @Component({
   templateUrl: 'app.html'
@@ -19,20 +18,8 @@ import { Deeplinks } from '@ionic-native/deeplinks';
 export class MyApp {
   rootPage:any;
   public response: any = {};
-  constructor(private deeplinks: Deeplinks, private screenOrientation: ScreenOrientation, public app: App, private diagnostic: Diagnostic, private alertCtrl: AlertController, private httpClient: HttpClient, private config: ConfigService, platform: Platform, statusBar: StatusBar, splashScreen: SplashScreen, iam: IAMService) {
+  constructor(private screenOrientation: ScreenOrientation, public app: App, private diagnostic: Diagnostic, private alertCtrl: AlertController, private httpClient: HttpClient, private config: ConfigService, platform: Platform, statusBar: StatusBar, splashScreen: SplashScreen, iam: IAMService) {
     platform.ready().then(() => {
-      /*
-      platform.registerBackButtonAction(() => {
-        let nav = this.app.getActiveNav();
-        let activeView = nav.getActive();
-        if(nav.canGoBack()) {
-          nav.pop();
-        } else if (typeof activeView.instance.backButtonAction === 'function') {
-          activeView.instance.back();
-        } else {
-          nav.setRoot(HomePage);
-        }
-      });*/
       // Okay, so the platform is ready and our plugins are available.
       // Here you can do any higher level native things you might need.
       statusBar.styleDefault();
@@ -72,7 +59,7 @@ export class MyApp {
          console.error('Got a deeplink that didn\'t match', nomatch);
        });*/
 
-      //this.screenOrientation.lock(this.screenOrientation.ORIENTATIONS.PORTRAIT);
+      this.screenOrientation.lock(this.screenOrientation.ORIENTATIONS.PORTRAIT);
     });
     let headers = new HttpHeaders({
       'Authorization': localStorage.getItem('token')
@@ -80,13 +67,13 @@ export class MyApp {
     this.httpClient.get(this.config.getAPILocation() + '/user', {headers: headers}).subscribe(data => {
       if(data) {
         this.response = data;
-          console.log("Logged in");
-          localStorage.setItem('totalDistance', this.response.user.totalDistance.toFixed(2).toString());
-          localStorage.setItem('totalRideTime', this.response.user.totalRideTime.toFixed(2).toString());
-          localStorage.setItem('totalRides', this.response.user.pastRides.length.toString());
+        if(this.response.verified) {
           this.rootPage = HomePage;
+        } else {
+          this.rootPage = LandingPage;
         }
-/*
+      }
+
         this.diagnostic.isGpsLocationEnabled().then(state => {
           if (!state) {
             let confirm = this.alertCtrl.create({
@@ -113,7 +100,7 @@ export class MyApp {
           else {
             this.rootPage = HomePage;
           }
-        })*/
+        })
 
     }, error => {
       console.log("Not logged in");

@@ -24,6 +24,7 @@ export class RegisterPage {
   campus: string = "";
   error_message: string = "";
   campuses: Array<string>;
+  verifyPIN: number;
   public response: any = {};
 
   constructor(private navCtrl: NavController, private loadingCtrl: LoadingController, private httpClient: HttpClient, private alertCtrl: AlertController, private config: ConfigService, private iam: IAMService) {
@@ -68,14 +69,70 @@ export class RegisterPage {
                   this.response = data;
                   if(this.response.success==true) {
                     console.log(this.response);
+                    this.iam.setCurrentUser(this.response);
                     let alert = this.alertCtrl.create({
-                      title: 'Account created!',
-                      subTitle: 'Please login to continue.',
+                      title: 'Verify your account',
+                      message: 'We sent a 4-digit verification code to ' + localStorage.getItem('email') + '. Please enter it in to verify your account.',
+                      inputs: [
+                        {
+                          name: 'verifyPIN',
+                          placeholder: '4-digit Code',
+                          type: 'number'
+                        }
+                      ],
                       buttons: [
-                        {text: 'OK',
-                        handler: () => {
-                          this.navCtrl.pop();
-                        }}
+                        {
+                          text: 'Verify',
+                          handler: data => {
+                            let headers = new HttpHeaders({
+                              'Authorization': localStorage.getItem('token')
+                            });
+                            this.httpClient.post(this.config.getAPILocation() + '/verify', {verifyPIN: data.verifyPIN}, {headers: headers}).subscribe(data => {
+                              this.response = data;
+                              console.log(this.response);
+                              if(this.response.success==true) {
+                                console.log("CODE IS GOOD");
+                                this.navCtrl.setRoot(HomePage);
+                                alert.dismiss();
+                                let secondAlert = this.alertCtrl.create({
+                                  title: "Account Verified!",
+                                  buttons: ['OK']
+                                })
+                                secondAlert.present();
+                              } else {
+                                let secondAlert = this.alertCtrl.create({
+                                  title: "Wrong Code",
+                                  buttons: ['OK']
+                                })
+                                secondAlert.present();
+                              }
+                            });
+                            return false;
+                          }
+                        },
+                        {
+                          text: 'Resend',
+                          handler: () => {
+                            let headers = new HttpHeaders({
+                              'Content-Type': 'application/x-www-form-urlencoded',
+                              'Authorization': localStorage.getItem('token')
+                            });
+                            this.httpClient.get(this.config.getAPILocation() + '/resend', {headers: headers}).subscribe(data => {
+                              let secondAlert = this.alertCtrl.create({
+                                title: "Sent to " + localStorage.getItem('email'),
+                                buttons: ['OK']
+                              })
+                              secondAlert.present();
+                            })
+                            return false;
+                          }
+                        },
+                        {
+                          text: 'Cancel',
+                          handler: () => {
+                            this.navCtrl.setRoot(LandingPage);
+                          }
+                        }
                       ]
                     });
                     alert.present();
