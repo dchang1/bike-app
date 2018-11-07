@@ -24,42 +24,7 @@ export class MyApp {
       // Here you can do any higher level native things you might need.
       statusBar.styleDefault();
       splashScreen.hide();
-      /*
-      this.deeplinks.route({
-         '/verify/:token': LandingPage
-       }).subscribe(match => {
-         let headers = new HttpHeaders({
-           'Authorization': localStorage.getItem('token')
-         });
-         this.httpClient.get(this.config.getAPILocation() + '/verify/' + match.$args.token, {headers: headers}).subscribe(data => {
-           this.response = data;
-           if(this.response.success==true) {
-             let alert = this.alertCtrl.create({
-               title: 'Success!',
-               subTitle: 'Your account has been verified!',
-               buttons: ['OK']
-             });
-             alert.present();
-             this.rootPage = HomePage;
-           } else {
-             let alert = this.alertCtrl.create({
-               title: 'Error',
-               subTitle: 'Invalid',
-               buttons: ['OK']
-             });
-             alert.present();
-           }
-         })
-         // match.$route - the route we matched, which is the matched entry from the arguments to route()
-         // match.$args - the args passed in the link
-         // match.$link - the full link data
-         console.log('Successfully matched route', match);
-       }, nomatch => {
-         // nomatch.$link - the full link data
-         console.error('Got a deeplink that didn\'t match', nomatch);
-       });*/
-
-      this.screenOrientation.lock(this.screenOrientation.ORIENTATIONS.PORTRAIT);
+      //this.screenOrientation.lock(this.screenOrientation.ORIENTATIONS.PORTRAIT);
     });
     let headers = new HttpHeaders({
       'Authorization': localStorage.getItem('token')
@@ -74,7 +39,7 @@ export class MyApp {
         }
       }
 
-        this.diagnostic.isGpsLocationEnabled().then(state => {
+        this.diagnostic.isLocationEnabled().then(state => {
           if (!state) {
             let confirm = this.alertCtrl.create({
               title: '<b>Location</b>',
@@ -82,10 +47,7 @@ export class MyApp {
               buttons: [
                 {
                   text: 'cancel',
-                  role: 'Cancel',
-                  handler: () => {
-                      this.rootPage = LandingPage;
-                  }
+                  role: 'Cancel'
                 },
                 {
                   text: 'Go to settings',
@@ -101,6 +63,19 @@ export class MyApp {
             this.rootPage = HomePage;
           }
         })
+
+        this.diagnostic.getBluetoothState().then((state) => {
+          if (state == this.diagnostic.bluetoothState.POWERED_ON){
+            this.rootPage = HomePage;
+          } else {
+            let confirm = this.alertCtrl.create({
+              title: '<b>Location</b>',
+              message: 'Bluetooth is required for this application. Please enable bluetooth.',
+              buttons: ['OK']
+            });
+            confirm.present();
+          }
+        }).catch(e => console.error(e));
 
     }, error => {
       console.log("Not logged in");
