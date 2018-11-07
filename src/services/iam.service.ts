@@ -29,7 +29,7 @@ export class IAMService {
       localStorage.setItem('userType', data.userType);
       localStorage.setItem('totalRideDistance', data.totalDistance.toFixed(2).toString().split(".")[0]);
       localStorage.setItem('totalRideDistanceDecimal', data.totalDistance.toFixed(2).toString().split(".")[1]);
-      localStorage.setItem('totalRideHours', Math.floor(data.totalRideTime));
+      localStorage.setItem('totalRideHours', Math.floor(data.totalRideTime).toString());
       localStorage.setItem('totalRideMinutes', this.pad(Math.floor(data.totalRideTime%1 * 60)));
       localStorage.setItem('totalRides', data.totalRides.toString());
       localStorage.setItem('verified', data.verified);
@@ -44,7 +44,7 @@ export class IAMService {
     localStorage.setItem('userType', data.userType);
     localStorage.setItem('totalRideDistance', data.totalDistance.toFixed(2).toString().split(".")[0]);
     localStorage.setItem('totalRideDistanceDecimal', data.totalDistance.toFixed(2).toString().split(".")[1]);
-    localStorage.setItem('totalRideHours', Math.floor(data.totalRideTime));
+    localStorage.setItem('totalRideHours', Math.floor(data.totalRideTime).toString());
     localStorage.setItem('totalRideMinutes', this.pad(Math.floor(data.totalRideTime%1 * 60)));
     localStorage.setItem('totalRides', data.totalRides.toString());
     localStorage.setItem('verified', data.verified);
