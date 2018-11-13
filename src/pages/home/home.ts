@@ -252,10 +252,6 @@ export class HomePage implements OnInit {
     //direction of 16 means down, 24 is up
     console.log(event.direction);
   }
-  public moreDetails(bike) {
-    const modal = this.modalCtrl.create(BikeProfilePage, {bikeNumber: bike, reportBike: true, unlockBike: false});
-    modal.present();
-  }
 
   payment() {
     let alert = this.alertCtrl.create({
@@ -686,6 +682,7 @@ export class HomePage implements OnInit {
   }
   */
 
+/*
   //WORKING WITHOUT BLUETOOTH
   async scanBarcode(){
     this.options = {
@@ -770,6 +767,7 @@ export class HomePage implements OnInit {
       alert.present();
     })
   }
+*/
 
   //WITHOUT HAVING TO SCAN
   async test() {
