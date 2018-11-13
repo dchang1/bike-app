@@ -26,7 +26,7 @@
       <p style="float: right; display: inline">$0.00</p>
     </ion-item>
   </ion-card>
-  <div class="noRides" *ngIf="!rides">
+  <div class="noRides" *ngIf="noRides">
     <h1 class="text">No rides yet!</h1>
   </div>
   <ion-infinite-scroll (ionInfinite)="doInfinite($event)" [threshold]="'5%'" *ngIf="pagingEnabled" style="color: white;">

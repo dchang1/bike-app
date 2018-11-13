@@ -16,6 +16,7 @@ export class RideHistoryPage implements OnInit {
   public unregisterBackButtonAction: any;
   public ridePage = 1;
   public pagingEnabled = true;
+  public noRides = true;
 
   constructor(public platform: Platform, public viewCtrl: ViewController, private navCtrl: NavController, private httpClient: HttpClient, private config: ConfigService, private loadingCtrl: LoadingController) {}
 
@@ -58,7 +59,8 @@ export class RideHistoryPage implements OnInit {
       this.response = data;
       this.rides = this.response.rides;
       console.log(this.rides);
-      if(this.rides) {
+      if(this.rides.length > 0) {
+        this.noRides = false;
         for(var i=0; i<this.rides.length; i++) {
           this.rides[i].startTime = moment(this.rides[i].startTime).format('MM/DD/YYYY');
           this.rides[i].distance = Math.round(this.rides[i].distance * 100)/100;
