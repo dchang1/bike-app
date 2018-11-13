@@ -14,9 +14,10 @@ import { LandingPage } from '../pages/landing/landing';
 import { RegisterPage } from '../pages/register/register';
 import { RideHistoryPage } from '../pages/ridehistory/ridehistory';
 import { SettingsPage } from '../pages/settings/settings';
-import { BikeProfilePage } from '../pages/bike-profile/bike-profile';
 import { EndRidePage } from '../pages/end-ride/end-ride';
 import { ResetPage } from '../pages/reset/reset';
+import { SafetyPage } from '../pages/safety/safety';
+import { ReportPage } from '../pages/report/report';
 
 import { IAMService } from '../services/iam.service';
 import { ConfigService } from '../services/config.service';
@@ -39,9 +40,10 @@ import { BLE } from '@ionic-native/ble';
     RegisterPage,
     RideHistoryPage,
     SettingsPage,
-    BikeProfilePage,
     EndRidePage,
-    ResetPage
+    ResetPage,
+    SafetyPage,
+    ReportPage
   ],
   imports: [
     BrowserModule,
@@ -62,9 +64,10 @@ import { BLE } from '@ionic-native/ble';
     RegisterPage,
     RideHistoryPage,
     SettingsPage,
-    BikeProfilePage,
     EndRidePage,
-    ResetPage
+    ResetPage,
+    SafetyPage,
+    ReportPage
   ],
   providers: [
     IAMService,

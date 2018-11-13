@@ -1,0 +1,88 @@
+page-safety {
+  ::-webkit-scrollbar{
+    display:none;
+  }
+  modal-wrapper {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+  }
+  @media not all and (min-height: 600px) and (min-width: 768px) {
+    ion-modal ion-backdrop {
+      visibility: hidden;
+    }
+  }
+  @media only screen and (min-height: 0px) and (min-width: 0px) {
+    .modal-wrapper {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+    }
+  }
+  .main-view{
+    background: transparent;
+    width: 100%;
+    height: 100%;
+  }
+  .overlay {
+    position: fixed;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+    opacity: .5;
+    background-color: #333;
+  }
+  .modal_content {
+    text-align: center;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    -webkit-transform: translate(-50%, -50%);
+    transform: translate(-50%, -50%);
+    width: 70%;
+    height: 60%;
+    z-index: 100;
+    margin: 0 auto;
+    padding: 10px;
+    color: #333;
+    background: #e8e8e8;
+    background: -moz-linear-gradient(top, #fff 0%, #e8e8e8 100%);
+    background: -webkit-linear-gradient(top, #fff 0%, #e8e8e8 100%);
+    background: linear-gradient(to bottom, #fff 0%, #e8e8e8 100%);
+    border-radius: 10px;
+    box-shadow: 0 2px 3px rgba(51, 51, 51, .35);
+    box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    -webkit-box-sizing: border-box;
+    overflow: hidden;
+  }
+  .swiper-pagination {
+    padding-bottom: 50px;
+  }
+  ion-slide {
+    padding-bottom: 50px;
+  }
+  .safetyPicture {
+    height: 30vh;
+  }
+  .rounded {
+    border-radius: 25px;
+    border: 1px solid #ffffff;
+    padding: 0px;
+    width: 100%;
+    height: 40px;
+    border-radius: 10px;
+    color: #ffffff;
+    background-color: #FECA51;
+  }
+  .title {
+    text-align: center;
+    margin: auto;
+    width: 100%;
+    display: inline-block;
+    padding-top: 5px;
+  }
+}

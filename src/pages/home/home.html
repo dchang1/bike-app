@@ -13,51 +13,111 @@
 <ion-content class="background">
 
   <ion-card style="position: absolute; top: 0; z-index: 4;" [ngClass]="bikePreviewClass">
-    <ion-card-header style="text-align: center; font-size: 20px; font-weight: bold">
-      Hunter's Bike
+    <ion-card-header class="bikePreviewName">
+      {{bikeProfile.type}} Bike
+      <!--
+      {{bikeProfile.ownerName ? bikeProfile.ownerName + "'s Bike": bikeProfile.name}}
+      -->
     </ion-card-header>
-    <img src="assets/bike-profile.png" class="bikePreview">
-    <div class="bikePreviewStats">
-      <div style="display: inline-block; height: 100%; margin: auto; padding-right: 10px">
-        <p>Size</p>
-        <br><br>
-        <p>Rating</p>
-        <br><br>
-        <p>Rides</p>
+    <div style="text-align:center; background-color: white; display:">
+      <img src="assets/bike-profile.png" class="bikePreview">
+    </div>
+    <div style="text-align: center;background-color: white">
+      <span class="inRide-stat userStat" style="height: 44px;"><span [ngClass]="bikeProfile.size=='S' ? 'white' : 'grey'">S</span><span class="grey">/</span><span [ngClass]="bikeProfile.size=='M' ? 'white' : 'grey'">M</span><span class="grey">/</span><span [ngClass]="bikeProfile.size=='L' ? 'white' : 'grey'">L</span></span>
+      <span class="inRide-stat userStat"><span class="big" *ngIf="bikeProfile.rides">{{bikeProfile.rides.length}}</span> rides</span>
+      <span class="inRide-stat userStat"><span class="big">{{bikeProfile.rating}}</span> <ion-icon name="star" style="font-size: 25px; padding: 0px;"></ion-icon></span>
+    </div>
+    <!--
+    <div class="right">
+      <ion-item class="stat">
+        <span class="bikePreviewText" padding-vertical>Size</span>
+        <span class="bikePreviewStat">{{bikeProfile.size}}</span>
+      </ion-item>
+      <ion-item class="stat">
+        <span class="bikePreviewText" padding-vertical>Rating</span>
+        <span class="bikePreviewStat">{{bikeProfile.rating}}</span>
+      </ion-item>
+      <ion-item class="stat">
+        <span class="bikePreviewText" padding-vertical>Rides</span>
+        <span class="bikePreviewStat" *ngIf="bikeProfile.rides">{{bikeProfile.rides.length}}</span>
+      </ion-item>
+    </div>
+  -->
+    <div class="fullBike" [ngClass]="bikeProfileClass"><!--(swipe)="swipeEvent($event)">-->
+      <div class="bikeProfileStats">
+        <ion-item class="bikeProfileStat">
+          <div class="left">
+            <p class="bikeProfileStat-label">Name</p>
+          </div>
+          <div class="right">
+            <p class="bikeProfileStat-stat">{{bikeProfile.name}}</p>
+          </div>
+        </ion-item>
+        <ion-item class="bikeProfileStat">
+          <div class="left">
+            <p class="bikeProfileStat-label">Color</p>
+          </div>
+          <div class="right">
+            <p class="bikeProfileStat-stat">{{bikeProfile.color}}</p>
+          </div>
+        </ion-item>
+        <ion-item class="bikeProfileStat">
+          <div class="left">
+            <p class="bikeProfileStat-label">Total Distance</p>
+          </div>
+          <div class="right">
+            <p class="bikeProfileStat-stat">{{bikeProfile.totalDistance}} km</p>
+          </div>
+        </ion-item>
+        <ion-item class="bikeProfileStat">
+          <div class="left">
+            <p class="bikeProfileStat-label">Total Time</p>
+          </div>
+          <div class="right">
+            <p class="bikeProfileStat-stat">{{bikeProfile.rideHours}}:{{bikeProfile.rideMinutes}}</p>
+          </div>
+        </ion-item>
+        <!--
+        <ion-item class="bikeProfileStat" style="margin-top: -10px;">
+          <input type="button" class="rounded button" style="padding:0px" value="Report this Bike" (click)="report()">
+        </ion-item>-->
       </div>
-      <div style="display: inline-block; float: right; height: 100%; margin-top: -18px; margin-right: -30px">
-        <b style="color: gray; font-size:47px;">S</b><br>
-        <b style="color: gray; font-size:47px;">4.9</b><br>
-        <b style="color: gray; font-size:47px;">25</b>
-      </div>
+      <img src="{{bikeProfileArrow}}" class="arrow" (click)="showBikeProfile()">
     </div>
   </ion-card>
 
-  <img src="assets/QR_2.png" class="qr" (click)="bleScan()" *ngIf="!inRide">
+  <img src="assets/QR.png" class="qr" (click)="bleScan()" *ngIf="!inRide">
 
   <div class="circle" (click)="center()" *ngIf="!inRide">
     <ion-icon name="locate" class="icon locate"></ion-icon>
   </div>
 
+<!--
   <agm-map (mapReady)="mapReady($event)" [latitude]="39.905022" [longitude]="-75.354034" [zoom]="16" [streetViewControl]="false" [clickableIcons]="false" (mapClick)="closeBikePreview()" #gm>
+-->
+  <agm-map (mapReady)="mapReady($event)" [latitude]="latitude" [longitude]="longitude" [zoom]="16" [streetViewControl]="false" [clickableIcons]="false" (mapClick)="closeBikePreview()" #gm>
+
     <agm-polygon *ngIf="paths" [paths]="paths" [fillOpacity]="0.2" [clickable]="false" [strokeWeight]="0"></agm-polygon>
-
+<!--
     <agm-marker [visible]="!inRide" [zIndex]="3" [latitude]="39.905022" [longitude]="-75.354034" [iconUrl]="'assets/location.png'"></agm-marker>
+-->
+    <agm-marker [visible]="!inRide" [zIndex]="3" [latitude]="latitude" [longitude]="longitude" [iconUrl]="'assets/location.png'">
+      <agm-circle [visible]="!inRide" [latitude]="latitude" [longitude]="longitude" [radius]="50" [fillColor]="color" [fillOpacity]="0.3" [strokeWeight]="0"></agm-circle>
+    </agm-marker>
 
-    <agm-marker [visible]="!inRide" *ngFor="let bike of bikes" [zIndex]="2" [latitude]="bike.currentPosition[0]" [longitude]="bike.currentPosition[1]" [iconUrl]="'assets/bike-icon.png'" (markerClick)="bikePreview(bike.number)"></agm-marker>
+    <agm-marker [visible]="!inRide" *ngFor="let bike of bikes" [zIndex]="2" [latitude]="bike.currentPosition[0]" [longitude]="bike.currentPosition[1]" [iconUrl]="'assets/bike-icon.png'" (markerClick)="openBikePreview(bike.number)"></agm-marker>
 
     <agm-marker *ngFor="let hub of hubs" [zIndex]="1" [latitude]="hub.location[0]" [longitude]="hub.location[1]" [iconUrl]="'assets/hub-icon.png'">
       <agm-circle [latitude]="hub.location[0]" [longitude]="hub.location[1]" [radius]="hub.radius*1000" [fillColor]="color" [fillOpacity]="0.3" [strokeWeight]="0"></agm-circle>
     </agm-marker>
 
     <agm-polyline [visible]="inRide" [clickable]="false" [geodesic]="true" [strokeColor]="'#EE4469'">
-      <agm-marker [visible]="inRide" [zIndex]="3" [latitude]="startPosition.lat" [longitude]="startPosition.lng" [iconUrl]="'assets/location.png'"></agm-marker>
       <agm-polyline-point *ngFor="let data of ridePath"
-        [latitude]="data.lat"
-        [longitude]="data.lng">
+        [latitude]="data[0]"
+        [longitude]="data[1]">
       </agm-polyline-point>
     </agm-polyline>
-    <agm-marker [visible]="inRide" [latitude]="currentLatitude" [longitude]="currentLongitude" [iconUrl]="'assets/inride.png'"></agm-marker>
+    <agm-marker [visible]="inRide" [latitude]="currentLatitude" [longitude]="currentLongitude" [iconUrl]="'assets/inRide.png'"></agm-marker>
 
   </agm-map>
 
@@ -85,10 +145,10 @@
     <ion-content class="userMenu">
       <ion-item class="menu-items" no-lines text-wrap>
         <span class="avatar">
-        <img src="assets/avatar.png">
+          <img src="assets/avatar.png">
         </span>
         <span class="name" padding-vertical>
-          <h1 style="width: 100%">{{firstName}} {{lastName}}</h1>
+          <h1 style="font-size: 20px">{{firstName}} {{lastName}}</h1>
           <h2 style="width: 100%">{{campus}} College</h2>
         </span>
       </ion-item>
@@ -106,10 +166,14 @@
         <button ion-item (click)="payment()">Payment</button>
         <button ion-item (click)="help()">Help</button>
         <button ion-item (click)="settings()">Settings</button>
-        <button ion-item (click)="share()">Share a bike</button>
+        <button ion-item (click)="share()">Donate a bike</button>
+        <button ion-item (click)="report()">Report a bike</button>
         <button ion-item (click)="logout()">Logout</button>
+        <!--
         <button ion-item (click)="test()">DEMO</button>
         <button ion-item (click)="reset()">Reset</button>
+        <button ion-item (click)="safety()">Safety</button>
+    -->
       </ion-list>
     </ion-content>
   </ion-menu>

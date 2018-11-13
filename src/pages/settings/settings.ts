@@ -1,10 +1,7 @@
 import { Component, ViewChild, OnInit } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Http, Headers, Response, URLSearchParams } from '@angular/http';
-import { Navbar, NavController, Slides, LoadingController, AlertController, Platform, } from 'ionic-angular';
+import { Navbar, NavController, Slides, Platform, } from 'ionic-angular';
 import { ConfigService } from '../../services/config.service';
-
-import { HomePage } from '../../pages/home/home';
 
 @Component({
   selector: 'page-settings',
@@ -117,7 +114,7 @@ export class SettingsPage implements OnInit {
     let headers = new HttpHeaders({
       'Authorization': localStorage.getItem('token')
     });
-    this.httpClient.post(this.config.getAPILocation() + '/verify', {password: this.password}, {headers: headers}).subscribe(data => {
+    this.httpClient.post(this.config.getAPILocation() + '/verifyPassword', {password: this.password}, {headers: headers}).subscribe(data => {
       this.response = data;
       if(this.response.success==true) {
         this.error_message = "";

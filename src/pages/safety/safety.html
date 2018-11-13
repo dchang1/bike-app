@@ -1,0 +1,39 @@
+<ion-content class="main-view">
+  <div class="overlay" (click)="dismiss()"></div>
+  <div class="modal_content">
+    <ion-header>
+      <ion-toolbar>
+        <ion-buttons left>
+          <button ion-button (click)="dismiss()" left><ion-icon name="close"></ion-icon></button>
+        </ion-buttons>
+        <ion-title class="title">Safety Checks</ion-title>
+        <ion-buttons right style="visibility: hidden;">
+          <button ion-button (click)="dismiss()"><ion-icon name="close"></ion-icon></button>
+        </ion-buttons>
+      </ion-toolbar>
+    </ion-header>
+    <ion-slides pager>
+      <ion-slide>
+        <p class="caption">Squeeze your brakes</p>
+        <img class="safetyPicture" src="assets/brakes.png">
+      </ion-slide>
+      <ion-slide>
+        <p class="caption">Check your tires</p>
+        <img class="safetyPicture" src="assets/tires.png">
+      </ion-slide>
+      <ion-slide>
+        <p class="caption">Spin your chains</p>
+        <img class="safetyPicture" src="assets/chains.png">
+      </ion-slide>
+      <ion-slide>
+        <p class="caption">Turn your handles</p>
+        <img class="safetyPicture" src="assets/handles.png">
+      </ion-slide>
+    </ion-slides>
+    <ion-footer>
+      <ion-toolbar>
+        <input type="button" class="rounded" value="Unlock!" (click)="unlock()">
+      </ion-toolbar>
+    </ion-footer>
+  </div>
+</ion-content>

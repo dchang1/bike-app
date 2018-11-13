@@ -1,33 +1,33 @@
 <ion-header>
   <ion-navbar>
-    <ion-title>Settings</ion-title>
+    <ion-title class="title">Settings</ion-title>
   </ion-navbar>
 </ion-header>
 
-<ion-content padding>
+<ion-content class="background" padding>
   <ion-slides>
     <ion-slide>
-      <ion-item (click)="updateFirstNamePage()">
+      <ion-item (click)="updateFirstNamePage()" class="settingsItem">
         <ion-label stacked class="grey-label">First Name</ion-label>
         <ion-label class="name">{{firstName}}</ion-label>
         <ion-icon class="grey-icon" name="arrow-forward" item-end></ion-icon>
       </ion-item>
-      <ion-item (click)="updateLastNamePage()">
+      <ion-item (click)="updateLastNamePage()" class="settingsItem">
         <ion-label stacked class="grey-label">Last Name</ion-label>
         <ion-label class="name">{{lastName}}</ion-label>
         <ion-icon class="grey-icon" name="arrow-forward" item-end></ion-icon>
       </ion-item>
-      <ion-item (click)="updateEmailPage()">
+      <ion-item (click)="updateEmailPage()" class="settingsItem">
         <ion-label stacked class="grey-label">Email</ion-label>
         <ion-label class="name">{{email}}</ion-label>
         <ion-icon class="grey-icon" name="arrow-forward" item-end></ion-icon>
       </ion-item>
-      <ion-item (click)="updateCampusPage()">
+      <ion-item (click)="updateCampusPage()" class="settingsItem">
         <ion-label stacked class="grey-label">Campus</ion-label>
         <ion-label class="name">{{campus}}</ion-label>
         <ion-icon class="grey-icon" name="arrow-forward" item-end></ion-icon>
       </ion-item>
-      <ion-item (click)="verifyPasswordPage()">
+      <ion-item (click)="verifyPasswordPage()" class="settingsItem">
         <ion-label stacked class="grey-label">Password</ion-label>
         <ion-label class="name">••••••••</ion-label>
         <ion-icon class="grey-icon" name="arrow-forward" item-end></ion-icon>
@@ -47,7 +47,7 @@
       <p class="error">{{error_message}}</p>
     </ion-slide>
     <ion-slide>
-      <select [(ngModel)]="campus" class="rounded" style="padding: 0px; padding-left: 20px; color: black; background-color: #ffffff">
+      <select [(ngModel)]="campus" class="rounded" style="border: 1px solid white; padding: 0px; padding-left: 20px; color: black; background-color: #ffffff">
         <option value="" selected disabled>Campus</option>
         <option *ngFor="let name of campuses" [value]="name">{{name}}</option>
       </select>

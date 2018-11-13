@@ -24,7 +24,7 @@ export class MyApp {
       // Here you can do any higher level native things you might need.
       statusBar.styleDefault();
       splashScreen.hide();
-      //this.screenOrientation.lock(this.screenOrientation.ORIENTATIONS.PORTRAIT);
+      this.screenOrientation.lock(this.screenOrientation.ORIENTATIONS.PORTRAIT);
     });
     let headers = new HttpHeaders({
       'Authorization': localStorage.getItem('token')
@@ -33,49 +33,52 @@ export class MyApp {
       if(data) {
         this.response = data;
         if(this.response.verified) {
+
+          this.diagnostic.isLocationEnabled().then(state => {
+            if (!state) {
+              let confirm = this.alertCtrl.create({
+                title: '<b>Location</b>',
+                message: 'Location information is unavaliable on this device. Go to Settings to enable Location.',
+                buttons: [
+                  {
+                    text: 'cancel',
+                    role: 'Cancel'
+                  },
+                  {
+                    text: 'Go to settings',
+                    handler: () => {
+                      this.diagnostic.switchToLocationSettings()
+                    }
+                  }
+                ]
+              });
+              confirm.present();
+            }
+          })
+
           this.rootPage = HomePage;
         } else {
           this.rootPage = LandingPage;
         }
       }
 
-        this.diagnostic.isLocationEnabled().then(state => {
-          if (!state) {
-            let confirm = this.alertCtrl.create({
-              title: '<b>Location</b>',
-              message: 'Location information is unavaliable on this device. Go to Settings to enable Location.',
-              buttons: [
-                {
-                  text: 'cancel',
-                  role: 'Cancel'
-                },
-                {
-                  text: 'Go to settings',
-                  handler: () => {
-                    this.diagnostic.switchToLocationSettings()
-                  }
-                }
-              ]
-            });
-            confirm.present();
-          }
-          else {
-            this.rootPage = HomePage;
-          }
-        })
 
+/*
         this.diagnostic.getBluetoothState().then((state) => {
           if (state == this.diagnostic.bluetoothState.POWERED_ON){
             this.rootPage = HomePage;
           } else {
             let confirm = this.alertCtrl.create({
-              title: '<b>Location</b>',
+              title: '<b>Bluetooth</b>',
               message: 'Bluetooth is required for this application. Please enable bluetooth.',
               buttons: ['OK']
             });
             confirm.present();
           }
-        }).catch(e => console.error(e));
+        }, error => {
+          console.log("no bluetooth");
+        })
+        */
 
     }, error => {
       console.log("Not logged in");

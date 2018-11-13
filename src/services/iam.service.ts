@@ -1,13 +1,10 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { ConfigService } from '../services/config.service';
-import { NavController, AlertController } from 'ionic-angular';
 
 @Injectable()
 export class IAMService {
   public response: any = {};
 
-  constructor(private httpClient: HttpClient, private config: ConfigService) {}
+  constructor() {}
 
   pad(num) {
     var s = "0" + num;
@@ -19,7 +16,6 @@ export class IAMService {
       console.log("logged out");
       localStorage.clear();
     } else {
-      data.totalDistance = 0.10;
       localStorage.setItem('firstName', data.firstName);
       localStorage.setItem('lastName', data.lastName);
       localStorage.setItem('token', data.token);

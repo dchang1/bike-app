@@ -2,16 +2,38 @@ page-settings {
   ::-webkit-scrollbar{
     display:none;
   }
+  ::placeholder {
+    color: #ffffff;
+  }
+  .toolbar-title {
+    color: white;
+  }
+  .back-button-icon-md {
+    color: white;
+  }
+  .toolbar-background {
+    background-color: #FECA51;
+  }
+  .background {
+    background-color: #5ACCF7;
+  }
+  .floating {
+    color: white;
+    background-color: #5ACCF7;
+    border-bottom-color: white !important;
+  }
   .name {
-    padding-bottom: 1px;
     margin-top: 0px;
+    padding-bottom: 5px;
+    margin-bottom: 0px;
     font-size: 16px;
+    color: white;
   }
   .grey-label {
-    color: grey;
+    color: white;
   }
   .grey-icon {
-    color: grey;
+    color: white;
   }
   .button {
     background-color: white;
@@ -19,14 +41,17 @@ page-settings {
   }
   .rounded {
     border-radius: 25px;
-    border: 1px solid #ffffff;
+    border: 1px solid #FECA51;
     padding: 20px;
     width: 100%;
     height: 40px;
     border-radius: 10px;
     margin-bottom: 10px;
     color: #ffffff;
-    background-color: #633bb7;
+    background-color: #FECA51;
+  }
+  .settingsItem {
+    background-color: #5ACCF7;
   }
   p.error {
     color: map-get($colors, 'danger');

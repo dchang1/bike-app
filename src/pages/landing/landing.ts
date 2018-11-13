@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Http, Headers, Response, URLSearchParams } from '@angular/http';
-import { ModalController, NavController, Slides, LoadingController, AlertController } from 'ionic-angular';
+import { ModalController, NavController, LoadingController, AlertController } from 'ionic-angular';
 
 import { ConfigService } from '../../services/config.service';
 import { IAMService } from '../../services/iam.service';
@@ -123,7 +122,10 @@ export class LandingPage implements OnInit{
           this.httpClient.get(this.config.getAPILocation() + '/campus/' + localStorage.getItem('campus'), {headers: headers}).subscribe(data => {
             this.response = data;
             if(this.response) {
+              console.log(this.response);
               localStorage.setItem('geofence', JSON.stringify(this.response.geofence));
+              localStorage.setItem('geofenceCenterLat', this.response.centerLat);
+              localStorage.setItem('geofenceCenterLng', this.response.centerLng);
               this.navCtrl.setRoot(HomePage);
             }
           })

@@ -27,8 +27,9 @@ page-end-ride {
     color: #633bb7;
   }
   .rating {
-    font-size: 50px;
+    font-size: 40px;
     text-align: center;
+    color: white;
   }
   .rounded {
     border-radius: 25px;
@@ -45,9 +46,27 @@ page-end-ride {
     padding: 20px;
   }
   .map {
-    width: 100%;
-    height: 40vh;
-    display: inline-block;
+    width: 90%;
+    height: 25vh;
+    margin: auto;
+  }
+  .map div {
+    border-radius: 15px;
+  }
+  .comment {
+    margin: auto;
+    color: white;
+    background-color: #EE4469;
+  }
+  .text-input::-moz-placeholder {
+    color: white;
+  }
+  .text-input:-ms-input-placeholder {
+    color: white;
+  }
+  .text-input::-webkit-input-placeholder {
+    text-indent: 0;
+    color: white;
   }
   .labels {
     float: left;
@@ -60,5 +79,75 @@ page-end-ride {
     display: inline-block;
     padding: 20px;
     font-size: 16px;
+  }
+  .bikeName {
+    background-color: #DB3364;
+    color: white;
+    padding: 5px 0px 5px 10px;
+  }
+  .inRide-stats {
+    font-size: 20px;
+    background-color: #EE4469;
+    color: white;
+    padding: 0px 0px 0px 5px;
+  }
+  .inRide-text {
+    font-size: 12px;
+    display: inline-block;
+    vertical-align: middle;
+  }
+  .inRide-stat {
+    float: right;
+    padding: 0px;
+    color: white;
+    font-size: 30px;
+    display: inline-block;
+    vertical-align: middle;
+  }
+  .inRide-stats .label-md {
+    margin: 10px 0px 0px 0px;
+  }
+  .last .label-md {
+    margin: 10px 0px 10px 0px;
+  }
+  .big {
+    height: 100%;
+    background: linear-gradient(0deg, #F7FAFB 50%, #EAEBE9 50%);
+    color: black;
+    border-radius: 10px;
+    padding-left: 8px;
+    padding-right: 8px;
+    font-family: "Roboto", "Helvetica Neue", sans-serif !important;
+  }
+  .no-border {
+    padding-left: 7px;
+    padding-right: 7px;
+    font-weight: bold;
+    font-size: 40px;
+    line-height: 35px;
+    margin: 0px;
+  }
+
+  .button {
+    background-color: white;
+    color: #77D1F6;
+  }
+  .rounded {
+    border-radius: 25px;
+    border: 1px solid #FECA51;
+    padding: 20px;
+    width: 100%;
+    height: 40px;
+    border-radius: 10px;
+    margin-bottom: 10px;
+    color: #ffffff;
+    background-color: #FECA51;
+  }
+
+  .bottom {
+    width: 100%;
+    position: absolute;
+    bottom: 0px;
+    padding: 15px;
   }
 }

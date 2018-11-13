@@ -1,0 +1,73 @@
+<ion-header>
+  <ion-navbar>
+    <ion-title class="title">Report a Bike</ion-title>
+  </ion-navbar>
+</ion-header>
+
+<ion-content class="background" padding>
+  <div>
+    <img src="assets/QRCode.png" class="qr" (click)="qr()">
+    <input type="text" class="floating" [(ngModel)]="bikeNumber" placeholder="Scan the bike or enter its ID">
+  </div>
+  <ion-item no-lines>
+    <h1 class="caption">Check the broken parts of the bike</h1>
+  </ion-item>
+  <ion-list no-lines class="left-list">
+    <ion-item>
+      <ion-label>Lock</ion-label>
+      <ion-checkbox [(ngModel)]="lock"></ion-checkbox>
+    </ion-item>
+    <ion-item>
+      <ion-label>Brakes</ion-label>
+      <ion-checkbox [(ngModel)]="brakes"></ion-checkbox>
+    </ion-item>
+    <ion-item>
+      <ion-label>Tires</ion-label>
+      <ion-checkbox [(ngModel)]="tires"></ion-checkbox>
+    </ion-item>
+    <ion-item>
+      <ion-label>Spokes</ion-label>
+      <ion-checkbox [(ngModel)]="spokes"></ion-checkbox>
+    </ion-item>
+    <ion-item>
+      <ion-label>Chains</ion-label>
+      <ion-checkbox [(ngModel)]="chains"></ion-checkbox>
+    </ion-item>
+    <ion-item>
+      <ion-label>Handles</ion-label>
+      <ion-checkbox [(ngModel)]="handles"></ion-checkbox>
+    </ion-item>
+  </ion-list>
+  <ion-list no-lines class="right-list">
+    <ion-item>
+      <ion-label>Frame</ion-label>
+      <ion-checkbox [(ngModel)]="frame"></ion-checkbox>
+    </ion-item>
+    <ion-item>
+      <ion-label>Seat</ion-label>
+      <ion-checkbox [(ngModel)]="seat"></ion-checkbox>
+    </ion-item>
+    <ion-item>
+      <ion-label>Pedal</ion-label>
+      <ion-checkbox [(ngModel)]="pedal"></ion-checkbox>
+    </ion-item>
+    <ion-item>
+      <ion-label>Lights</ion-label>
+      <ion-checkbox [(ngModel)]="lights"></ion-checkbox>
+    </ion-item>
+    <ion-item>
+      <ion-label>Kickstand</ion-label>
+      <ion-checkbox [(ngModel)]="kickstand"></ion-checkbox>
+    </ion-item>
+    <ion-item>
+      <ion-label>Other</ion-label>
+      <ion-checkbox [(ngModel)]="other"></ion-checkbox>
+    </ion-item>
+  </ion-list>
+  <ion-item no-lines class="commentsBox">
+    <ion-textarea placeholder="Comments..." class="comments" [(ngModel)]="comments"></ion-textarea>
+  </ion-item>
+  <ion-item no-lines class="button">
+    <input type="button" class="rounded" style="padding:0px" value="Report" (click)="report()">
+  </ion-item>
+</ion-content>

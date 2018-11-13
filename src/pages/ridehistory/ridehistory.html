@@ -4,11 +4,11 @@
   </ion-navbar>
 </ion-header>
 
-<ion-content padding *ngIf="rides">
+<ion-content class="background">
 
-  <ion-card *ngFor="let ride of rides">
-    <agm-map [latitude]="ride.endPosition[0]" [longitude]="ride.endPosition[1]" [zoom]="16" [clickableIcons]="false" [streetViewControl]="false">
-      <agm-polyline>
+  <ion-card *ngFor="let ride of rides" class="card">
+    <agm-map [latitude]="ride.endPosition[0]" [longitude]="ride.endPosition[1]" [zoom]="16" [streetViewControl]="false" [clickableIcons]="false" [mapDraggable]="false" [zoomControl]="false">
+      <agm-polyline [clickable]="false" [geodesic]="true" [strokeColor]="'#EE4469'">
         <agm-polyline-point *ngFor="let data of ride.route"
           [latitude]="data[0]"
           [longitude]="data[1]">
@@ -16,13 +16,23 @@
       </agm-polyline>
       <agm-marker [latitude]="ride.endPosition[0]" [longitude]="ride.endPosition[1]" [iconUrl]="'assets/inride.png'"></agm-marker>
     </agm-map>
+
+
     <ion-item>
       <h2 style="display: inline">{{ride.startTime}}</h2>
       <p style="float: right; display: inline">{{ride.distance}} km</p>
       <br>
-      <p style="display: inline">{{ride.time}} min</p>
-      <p style="float: right; display: inline">{{ride.calories}} cal</p>
+      <p style="display: inline">{{ride.rideHours}}:{{ride.rideMinutes}}:{{ride.rideSeconds}}</p>
+      <p style="float: right; display: inline">$0.00</p>
     </ion-item>
-
   </ion-card>
+  <div class="noRides" *ngIf="!rides">
+    <h1 class="text">No rides yet!</h1>
+  </div>
+  <ion-infinite-scroll (ionInfinite)="doInfinite($event)" [threshold]="'5%'" *ngIf="pagingEnabled" style="color: white;">
+    <ion-infinite-scroll-content
+      loadingSpinner="bubbles"
+      loadingText="Loading more data...">
+    </ion-infinite-scroll-content>
+  </ion-infinite-scroll>
 </ion-content>

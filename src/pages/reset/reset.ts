@@ -1,13 +1,8 @@
 import { Component, ViewChild, OnInit } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Http, Headers, Response, URLSearchParams } from '@angular/http';
-import { NavController, Slides, LoadingController, AlertController, ViewController, NavParams } from 'ionic-angular';
+import { HttpClient } from '@angular/common/http';
+import { NavController, Slides, AlertController, ViewController, NavParams } from 'ionic-angular';
 
 import { ConfigService } from '../../services/config.service';
-import { IAMService } from '../../services/iam.service';
-
-import { RegisterPage } from '../register/register';
-import { HomePage } from '../../pages/home/home';
 
 @Component({
   selector: 'page-reset',
@@ -24,7 +19,7 @@ export class ResetPage implements OnInit {
   error_message: string;
   public response: any = {};
 
-  constructor(private navCtrl: NavController, private loadingCtrl: LoadingController, private alertCtrl: AlertController, private httpClient: HttpClient, private config: ConfigService, private iam: IAMService, public viewCtrl: ViewController, public params: NavParams) {
+  constructor(private navCtrl: NavController, private alertCtrl: AlertController, private httpClient: HttpClient, private config: ConfigService, public viewCtrl: ViewController, public params: NavParams) {
   }
 
   ngOnInit() {
@@ -40,11 +35,6 @@ export class ResetPage implements OnInit {
       this.response = data;
       if(this.response.success==true) {
         console.log("success");
-        let alert = this.alertCtrl.create({
-          title: 'Please check your email for a token.',
-          buttons: ['OK']
-        });
-        alert.present();
         this.slides.lockSwipes(false);
         this.slides.slideNext();
         this.slides.lockSwipes(true);

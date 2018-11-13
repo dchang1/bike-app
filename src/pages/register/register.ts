@@ -1,7 +1,6 @@
-import { Component, ViewChild, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Http, Headers, Response, URLSearchParams } from '@angular/http';
-import { NavController, Slides, LoadingController, AlertController } from 'ionic-angular';
+import { NavController, LoadingController, AlertController } from 'ionic-angular';
 
 import { ConfigService } from '../../services/config.service';
 import { IAMService } from '../../services/iam.service';
