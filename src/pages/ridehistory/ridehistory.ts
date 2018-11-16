@@ -4,7 +4,7 @@ import { Platform, NavController, LoadingController, ViewController } from 'ioni
 
 import { ConfigService } from '../../services/config.service';
 
-import  moment from 'moment';
+import moment from 'moment';
 
 @Component({
   selector: 'page-ridehistory',

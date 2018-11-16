@@ -17,6 +17,7 @@ import { Geolocation } from '@ionic-native/geolocation';
 import { BarcodeScanner,BarcodeScannerOptions } from '@ionic-native/barcode-scanner';
 import { BLE } from '@ionic-native/ble';
 import { Diagnostic } from '@ionic-native/diagnostic';
+import moment from 'moment';
 
 @Component({
   selector: 'page-home',
@@ -114,6 +115,9 @@ export class HomePage implements OnInit {
     });
     if(localStorage.getItem("inRide")=="true") {
       this.inRide=true;
+      this.bikePreviewClass = "hide";
+      this.bikeProfileArrow = "assets/arrow-down.png";
+      this.bikeProfileClass = "slideUp";
       var currentRide = setInterval(() => {
         if(localStorage.getItem('inRide')=="true") {
           let headers = new HttpHeaders({
@@ -126,16 +130,30 @@ export class HomePage implements OnInit {
               clearInterval(currentRide);
               localStorage.setItem('inRide', "false");
               this.inRide=false;
-              const modal = this.modalCtrl.create(EndRidePage);
+              const modal = this.modalCtrl.create(EndRidePage, {bikeType: this.bikeType, rideSeconds: this.rideSeconds, rideMinutes: this.rideMinutes, rideHours: this.rideHours, rideDistance: this.rideDistance, rideDistanceDecimal: this.rideDistanceDecimal, ridePath: this.ridePath});
+              this.rideSeconds = '00';
+              this.rideMinutes = '00';
+              this.rideHours = 0;
+              this.rideDistance = 0;
+              this.rideDistanceDecimal = '00';
               modal.present();
             } else {
                 this.currentLatitude = this.rideInfo.ride.route[this.rideInfo.ride.route.length-1][0];
                 this.currentLongitude = this.rideInfo.ride.route[this.rideInfo.ride.route.length-1][1];
                 this.ridePath = this.rideInfo.ride.route;
-                this.rideTime = Math.round((Date.now()-this.rideInfo.ride.startTime)/60000 * 100)/100;
-                this.rideCalories = Math.round(650*this.rideTime / 60 * 100)/100;
-                this.rideDistance = (this.distance(this.rideInfo.ride.startPosition[0], this.rideInfo.ride.startPosition[1], this.currentLatitude, this.currentLongitude));
-                console.log("still in ride");
+                this.rideSeconds = this.pad(Math.floor((moment().valueOf() - moment(this.rideInfo.ride.startTime).valueOf())/1000) % 60);
+                this.rideMinutes = this.pad(Math.floor(parseInt(this.rideSeconds)/60) % 60);
+                this.rideHours = Math.floor(parseInt(this.rideMinutes)/60);
+                this.rideDistance = Math.round((this.distance(this.rideInfo.ride.startPosition[0], this.rideInfo.ride.startPosition[1], this.currentLatitude, this.currentLongitude))*100)/100;
+                this.rideDistanceDecimal = (this.rideDistance.toString().split(".")[1]);
+                if(this.rideDistanceDecimal) {
+                  if(this.rideDistanceDecimal.length == 1) {
+                    this.rideDistanceDecimal += "0";
+                  }
+                } else {
+                  this.rideDistanceDecimal = "00";
+                }
+                this.rideDistance = Math.floor(this.rideDistance);
             }
           });
         }
@@ -207,7 +225,10 @@ export class HomePage implements OnInit {
       console.log("ERROR");
     });
 
-    setInterval(() => {
+    var getBikes = setInterval(() => {
+      if(!localStorage.getItem("session")) {
+        clearInterval(getBikes);
+      }
       let headers = new HttpHeaders({
         'Authorization': localStorage.getItem('token')
       });
@@ -479,7 +500,7 @@ export class HomePage implements OnInit {
                       this.currentLatitude = this.rideInfo.ride.route[this.rideInfo.ride.route.length-1][0];
                       this.currentLongitude = this.rideInfo.ride.route[this.rideInfo.ride.route.length-1][1];
                       this.ridePath = this.rideInfo.ride.route;
-                      this.rideSeconds = this.pad(Math.floor((Date.now() - this.rideInfo.ride.startTime)/1000) % 60);
+                      this.rideSeconds = this.pad(Math.floor((moment().valueOf() - moment(this.rideInfo.ride.startTime).valueOf())/1000) % 60);
                       this.rideMinutes = this.pad(Math.floor(parseInt(this.rideSeconds)/60) % 60);
                       this.rideHours = Math.floor(parseInt(this.rideMinutes)/60);
                       this.rideDistance = Math.round((this.distance(this.rideInfo.ride.startPosition[0], this.rideInfo.ride.startPosition[1], this.currentLatitude, this.currentLongitude))*100)/100;
@@ -542,7 +563,7 @@ export class HomePage implements OnInit {
     alert.present();
   }
 
-  //New demo with fake data
+  //New demo with fake data NO UNLOCKING ONLY SCANNING
   async scanQR() {
     this.options = {
       prompt: "Scan a QR code!"
@@ -633,144 +654,10 @@ export class HomePage implements OnInit {
       alert.present();
     })
   }
-  /*
-  //OLD DEMO WITH FAKE DATA
-  async scanQR() {
-    console.log("QR");
-    this.options = {
-      prompt: "Scan a QR code!"
-    }
-    this.barcode.scan().then(results => {
-      this.results = results;
-      if(this.results.cancelled == false) {
-        const modal = this.modalCtrl.create(BikeProfilePage, {bikeNumber: 977500, reportBike: false, unlockBike: true});
-        modal.present();
-        modal.onDidDismiss(data => {
-          console.log(data);
-          if(data.unlock==true) {
-            let loading = this.loadingCtrl.create({
-              content: 'Unlocking Bike...'
-            });
-            loading.present();
-            localStorage.setItem('inRide', "true");
-            this.inRide=true;
-            loading.dismiss();
-            let test = 0;
-            this.ridePath = [];
-            let rideStartTime = Date.now();
-            var currentRide = setInterval(() => {
-              this.currentLatitude = this.lines[test].lat;
-              this.currentLongitude = this.lines[test].lng;
-              this.ridePath.push(this.lines[test]);
-              this.rideTime = Math.round((Date.now()-rideStartTime)/60000 * 100)/100;
-              this.rideDistance = Math.round((this.distance(this.lines[0].lat, this.lines[1].lng, this.lines[test].lat, this.lines[test].lng))*100)/100;
-              this.rideCalories = Math.round(134*Math.exp(0.0725*(this.rideDistance/this.rideTime)) * this.rideTime * 100)/100;
-              test++;
-              console.log(test);
-              if(test==20) {
-                clearInterval(currentRide);
-                localStorage.setItem('inRide', "false");
-                this.inRide=false;
-                const modal = this.modalCtrl.create(EndRidePage);
-                modal.present();
-              }
-            }, 1000);
-          }
-        });
-      }
-    })
-  }
-  */
 
-/*
-  //WORKING WITHOUT BLUETOOTH
-  async scanBarcode(){
-    this.options = {
-      prompt: "Scan a QR code!"
-    }
-    this.barcode.scan().then(results => {
-      this.results = results;
-      if(this.results.cancelled == false) {
-        const modal = this.modalCtrl.create(BikeProfilePage, {bikeNumber: this.results.text, reportBike: false, unlockBike: true});
-        modal.present();
-        modal.onDidDismiss(data => {
-          console.log(data);
-          if(data.unlock==true) {
-            let headers = new HttpHeaders({
-              'Authorization': localStorage.getItem('token')
-            });
-            let loading = this.loadingCtrl.create({
-              content: 'Unlocking Bike...'
-            });
-            loading.present();
-            this.httpClient.post(this.config.getAPILocation() + '/newRide', {bike: this.results.text}, {headers: headers}).subscribe(data => {
-              this.response = data;
-              if(this.response.success==true) {
-                loading.dismiss();
-                localStorage.setItem('inRide', "true");
-                this.inRide=true;
-                localStorage.setItem('rideID', this.response.rideID);
-                localStorage.setItem('bikeNumber', this.response.bike);
-                var currentRide = setInterval(() => {
-                  if(localStorage.getItem('inRide')=="true") {
-                    let headers = new HttpHeaders({
-                      'Content-Type': 'application/x-www-form-urlencoded',
-                      'Authorization': localStorage.getItem('token')
-                    });
-                    this.httpClient.get(this.config.getAPILocation() + '/ride/' + localStorage.getItem('rideID'), {headers: headers}).subscribe(data => {
-                      this.rideInfo = data;
-                      if (this.rideInfo.ride.inRide==false) {
-                        clearInterval(currentRide);
-                        localStorage.setItem('inRide', "false");
-                        this.inRide=false;
-                        const modal = this.modalCtrl.create(EndRidePage);
-                        modal.present();
-                      } else {
-                          this.currentLatitude = this.rideInfo.ride.route[this.rideInfo.ride.route.length-1][0];
-                          this.currentLongitude = this.rideInfo.ride.route[this.rideInfo.ride.route.length-1][1];
-                          this.ridePath = this.rideInfo.ride.route;
-                          this.rideTime = Math.round((Date.now()-this.rideInfo.ride.startTime)/60000 * 100)/100;
-                          this.rideDistance = Math.round(this.distance(this.rideInfo.ride.startPosition[0], this.rideInfo.ride.startPosition[1], this.currentLatitude, this.currentLongitude)*100)/100;
-                          this.rideCalories = Math.round(134*Math.exp(0.0725*(this.rideDistance/this.rideTime)) * this.rideTime*100)/100;
-                          console.log("still in ride");
-                      }
-                    });
-                  }
-                }, 1000);
-              } else {
-                loading.dismiss();
-                let alert = this.alertCtrl.create({
-                  title: 'Error',
-                  subTitle: 'Bike does not exist or it could not be unlock.',
-                  buttons: ['OK']
-                });
-                alert.present();
-              }
-            }, error => {
-              loading.dismiss();
-              let alert = this.alertCtrl.create({
-                title: 'Error',
-                subTitle: 'Could not connect to server.',
-                buttons: ['OK']
-              });
-              alert.present();
-            })
-          }
-        });
-      }
-    }).catch(err => {
-      let alert = this.alertCtrl.create({
-        title: 'Error',
-        subTitle: 'Scanning failed: ' + err,
-        buttons: ['OK']
-      });
-      alert.present();
-    })
-  }
-*/
-
-  //WITHOUT HAVING TO SCAN
+  //DEMO WITHOUT HAVING TO SCAN
   async test() {
+    console.log("TEST()");
     let headers = new HttpHeaders({
       'Authorization': localStorage.getItem('token')
     });
@@ -798,6 +685,8 @@ export class HomePage implements OnInit {
             var currentRide = setInterval(() => {
               this.currentLatitude = this.lines[test][0];
               this.currentLongitude = this.lines[test][1];
+              this.latitude = this.currentLatitude;
+              this.longitude = this.currentLongitude;
               this.ridePath.push(this.lines[test]);
               this.rideSeconds = this.pad(Math.floor((Date.now() - rideStartTime)/1000) % 60);
               this.rideMinutes = this.pad(Math.floor(parseInt(this.rideSeconds)/60) % 60);
@@ -817,7 +706,7 @@ export class HomePage implements OnInit {
                 clearInterval(currentRide);
                 localStorage.setItem('inRide', "false");
                 this.inRide=false;
-                const modal = this.modalCtrl.create(EndRidePage, {bikeType: this.bikeType, rideSeconds: this.rideSeconds, rideMinutes: this.rideMinutes, rideHours: this.rideHours, rideDistance: this.rideDistance, rideDistanceDecimal: this.rideDistanceDecimal, ridePath: this.ridePath});
+                const modal = this.modalCtrl.create(EndRidePage, {demo: true, bikeType: this.bikeType, rideSeconds: this.rideSeconds, rideMinutes: this.rideMinutes, rideHours: this.rideHours, rideDistance: this.rideDistance, rideDistanceDecimal: this.rideDistanceDecimal, ridePath: this.ridePath});
                 this.rideSeconds = '00';
                 this.rideMinutes = '00';
                 this.rideHours = 0;
@@ -845,4 +734,246 @@ export class HomePage implements OnInit {
       alert.present();
     });
   }
+
+  //CREATE ACTUAL NEW RIDE TEST
+  async testBLE() {
+    let headers = new HttpHeaders({
+      'Authorization': localStorage.getItem('token')
+    });
+    this.httpClient.get(this.config.getAPILocation() + '/bike/600521', {headers: headers}).subscribe(data => {
+      this.bikeResponse = data;
+      if(this.bikeResponse.success==true) {
+        this.bikeType = this.bikeResponse.bike.type;
+        const modal = this.modalCtrl.create(SafetyPage, {showBackdrop: true, enableBackdropDismiss: true});
+        modal.present();
+        modal.onDidDismiss(data => {
+          if(data.unlock==true) {
+            let loading = this.loadingCtrl.create({
+              content: 'Unlocking Bike...'
+            });
+            loading.present();
+            this.httpClient.post(this.config.getAPILocation() + '/newBLERide', {bike: '600521'}, {headers: headers}).timeout(10000).subscribe(data => {
+              this.response = data;
+              if(this.response.success==true) {
+                localStorage.setItem('inRide', "true");
+                this.inRide=true;
+                this.bikePreviewClass = "hide";
+                this.bikeProfileArrow = "assets/arrow-down.png";
+                this.bikeProfileClass = "slideUp";
+                localStorage.setItem('rideID', this.response.rideID);
+                localStorage.setItem('bikeNumber', this.response.bike);
+                loading.dismiss();
+                var currentRide = setInterval(() => {
+                  if(localStorage.getItem('inRide')=="true") {
+                    let headers = new HttpHeaders({
+                      'Content-Type': 'application/x-www-form-urlencoded',
+                      'Authorization': localStorage.getItem('token')
+                    });
+                    this.httpClient.get(this.config.getAPILocation() + '/ride/' + localStorage.getItem('rideID'), {headers: headers}).subscribe(data => {
+                      this.rideInfo = data;
+                      if (this.rideInfo.ride.inRide==false) {
+                        clearInterval(currentRide);
+                        localStorage.setItem('inRide', "false");
+                        this.inRide=false;
+                        const modal = this.modalCtrl.create(EndRidePage, {bikeType: this.bikeType, rideSeconds: this.rideSeconds, rideMinutes: this.rideMinutes, rideHours: this.rideHours, rideDistance: this.rideDistance, rideDistanceDecimal: this.rideDistanceDecimal, ridePath: this.ridePath});
+                        this.rideSeconds = '00';
+                        this.rideMinutes = '00';
+                        this.rideHours = 0;
+                        this.rideDistance = 0;
+                        this.rideDistanceDecimal = '00';
+                        modal.present();
+                      } else {
+                          this.currentLatitude = this.rideInfo.ride.route[this.rideInfo.ride.route.length-1][0];
+                          this.currentLongitude = this.rideInfo.ride.route[this.rideInfo.ride.route.length-1][1];
+                          this.ridePath = this.rideInfo.ride.route;
+                          this.rideSeconds = this.pad(Math.floor((moment().valueOf() - moment(this.rideInfo.ride.startTime).valueOf())/1000) % 60);
+                          this.rideMinutes = this.pad(Math.floor(parseInt(this.rideSeconds)/60) % 60);
+                          this.rideHours = Math.floor(parseInt(this.rideMinutes)/60);
+                          this.rideDistance = Math.round((this.distance(this.rideInfo.ride.startPosition[0], this.rideInfo.ride.startPosition[1], this.currentLatitude, this.currentLongitude))*100)/100;
+                          this.rideDistanceDecimal = (this.rideDistance.toString().split(".")[1]);
+                          if(this.rideDistanceDecimal) {
+                            if(this.rideDistanceDecimal.length == 1) {
+                              this.rideDistanceDecimal += "0";
+                            }
+                          } else {
+                            this.rideDistanceDecimal = "00";
+                          }
+                          this.rideDistance = Math.floor(this.rideDistance);
+                      }
+                    });
+                  }
+                }, 1000);
+              } else {
+                loading.dismiss();
+                let alert = this.alertCtrl.create({
+                  title: 'Error',
+                  subTitle: 'Bike does not exist or it could not be unlock.',
+                  buttons: ['OK']
+                });
+                alert.present();
+              }
+            }, error => {
+              loading.dismiss();
+              let alert = this.alertCtrl.create({
+                title: 'Error',
+                subTitle: 'Could not connect to server.',
+                buttons: ['OK']
+              });
+              alert.present();
+            })
+          }
+        })
+      }
+    })
+  }
+
+  async demo() {
+    this.diagnostic.getBluetoothState().then((state) => {
+      if (state == this.diagnostic.bluetoothState.POWERED_ON){
+        this.options = {
+          prompt: "Scan a QR code!"
+        }
+        this.devices = [];
+        this.ble.startScan([]).subscribe(
+          device => this.onDeviceDiscovered(device),
+          error => this.scanError(error)
+        );
+        this.barcode.scan().then(results => {
+          this.results = results;
+          if(this.results.cancelled == false) {
+            let headers = new HttpHeaders({
+              'Authorization': localStorage.getItem('token')
+            });
+            this.httpClient.get(this.config.getAPILocation() + '/bike/' + this.results.text, {headers: headers}).subscribe(data => {
+              this.bikeResponse = data;
+              if(this.bikeResponse.success==true) {
+                this.bikeType = this.bikeResponse.bike.type;
+                const modal = this.modalCtrl.create(SafetyPage, {showBackdrop: true, enableBackdropDismiss: true});
+                modal.present();
+                this.httpClient.get(this.config.getAPILocation() + '/bleMAC/' + 977500, {headers: headers}).subscribe(data => {
+                  this.response = data;
+                  if(this.response.success==true) {
+                    this.bleMAC = this.response.bleMAC;
+                    this.ble.stopScan();
+                    modal.onDidDismiss(data => {
+                      if(data.unlock==true) {
+                        let loading = this.loadingCtrl.create({
+                          content: 'Unlocking Bike...'
+                        });
+                        loading.present();
+                        this.ble.connect(this.bleMAC).subscribe(
+                          peripheral => this.connectedDemo(peripheral, loading),
+                          peripheral => this.onDeviceDiscovered(peripheral)
+                        );
+                      }
+                    });
+                  }
+                })
+              }
+            })
+          }
+        }).catch(err => {
+          let alert = this.alertCtrl.create({
+            title: 'Error',
+            subTitle: 'Scanning failed: ' + err,
+            buttons: ['OK']
+          });
+          alert.present();
+        })
+      } else {
+        let confirm = this.alertCtrl.create({
+          title: '<b>Bluetooth</b>',
+          message: 'Bluetooth is required for this application. Please enable bluetooth.',
+          buttons: ['OK']
+        });
+        confirm.present();
+      }
+    }, error => {
+      console.log("no bluetooth");
+    })
+  }
+
+  connectedDemo(peripheral, loading) {
+    this.peripheral = peripheral;
+    let buffer = this.stringToArrayBuffer("davidchang");
+    this.ble.write(this.peripheral.id, '6E400001-B5A3-F393-E0A9-E50E24DCCA9E', '6E400002-B5A3-F393-E0A9-E50E24DCCA9E', buffer).then(
+      () => {
+        let headers = new HttpHeaders({
+          'Authorization': localStorage.getItem('token')
+        });
+        this.httpClient.post(this.config.getAPILocation() + '/newBLERide', {bike: this.results.text}, {headers: headers}).timeout(10000).subscribe(data => {
+          this.response = data;
+          if(this.response.success==true) {
+            localStorage.setItem('inRide', "true");
+            this.inRide=true;
+            this.bikePreviewClass = "hide";
+            this.bikeProfileArrow = "assets/arrow-down.png";
+            this.bikeProfileClass = "slideUp";
+            loading.dismiss();
+            let test = 0;
+            this.ridePath = [];
+            let rideStartTime = Date.now();
+            var currentRide = setInterval(() => {
+              this.currentLatitude = this.lines[test][0];
+              this.currentLongitude = this.lines[test][1];
+              this.latitude = this.currentLatitude;
+              this.longitude = this.currentLongitude;
+              this.ridePath.push(this.lines[test]);
+              this.rideSeconds = this.pad(Math.floor((Date.now() - rideStartTime)/1000) % 60);
+              this.rideMinutes = this.pad(Math.floor(parseInt(this.rideSeconds)/60) % 60);
+              this.rideHours = Math.floor(parseInt(this.rideMinutes)/60);
+              this.rideDistance = Math.round((this.distance(this.lines[0][0], this.lines[0][1], this.lines[test][0], this.lines[test][1]))*100)/100;
+              this.rideDistanceDecimal = (this.rideDistance.toString().split(".")[1]);
+              if(this.rideDistanceDecimal) {
+                if(this.rideDistanceDecimal.length == 1) {
+                  this.rideDistanceDecimal += "0";
+                }
+              } else {
+                this.rideDistanceDecimal = "00";
+              }
+              this.rideDistance = Math.floor(this.rideDistance);
+              test++;
+              if(test==20) {
+                clearInterval(currentRide);
+                localStorage.setItem('inRide', "false");
+                this.inRide=false;
+                const modal = this.modalCtrl.create(EndRidePage, {demo: true, bikeType: this.bikeType, rideSeconds: this.rideSeconds, rideMinutes: this.rideMinutes, rideHours: this.rideHours, rideDistance: this.rideDistance, rideDistanceDecimal: this.rideDistanceDecimal, ridePath: this.ridePath});
+                this.rideSeconds = '00';
+                this.rideMinutes = '00';
+                this.rideHours = 0;
+                this.rideDistance = 0;
+                this.rideDistanceDecimal = '00';
+                modal.present();
+              }
+            }, 1000);
+          } else {
+            loading.dismiss();
+            let alert = this.alertCtrl.create({
+              title: 'Error',
+              subTitle: 'Bike does not exist or it could not be unlock.',
+              buttons: ['OK']
+            });
+            alert.present();
+          }
+        }, error => {
+          loading.dismiss();
+          let alert = this.alertCtrl.create({
+            title: 'Error',
+            subTitle: 'Could not connect to server.',
+            buttons: ['OK']
+          });
+          alert.present();
+        })
+      },
+      e => {
+        let alert = this.alertCtrl.create({
+          title: 'ERROR',
+          message: 'Couldnt write ' + e,
+          buttons: ['OK']
+        });
+        alert.present();
+      }
+    );
+  }
+
 }

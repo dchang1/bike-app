@@ -25,7 +25,7 @@
     <div style="text-align: center;background-color: white">
       <span class="inRide-stat userStat" style="height: 44px;"><span [ngClass]="bikeProfile.size=='S' ? 'white' : 'grey'">S</span><span class="grey">/</span><span [ngClass]="bikeProfile.size=='M' ? 'white' : 'grey'">M</span><span class="grey">/</span><span [ngClass]="bikeProfile.size=='L' ? 'white' : 'grey'">L</span></span>
       <span class="inRide-stat userStat"><span class="big" *ngIf="bikeProfile.rides">{{bikeProfile.rides.length}}</span> rides</span>
-      <span class="inRide-stat userStat"><span class="big">{{bikeProfile.rating}}</span> <ion-icon name="star" style="font-size: 25px; padding: 0px;"></ion-icon></span>
+      <span class="inRide-stat userStat" *ngIf="bikeProfile.rating"><span class="big">{{bikeProfile.rating}}</span> <ion-icon name="star" style="font-size: 25px; padding: 0px;"></ion-icon></span>
     </div>
     <!--
     <div class="right">
@@ -169,6 +169,7 @@
         <button ion-item (click)="share()">Donate a bike</button>
         <button ion-item (click)="report()">Report a bike</button>
         <button ion-item (click)="logout()">Logout</button>
+        <button ion-item (click)="demo()">DEMO</button>
         <!--
         <button ion-item (click)="test()">DEMO</button>
         <button ion-item (click)="reset()">Reset</button>

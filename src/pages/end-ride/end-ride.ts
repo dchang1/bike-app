@@ -29,6 +29,7 @@ export class EndRidePage {
   public rideCost = '0.00';
   public rideDistanceDecimal = '00';
   public bikeType;
+  public demo;
 
   constructor(private alertCtrl: AlertController, private httpClient: HttpClient, private config: ConfigService, public viewCtrl: ViewController, public params: NavParams) {
     this.rideSeconds = params.get('rideSeconds');
@@ -40,6 +41,7 @@ export class EndRidePage {
     this.bikeType = params.get('bikeType');
     this.currentLatitude = this.ridePath[this.ridePath.length-1][0];
     this.currentLongitude = this.ridePath[this.ridePath.length-1][1];
+    this.demo = params.get('demo');
   }
   public dismiss() {
     this.viewCtrl.dismiss();
@@ -80,39 +82,43 @@ export class EndRidePage {
     this.five = true;
   }
   public done() {
-    let rating = 0;
-    if(this.five) {
-      rating = 5;
-    } else if(this.four) {
-      rating = 4;
-    } else if(this.three) {
-      rating = 3;
-    } else if(this.two) {
-      rating = 2;
-    } else if(this.one) {
-      rating = 1;
-    }
-    let headers = new HttpHeaders({
-      'Content-Type': 'application/x-www-form-urlencoded',
-      'Authorization': localStorage.getItem('token')
-    });
-    this.httpClient.post(this.config.getAPILocation() + '/rating', {ride: localStorage.getItem('rideID'), rating: rating, comment: this.comment}, {headers: headers}).subscribe(data => {
-      this.response = data;
+    if(this.demo) {
+      console.log("DEMO");
       this.viewCtrl.dismiss();
-      if(this.response.success==true) {
-        this.viewCtrl.dismiss();
-        console.log("rating");
-      } else {
-        console.log("error");
+    } else {
+      let rating = 0;
+      if(this.five) {
+        rating = 5;
+      } else if(this.four) {
+        rating = 4;
+      } else if(this.three) {
+        rating = 3;
+      } else if(this.two) {
+        rating = 2;
+      } else if(this.one) {
+        rating = 1;
       }
-    }, error => {
-      this.viewCtrl.dismiss();
-      let alert = this.alertCtrl.create({
-        title: 'Error',
-        subTitle: 'Could not connect to server.',
-        buttons: ['OK']
+      let headers = new HttpHeaders({
+        'Content-Type': 'application/json',
+        'Authorization': localStorage.getItem('token')
       });
-      alert.present();
-    })
+      this.httpClient.post(this.config.getAPILocation() + '/rating', {"ride": localStorage.getItem('rideID'), "rating": rating, "comment": this.comment}, {headers: headers}).subscribe(data => {
+        this.response = data;
+        this.viewCtrl.dismiss();
+        if(this.response.success==true) {
+          console.log("rating");
+        } else {
+          console.log("error");
+        }
+      }, error => {
+        this.viewCtrl.dismiss();
+        let alert = this.alertCtrl.create({
+          title: 'Error',
+          subTitle: 'Could not connect to server.',
+          buttons: ['OK']
+        });
+        alert.present();
+      })
+    }
   }
 }
