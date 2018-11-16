@@ -77,11 +77,8 @@
             <p class="bikeProfileStat-stat">{{bikeProfile.rideHours}}:{{bikeProfile.rideMinutes}}</p>
           </div>
         </ion-item>
-        <!--
-        <ion-item class="bikeProfileStat" style="margin-top: -10px;">
-          <input type="button" class="rounded button" style="padding:0px" value="Report this Bike" (click)="report()">
-        </ion-item>-->
       </div>
+      <br>
       <img src="{{bikeProfileArrow}}" class="arrow" (click)="showBikeProfile()">
     </div>
   </ion-card>
@@ -123,7 +120,7 @@
 
   <ion-card [hidden]="!inRide" style="z-index: 1; position: absolute; bottom: 0">
     <ion-card-header class="bikeName">
-      Hunter's Bike
+      {{bikeType}} Bike
     </ion-card-header>
     <ion-card-content class="inRide-stats">
       <ion-item class="inRide-stats">

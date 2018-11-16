@@ -476,6 +476,8 @@ export class HomePage implements OnInit {
             this.bikeProfileClass = "slideUp";
             localStorage.setItem('rideID', this.response.rideID);
             localStorage.setItem('bikeNumber', this.response.bike);
+            this.currentLatitude = this.latitude;
+            this.currentLongitude = this.longitude;
             loading.dismiss();
             var currentRide = setInterval(() => {
               if(localStorage.getItem('inRide')=="true") {
