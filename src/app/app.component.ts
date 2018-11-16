@@ -24,7 +24,7 @@ export class MyApp {
       // Here you can do any higher level native things you might need.
       statusBar.styleDefault();
       splashScreen.hide();
-      //this.screenOrientation.lock(this.screenOrientation.ORIENTATIONS.PORTRAIT);
+      this.screenOrientation.lock(this.screenOrientation.ORIENTATIONS.PORTRAIT);
     });
     let headers = new HttpHeaders({
       'Authorization': localStorage.getItem('token')
@@ -33,7 +33,7 @@ export class MyApp {
       if(data) {
         this.response = data;
         if(this.response.verified) {
-/*
+
           this.diagnostic.isLocationEnabled().then(state => {
             if (!state) {
               let confirm = this.alertCtrl.create({
@@ -55,7 +55,7 @@ export class MyApp {
               confirm.present();
             }
           })
-*/
+
           this.rootPage = HomePage;
         } else {
           this.rootPage = LandingPage;
