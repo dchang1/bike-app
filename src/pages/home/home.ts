@@ -415,7 +415,7 @@ export class HomePage implements OnInit {
                 this.bikeType = this.bikeResponse.bike.type;
                 const modal = this.modalCtrl.create(SafetyPage, {showBackdrop: true, enableBackdropDismiss: true});
                 modal.present();
-                this.httpClient.get(this.config.getAPILocation() + '/bleMAC/' + 977500, {headers: headers}).subscribe(data => {
+                this.httpClient.get(this.config.getAPILocation() + '/bleMAC/' + this.results.text, {headers: headers}).subscribe(data => {
                   this.response = data;
                   if(this.response.success==true) {
                     this.bleMAC = this.response.bleMAC;
@@ -502,9 +502,13 @@ export class HomePage implements OnInit {
                       this.currentLatitude = this.rideInfo.ride.route[this.rideInfo.ride.route.length-1][0];
                       this.currentLongitude = this.rideInfo.ride.route[this.rideInfo.ride.route.length-1][1];
                       this.ridePath = this.rideInfo.ride.route;
-                      this.rideSeconds = this.pad(Math.floor((moment().valueOf() - moment(this.rideInfo.ride.startTime).valueOf())/1000) % 60);
-                      this.rideMinutes = this.pad(Math.floor(parseInt(this.rideSeconds)/60) % 60);
-                      this.rideHours = Math.floor(parseInt(this.rideMinutes)/60);
+                      let timePassed = Math.floor((moment().valueOf() - moment(this.rideInfo.ride.startTime).valueOf())/1000);
+                      if(timePassed < 0) {
+                        timePassed = 0;
+                      }
+                      this.rideSeconds = this.pad(timePassed % 60);
+                      this.rideMinutes = this.pad(Math.floor(timePassed/60) % 60);
+                      this.rideHours = Math.floor(timePassed/3600);
                       this.rideDistance = Math.round((this.distance(this.rideInfo.ride.startPosition[0], this.rideInfo.ride.startPosition[1], this.currentLatitude, this.currentLongitude))*100)/100;
                       this.rideDistanceDecimal = (this.rideDistance.toString().split(".")[1]);
                       if(this.rideDistanceDecimal) {
@@ -788,9 +792,13 @@ export class HomePage implements OnInit {
                           this.currentLatitude = this.rideInfo.ride.route[this.rideInfo.ride.route.length-1][0];
                           this.currentLongitude = this.rideInfo.ride.route[this.rideInfo.ride.route.length-1][1];
                           this.ridePath = this.rideInfo.ride.route;
-                          this.rideSeconds = this.pad(Math.floor((moment().valueOf() - moment(this.rideInfo.ride.startTime).valueOf())/1000) % 60);
-                          this.rideMinutes = this.pad(Math.floor(parseInt(this.rideSeconds)/60) % 60);
-                          this.rideHours = Math.floor(parseInt(this.rideMinutes)/60);
+                          let timePassed = Math.floor((moment().valueOf() - moment(this.rideInfo.ride.startTime).valueOf())/1000);
+                          if(timePassed < 0) {
+                            timePassed = 0;
+                          }
+                          this.rideSeconds = this.pad(timePassed % 60);
+                          this.rideMinutes = this.pad(Math.floor(timePassed/60) % 60);
+                          this.rideHours = Math.floor(timePassed/3600);
                           this.rideDistance = Math.round((this.distance(this.rideInfo.ride.startPosition[0], this.rideInfo.ride.startPosition[1], this.currentLatitude, this.currentLongitude))*100)/100;
                           this.rideDistanceDecimal = (this.rideDistance.toString().split(".")[1]);
                           if(this.rideDistanceDecimal) {
