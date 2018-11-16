@@ -130,7 +130,7 @@ export class HomePage implements OnInit {
               clearInterval(currentRide);
               localStorage.setItem('inRide', "false");
               this.inRide=false;
-              const modal = this.modalCtrl.create(EndRidePage, {bikeType: this.bikeType, rideSeconds: this.rideSeconds, rideMinutes: this.rideMinutes, rideHours: this.rideHours, rideDistance: this.rideDistance, rideDistanceDecimal: this.rideDistanceDecimal, ridePath: this.ridePath});
+              const modal = this.modalCtrl.create(EndRidePage, {currentLatitude: this.currentLatitude, currentLongitude: this.currentLongitude, bikeType: this.bikeType, rideSeconds: this.rideSeconds, rideMinutes: this.rideMinutes, rideHours: this.rideHours, rideDistance: this.rideDistance, rideDistanceDecimal: this.rideDistanceDecimal, ridePath: this.ridePath});
               this.rideSeconds = '00';
               this.rideMinutes = '00';
               this.rideHours = 0;
@@ -495,7 +495,7 @@ export class HomePage implements OnInit {
                     clearInterval(currentRide);
                     localStorage.setItem('inRide', "false");
                     this.inRide=false;
-                    const modal = this.modalCtrl.create(EndRidePage, {bikeType: this.bikeType, rideSeconds: this.rideSeconds, rideMinutes: this.rideMinutes, rideHours: this.rideHours, rideDistance: this.rideDistance, rideDistanceDecimal: this.rideDistanceDecimal, ridePath: this.ridePath});
+                    const modal = this.modalCtrl.create(EndRidePage, {currentLatitude: this.currentLatitude, currentLongitude: this.currentLongitude, bikeType: this.bikeType, rideSeconds: this.rideSeconds, rideMinutes: this.rideMinutes, rideHours: this.rideHours, rideDistance: this.rideDistance, rideDistanceDecimal: this.rideDistanceDecimal, ridePath: this.ridePath});
                     this.rideSeconds = '00';
                     this.rideMinutes = '00';
                     this.rideHours = 0;
@@ -627,7 +627,7 @@ export class HomePage implements OnInit {
                     clearInterval(currentRide);
                     localStorage.setItem('inRide', "false");
                     this.inRide=false;
-                    const modal = this.modalCtrl.create(EndRidePage, {bikeType: this.bikeType, rideSeconds: this.rideSeconds, rideMinutes: this.rideMinutes, rideHours: this.rideHours, rideDistance: this.rideDistance, rideDistanceDecimal: this.rideDistanceDecimal, ridePath: this.ridePath});
+                    const modal = this.modalCtrl.create(EndRidePage, {currentLatitude: this.currentLatitude, currentLongitude: this.currentLongitude, bikeType: this.bikeType, rideSeconds: this.rideSeconds, rideMinutes: this.rideMinutes, rideHours: this.rideHours, rideDistance: this.rideDistance, rideDistanceDecimal: this.rideDistanceDecimal, ridePath: this.ridePath});
                     this.rideSeconds = '00';
                     this.rideMinutes = '00';
                     this.rideHours = 0;
@@ -716,7 +716,7 @@ export class HomePage implements OnInit {
                 clearInterval(currentRide);
                 localStorage.setItem('inRide', "false");
                 this.inRide=false;
-                const modal = this.modalCtrl.create(EndRidePage, {demo: true, bikeType: this.bikeType, rideSeconds: this.rideSeconds, rideMinutes: this.rideMinutes, rideHours: this.rideHours, rideDistance: this.rideDistance, rideDistanceDecimal: this.rideDistanceDecimal, ridePath: this.ridePath});
+                const modal = this.modalCtrl.create(EndRidePage, {demo: true, currentLatitude: this.currentLatitude, currentLongitude: this.currentLongitude, bikeType: this.bikeType, rideSeconds: this.rideSeconds, rideMinutes: this.rideMinutes, rideHours: this.rideHours, rideDistance: this.rideDistance, rideDistanceDecimal: this.rideDistanceDecimal, ridePath: this.ridePath});
                 this.rideSeconds = '00';
                 this.rideMinutes = '00';
                 this.rideHours = 0;
@@ -785,7 +785,7 @@ export class HomePage implements OnInit {
                         clearInterval(currentRide);
                         localStorage.setItem('inRide', "false");
                         this.inRide=false;
-                        const modal = this.modalCtrl.create(EndRidePage, {bikeType: this.bikeType, rideSeconds: this.rideSeconds, rideMinutes: this.rideMinutes, rideHours: this.rideHours, rideDistance: this.rideDistance, rideDistanceDecimal: this.rideDistanceDecimal, ridePath: this.ridePath});
+                        const modal = this.modalCtrl.create(EndRidePage, {currentLatitude: this.currentLatitude, currentLongitude: this.currentLongitude, bikeType: this.bikeType, rideSeconds: this.rideSeconds, rideMinutes: this.rideMinutes, rideHours: this.rideHours, rideDistance: this.rideDistance, rideDistanceDecimal: this.rideDistanceDecimal, ridePath: this.ridePath});
                         this.rideSeconds = '00';
                         this.rideMinutes = '00';
                         this.rideHours = 0;
@@ -864,7 +864,7 @@ export class HomePage implements OnInit {
                 this.bikeType = this.bikeResponse.bike.type;
                 const modal = this.modalCtrl.create(SafetyPage, {showBackdrop: true, enableBackdropDismiss: true});
                 modal.present();
-                this.httpClient.get(this.config.getAPILocation() + '/bleMAC/' + 977500, {headers: headers}).subscribe(data => {
+                this.httpClient.get(this.config.getAPILocation() + '/bleMAC/' + this.results.text, {headers: headers}).subscribe(data => {
                   this.response = data;
                   if(this.response.success==true) {
                     this.bleMAC = this.response.bleMAC;
@@ -951,7 +951,7 @@ export class HomePage implements OnInit {
                 clearInterval(currentRide);
                 localStorage.setItem('inRide', "false");
                 this.inRide=false;
-                const modal = this.modalCtrl.create(EndRidePage, {demo: true, bikeType: this.bikeType, rideSeconds: this.rideSeconds, rideMinutes: this.rideMinutes, rideHours: this.rideHours, rideDistance: this.rideDistance, rideDistanceDecimal: this.rideDistanceDecimal, ridePath: this.ridePath});
+                const modal = this.modalCtrl.create(EndRidePage, {demo: true, currentLatitude: this.currentLatitude, currentLongitude: this.currentLongitude, bikeType: this.bikeType, rideSeconds: this.rideSeconds, rideMinutes: this.rideMinutes, rideHours: this.rideHours, rideDistance: this.rideDistance, rideDistanceDecimal: this.rideDistanceDecimal, ridePath: this.ridePath});
                 this.rideSeconds = '00';
                 this.rideMinutes = '00';
                 this.rideHours = 0;
