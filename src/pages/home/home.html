@@ -98,14 +98,18 @@
 <!--
     <agm-marker [visible]="!inRide" [zIndex]="3" [latitude]="39.905022" [longitude]="-75.354034" [iconUrl]="'assets/location.png'"></agm-marker>
 -->
-    <agm-marker [zIndex]="3" [latitude]="latitude" [longitude]="longitude" [iconUrl]="currentLocationPic">
-      <agm-circle [latitude]="latitude" [longitude]="longitude" [radius]="50" [fillColor]="locationColor" [fillOpacity]="0.3" [strokeWeight]="0"></agm-circle>
+    <agm-marker [visible]="!inRide" [zIndex]="3" [latitude]="latitude" [longitude]="longitude" [iconUrl]="currentLocationPic">
+      <agm-circle [visible]="!inRide" [latitude]="latitude" [longitude]="longitude" [radius]="50" [fillColor]="locationColor" [fillOpacity]="0.3" [strokeWeight]="0"></agm-circle>
     </agm-marker>
 
     <agm-marker [visible]="!inRide" *ngFor="let bike of bikes" [zIndex]="2" [latitude]="bike.currentPosition[0]" [longitude]="bike.currentPosition[1]" [iconUrl]="'assets/bike-icon.png'" (markerClick)="openBikePreview(bike.number)"></agm-marker>
 
     <agm-marker *ngFor="let hub of hubs" [zIndex]="1" [latitude]="hub.location[0]" [longitude]="hub.location[1]" [iconUrl]="'assets/hub-icon.png'">
       <agm-circle [latitude]="hub.location[0]" [longitude]="hub.location[1]" [radius]="hub.radius*1000" [fillColor]="color" [fillOpacity]="0.3" [strokeWeight]="0"></agm-circle>
+    </agm-marker>
+
+    <agm-marker [visible]="inRide" [zIndex]="3" [latitude]="currentLatitude" [longitude]="currentLongitude" [iconUrl]="'assets/location2.png'">
+      <agm-circle [visible]="inRide" [latitude]="currentLatitude" [longitude]="currentLongitude" [radius]="50" [fillColor]="locationColor" [fillOpacity]="0.3" [strokeWeight]="0"></agm-circle>
     </agm-marker>
 
     <agm-polyline [visible]="inRide" [clickable]="false" [geodesic]="true" [strokeColor]="'#EE4469'">
