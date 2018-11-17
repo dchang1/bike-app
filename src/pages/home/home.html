@@ -92,7 +92,7 @@
 <!--
   <agm-map (mapReady)="mapReady($event)" [latitude]="39.905022" [longitude]="-75.354034" [zoom]="16" [streetViewControl]="false" [clickableIcons]="false" (mapClick)="closeBikePreview()" #gm>
 -->
-  <agm-map (mapReady)="mapReady($event)" [latitude]="mapLatitude" [longitude]="mapLongitude" [zoom]="16" [streetViewControl]="false" [clickableIcons]="false" (mapClick)="closeBikePreview()" #gm>
+  <agm-map (mapReady)="mapReady($event)" [latitude]="mapLatitude" [longitude]="mapLongitude" [zoom]="16" [streetViewControl]="false" [clickableIcons]="false" (mapClick)="closeBikePreview()">
 
     <agm-polygon *ngIf="paths" [paths]="paths" [fillOpacity]="0.2" [clickable]="false" [strokeWeight]="0"></agm-polygon>
 <!--

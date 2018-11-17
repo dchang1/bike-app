@@ -448,8 +448,8 @@ export class HomePage implements OnInit {
         this.httpClient.post(this.config.getAPILocation() + '/newBLERide', {bike: this.results.text}, {headers: headers}).timeout(10000).subscribe(data => {
           this.response = data;
           if(this.response.success==true) {
-            this.currentLocationPic = 'assets/location.png';
-            this.locationColor = "#31b2f7";
+            this.currentLocationPic = 'assets/location2.png';
+            this.locationColor = "#EE4469";
             localStorage.setItem('inRide', "true");
             this.inRide=true;
             this.bikePreviewClass = "hide";
@@ -460,6 +460,16 @@ export class HomePage implements OnInit {
             this.currentLatitude = this.latitude;
             this.currentLongitude = this.longitude;
             loading.dismiss();
+            let rideStartTime = Date.now();
+            var currentTime = setInterval(() => {
+              let timePassed = Math.floor((moment().valueOf() - moment(rideStartTime).valueOf())/1000);
+              if(timePassed < 0) {
+                timePassed = 0;
+              }
+              this.rideSeconds = this.pad(timePassed % 60);
+              this.rideMinutes = this.pad(Math.floor(timePassed/60) % 60);
+              this.rideHours = Math.floor(timePassed/3600);
+            }, 1000);
             var currentRide = setInterval(() => {
               if(localStorage.getItem('inRide')=="true") {
                 let headers = new HttpHeaders({
@@ -470,10 +480,11 @@ export class HomePage implements OnInit {
                   this.rideInfo = data;
                   if (this.rideInfo.ride.inRide==false) {
                     clearInterval(currentRide);
+                    clearInterval(currentTime);
                     localStorage.setItem('inRide', "false");
                     this.inRide=false;
-                    this.currentLocationPic = 'assets/location2.png';
-                    this.locationColor = "#EE4469";
+                    this.currentLocationPic = 'assets/location.png';
+                    this.locationColor = "#31b2f7";
                     const modal = this.modalCtrl.create(EndRidePage, {currentLatitude: this.currentLatitude, currentLongitude: this.currentLongitude, bikeType: this.bikeType, rideSeconds: this.rideSeconds, rideMinutes: this.rideMinutes, rideHours: this.rideHours, rideDistance: this.rideDistance, rideDistanceDecimal: this.rideDistanceDecimal, ridePath: this.ridePath});
                     this.rideSeconds = '00';
                     this.rideMinutes = '00';
@@ -485,6 +496,7 @@ export class HomePage implements OnInit {
                       this.currentLatitude = this.rideInfo.ride.route[this.rideInfo.ride.route.length-1][0];
                       this.currentLongitude = this.rideInfo.ride.route[this.rideInfo.ride.route.length-1][1];
                       this.ridePath = this.rideInfo.ride.route;
+                      /*
                       let timePassed = Math.floor((moment().valueOf() - moment(this.rideInfo.ride.startTime).valueOf())/1000);
                       if(timePassed < 0) {
                         timePassed = 0;
@@ -492,6 +504,7 @@ export class HomePage implements OnInit {
                       this.rideSeconds = this.pad(timePassed % 60);
                       this.rideMinutes = this.pad(Math.floor(timePassed/60) % 60);
                       this.rideHours = Math.floor(timePassed/3600);
+                      */
                       this.rideDistance = Math.round((this.distance(this.rideInfo.ride.startPosition[0], this.rideInfo.ride.startPosition[1], this.currentLatitude, this.currentLongitude))*100)/100;
                       this.rideDistanceDecimal = (this.rideDistance.toString().split(".")[1]);
                       if(this.rideDistanceDecimal) {
@@ -505,7 +518,7 @@ export class HomePage implements OnInit {
                   }
                 });
               }
-            }, 1000);
+            }, 5000);
           } else {
             loading.dismiss();
             let alert = this.alertCtrl.create({
