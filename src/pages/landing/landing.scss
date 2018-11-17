@@ -1,12 +1,11 @@
 page-landing {
   .logo {
-    display: absolute;
     width: 100%;
     z-index:-1;
   }
   .container {
     width:200%;
-    position: fixed;
+    position: absolute;
     top: 45%;
     left: 50%;
     -webkit-transform: translate(-50%, -50%);
@@ -14,7 +13,7 @@ page-landing {
   }
   .text-logo {
     width: 90%;
-    position: fixed;
+    position: absolute;
     top: 90%;
     left: 50%;
     -webkit-transform: translate(-50%, -50%);

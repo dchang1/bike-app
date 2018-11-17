@@ -27,6 +27,8 @@ import moment from 'moment';
 export class HomePage implements OnInit {
   public latitude: any;
   public longitude: any;
+  public mapLatitude: any;
+  public mapLongitude: any;
   public rideInfo: any = {};
   public response: any = {};
   public bikeData: any = {};
@@ -68,6 +70,8 @@ export class HomePage implements OnInit {
   public unregisterBackButtonAction: any;
   public world;
   public color;
+  public locationColor;
+  public currentLocationPic = 'assets/location.png'
   public bikePreviewClass;
   public bikeProfileClass;
   public bikeProfileArrow = 'assets/arrow-down.png';
@@ -98,11 +102,13 @@ export class HomePage implements OnInit {
     this.totalRideMinutes = localStorage.getItem("totalRideMinutes");
     this.totalRideDistance = localStorage.getItem("totalRideDistance");
     this.totalRideDistanceDecimal = localStorage.getItem("totalRideDistanceDecimal");
-    this.bikeScore = 1;
+    this.mapLatitude = Number(localStorage.getItem('latitude'));
+    this.mapLongitude = Number(localStorage.getItem('longitude'));
     this.latitude = Number(localStorage.getItem('latitude'));
     this.longitude = Number(localStorage.getItem('longitude'));
     this.geofence = JSON.parse(localStorage.getItem('geofence'));
     this.color = "#31b2f7";
+    this.locationColor = "#31b2f7";
     this.bikePreviewClass = "hide";
     let headers1 = new HttpHeaders({
       'Content-Type': 'application/x-www-form-urlencoded',
@@ -138,6 +144,8 @@ export class HomePage implements OnInit {
               this.rideDistanceDecimal = '00';
               modal.present();
             } else {
+                this.currentLocationPic = 'assets/location2.png';
+                this.locationColor = "#EE4469";
                 this.currentLatitude = this.rideInfo.ride.route[this.rideInfo.ride.route.length-1][0];
                 this.currentLongitude = this.rideInfo.ride.route[this.rideInfo.ride.route.length-1][1];
                 this.ridePath = this.rideInfo.ride.route;
@@ -170,45 +178,8 @@ export class HomePage implements OnInit {
     this.paths = [this.world, this.geofence];
     this.lines=[[39.90668, -75.35538],[39.9065, -75.35518],[39.90643, -75.35499],[39.90637, -75.35495],[39.90631, -75.35491],[39.90628, -75.35487],[39.90624, -75.35482],[39.90621, -75.35478],[39.90612, -75.3546],[39.90607, -75.3545],[39.906, -75.35438],[39.90596, -75.35431],[39.90594, -75.35427],[39.90588, -75.35421],[39.90583, -75.35415],[39.9058, -75.35411],[39.90577, -75.35407],[39.90573, -75.35398],[39.9057, -75.35389],[39.90567, -75.35381],[39.90564, -75.35374],[39.90561, -75.35368],[39.90552, -75.35352],[39.90549, -75.35345],[39.90549, -75.35346],[39.90548, -75.35346],[39.90548, -75.35347],[39.90547, -75.35347],[39.90546, -75.35347],[39.90545, -75.35348],[39.90544, -75.35348],[39.90543, -75.35348],[39.90543, -75.35347],[39.90542, -75.35347],[39.90541, -75.35347],[39.90541, -75.35346],[39.9054, -75.35346],[39.90539, -75.35345],[39.90538, -75.35344],[39.90531, -75.35344],[39.90526, -75.35342],[39.90519, -75.35341],[39.90516, -75.3534],[39.90511, -75.35342],[39.90509, -75.35342],[39.905, -75.35347],[39.90494, -75.35349],[39.90487, -75.3535],[39.90481, -75.35349],[39.90476, -75.35348],[39.9047, -75.35347],[39.90467, -75.35347],[39.90463, -75.35347],[39.90457, -75.3535],[39.90452, -75.35357],[39.90447, -75.35363],[39.90441, -75.35366],[39.90435, -75.35367],[39.90431, -75.35368],[39.90426, -75.35365],[39.90415, -75.35363],[39.90406, -75.35361],[39.904, -75.35361],[39.90388, -75.35364],[39.90378, -75.3537],[39.90372, -75.35364],[39.90369, -75.3536],[39.90366, -75.35356],[39.90362, -75.35352],[39.90355, -75.35346],[39.9035, -75.35342],[39.90341, -75.35339],[39.90335, -75.35338],[39.90326, -75.35338],[39.90314, -75.35341],[39.90303, -75.35343],[39.90299, -75.35343],[39.90284, -75.35345],[39.90247, -75.3535],[39.90226, -75.3535],[39.90217, -75.3535],[39.90198, -75.3535],[39.9019, -75.35351],[39.90181, -75.3535],[39.90177, -75.3535],[39.90168, -75.3535],[39.90159, -75.3535],[39.90153, -75.35349],[39.90152, -75.35371],[39.90154, -75.35489],[39.90155, -75.35504],[39.90157, -75.35516]];
 
-/*
-    this.diagnostic.isLocationEnabled().then(state => {
-      if (!state) {
-        this.latitude = Number(localStorage.getItem('geofenceCenterLat'));
-        this.longitude = Number(localStorage.getItem('geofenceCenterLng'));
-        let confirm = this.alertCtrl.create({
-          title: '<b>Location</b>',
-          message: 'Location information is unavaliable on this device. Go to Settings to enable Location.',
-          buttons: [
-            {
-              text: 'cancel',
-              role: 'Cancel'
-            },
-            {
-              text: 'Go to settings',
-              handler: () => {
-                this.diagnostic.switchToLocationSettings()
-              }
-            }
-          ]
-        });
-        confirm.present();
-      } else {
-        let watch = this.geolocation.watchPosition();
-        watch.subscribe((data) => {
-         // data can be a set of coordinates, or an error (if an error occurred).
-           console.log(data.coords.latitude)
-           this.latitude = data.coords.latitude;
-           this.longitude = data.coords.longitude;
-           localStorage.setItem('latitude', data.coords.latitude.toString());
-           localStorage.setItem('longitude', data.coords.longitude.toString());
-           // data.coords.longitude
-        });
-      }
-    })
-*/
-
-
     let watch = this.geolocation.watchPosition();
+    let gotMapCoords = false;
     watch.subscribe((data) => {
      // data can be a set of coordinates, or an error (if an error occurred).
        console.log(data.coords.latitude)
@@ -216,7 +187,11 @@ export class HomePage implements OnInit {
        this.longitude = data.coords.longitude;
        localStorage.setItem('latitude', data.coords.latitude.toString());
        localStorage.setItem('longitude', data.coords.longitude.toString());
-       // data.coords.longitude
+       if(!gotMapCoords) {
+         this.mapLatitude = this.latitude;
+         this.mapLongitude = this.longitude;
+         gotMapCoords = true;
+       }
     });
 
     this.httpClient.get(this.config.getAPILocation() + '/allCampusBikes', {headers: headers}).subscribe(data => {
@@ -473,6 +448,8 @@ export class HomePage implements OnInit {
         this.httpClient.post(this.config.getAPILocation() + '/newBLERide', {bike: this.results.text}, {headers: headers}).timeout(10000).subscribe(data => {
           this.response = data;
           if(this.response.success==true) {
+            this.currentLocationPic = 'assets/location.png';
+            this.locationColor = "#31b2f7";
             localStorage.setItem('inRide', "true");
             this.inRide=true;
             this.bikePreviewClass = "hide";
@@ -495,6 +472,8 @@ export class HomePage implements OnInit {
                     clearInterval(currentRide);
                     localStorage.setItem('inRide', "false");
                     this.inRide=false;
+                    this.currentLocationPic = 'assets/location2.png';
+                    this.locationColor = "#EE4469";
                     const modal = this.modalCtrl.create(EndRidePage, {currentLatitude: this.currentLatitude, currentLongitude: this.currentLongitude, bikeType: this.bikeType, rideSeconds: this.rideSeconds, rideMinutes: this.rideMinutes, rideHours: this.rideHours, rideDistance: this.rideDistance, rideDistanceDecimal: this.rideDistanceDecimal, ridePath: this.ridePath});
                     this.rideSeconds = '00';
                     this.rideMinutes = '00';
@@ -596,6 +575,8 @@ export class HomePage implements OnInit {
                   content: 'Unlocking Bike...'
                 });
                 loading.present();
+                this.currentLocationPic = 'assets/location2.png';
+                this.locationColor = "#EE4469";
                 localStorage.setItem('inRide', "true");
                 this.inRide=true;
                 this.bikePreviewClass = "hide";
@@ -627,6 +608,8 @@ export class HomePage implements OnInit {
                     clearInterval(currentRide);
                     localStorage.setItem('inRide', "false");
                     this.inRide=false;
+                    this.currentLocationPic = 'assets/location.png';
+                    this.locationColor = "#31b2f7";
                     const modal = this.modalCtrl.create(EndRidePage, {currentLatitude: this.currentLatitude, currentLongitude: this.currentLongitude, bikeType: this.bikeType, rideSeconds: this.rideSeconds, rideMinutes: this.rideMinutes, rideHours: this.rideHours, rideDistance: this.rideDistance, rideDistanceDecimal: this.rideDistanceDecimal, ridePath: this.ridePath});
                     this.rideSeconds = '00';
                     this.rideMinutes = '00';
@@ -683,6 +666,8 @@ export class HomePage implements OnInit {
               content: 'Unlocking Bike...'
             });
             loading.present();
+            this.currentLocationPic = 'assets/location2.png';
+            this.locationColor = "#EE4469";
             localStorage.setItem('inRide', "true");
             this.inRide=true;
             this.bikePreviewClass = "hide";
@@ -716,6 +701,8 @@ export class HomePage implements OnInit {
                 clearInterval(currentRide);
                 localStorage.setItem('inRide', "false");
                 this.inRide=false;
+                this.currentLocationPic = 'assets/location.png';
+                this.locationColor = "#31b2f7";
                 const modal = this.modalCtrl.create(EndRidePage, {demo: true, currentLatitude: this.currentLatitude, currentLongitude: this.currentLongitude, bikeType: this.bikeType, rideSeconds: this.rideSeconds, rideMinutes: this.rideMinutes, rideHours: this.rideHours, rideDistance: this.rideDistance, rideDistanceDecimal: this.rideDistanceDecimal, ridePath: this.ridePath});
                 this.rideSeconds = '00';
                 this.rideMinutes = '00';
@@ -750,7 +737,7 @@ export class HomePage implements OnInit {
     let headers = new HttpHeaders({
       'Authorization': localStorage.getItem('token')
     });
-    this.httpClient.get(this.config.getAPILocation() + '/bike/600521', {headers: headers}).subscribe(data => {
+    this.httpClient.get(this.config.getAPILocation() + '/bike/977500', {headers: headers}).subscribe(data => {
       this.bikeResponse = data;
       if(this.bikeResponse.success==true) {
         this.bikeType = this.bikeResponse.bike.type;
@@ -762,9 +749,11 @@ export class HomePage implements OnInit {
               content: 'Unlocking Bike...'
             });
             loading.present();
-            this.httpClient.post(this.config.getAPILocation() + '/newBLERide', {bike: '600521'}, {headers: headers}).timeout(10000).subscribe(data => {
+            this.httpClient.post(this.config.getAPILocation() + '/newBLERide', {bike: '977500'}, {headers: headers}).timeout(10000).subscribe(data => {
               this.response = data;
               if(this.response.success==true) {
+                this.currentLocationPic = 'assets/location2.png';
+                this.locationColor = "#EE4469";
                 localStorage.setItem('inRide', "true");
                 this.inRide=true;
                 this.bikePreviewClass = "hide";
@@ -773,6 +762,16 @@ export class HomePage implements OnInit {
                 localStorage.setItem('rideID', this.response.rideID);
                 localStorage.setItem('bikeNumber', this.response.bike);
                 loading.dismiss();
+                let rideStartTime = Date.now();
+                var currentTime = setInterval(() => {
+                  let timePassed = Math.floor((moment().valueOf() - moment(rideStartTime).valueOf())/1000);
+                  if(timePassed < 0) {
+                    timePassed = 0;
+                  }
+                  this.rideSeconds = this.pad(timePassed % 60);
+                  this.rideMinutes = this.pad(Math.floor(timePassed/60) % 60);
+                  this.rideHours = Math.floor(timePassed/3600);
+                }, 1000);
                 var currentRide = setInterval(() => {
                   if(localStorage.getItem('inRide')=="true") {
                     let headers = new HttpHeaders({
@@ -781,10 +780,14 @@ export class HomePage implements OnInit {
                     });
                     this.httpClient.get(this.config.getAPILocation() + '/ride/' + localStorage.getItem('rideID'), {headers: headers}).subscribe(data => {
                       this.rideInfo = data;
+                      console.log(this.rideInfo);
                       if (this.rideInfo.ride.inRide==false) {
                         clearInterval(currentRide);
+                        clearInterval(currentTime);
                         localStorage.setItem('inRide', "false");
                         this.inRide=false;
+                        this.currentLocationPic = 'assets/location.png';
+                        this.locationColor = "#31b2f7";
                         const modal = this.modalCtrl.create(EndRidePage, {currentLatitude: this.currentLatitude, currentLongitude: this.currentLongitude, bikeType: this.bikeType, rideSeconds: this.rideSeconds, rideMinutes: this.rideMinutes, rideHours: this.rideHours, rideDistance: this.rideDistance, rideDistanceDecimal: this.rideDistanceDecimal, ridePath: this.ridePath});
                         this.rideSeconds = '00';
                         this.rideMinutes = '00';
@@ -796,6 +799,7 @@ export class HomePage implements OnInit {
                           this.currentLatitude = this.rideInfo.ride.route[this.rideInfo.ride.route.length-1][0];
                           this.currentLongitude = this.rideInfo.ride.route[this.rideInfo.ride.route.length-1][1];
                           this.ridePath = this.rideInfo.ride.route;
+                          /*
                           let timePassed = Math.floor((moment().valueOf() - moment(this.rideInfo.ride.startTime).valueOf())/1000);
                           if(timePassed < 0) {
                             timePassed = 0;
@@ -803,6 +807,7 @@ export class HomePage implements OnInit {
                           this.rideSeconds = this.pad(timePassed % 60);
                           this.rideMinutes = this.pad(Math.floor(timePassed/60) % 60);
                           this.rideHours = Math.floor(timePassed/3600);
+                          */
                           this.rideDistance = Math.round((this.distance(this.rideInfo.ride.startPosition[0], this.rideInfo.ride.startPosition[1], this.currentLatitude, this.currentLongitude))*100)/100;
                           this.rideDistanceDecimal = (this.rideDistance.toString().split(".")[1]);
                           if(this.rideDistanceDecimal) {
@@ -816,7 +821,7 @@ export class HomePage implements OnInit {
                       }
                     });
                   }
-                }, 1000);
+                }, 5000);
               } else {
                 loading.dismiss();
                 let alert = this.alertCtrl.create({
@@ -923,6 +928,8 @@ export class HomePage implements OnInit {
             this.bikePreviewClass = "hide";
             this.bikeProfileArrow = "assets/arrow-down.png";
             this.bikeProfileClass = "slideUp";
+            this.currentLocationPic = 'assets/location2.png';
+            this.locationColor = "#EE4469";
             loading.dismiss();
             let test = 0;
             this.ridePath = [];
@@ -951,6 +958,8 @@ export class HomePage implements OnInit {
                 clearInterval(currentRide);
                 localStorage.setItem('inRide', "false");
                 this.inRide=false;
+                this.currentLocationPic = 'assets/location.png';
+                this.locationColor = "#31b2f7";
                 const modal = this.modalCtrl.create(EndRidePage, {demo: true, currentLatitude: this.currentLatitude, currentLongitude: this.currentLongitude, bikeType: this.bikeType, rideSeconds: this.rideSeconds, rideMinutes: this.rideMinutes, rideHours: this.rideHours, rideDistance: this.rideDistance, rideDistanceDecimal: this.rideDistanceDecimal, ridePath: this.ridePath});
                 this.rideSeconds = '00';
                 this.rideMinutes = '00';

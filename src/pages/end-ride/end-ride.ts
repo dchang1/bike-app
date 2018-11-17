@@ -39,8 +39,8 @@ export class EndRidePage {
     this.rideDistanceDecimal = params.get('rideDistanceDecimal');
     this.ridePath = params.get('ridePath');
     this.bikeType = params.get('bikeType');
-    this.currentLatitude = params.get('currentLatitude');
-    this.currentLongitude = params.get('currentLongitude');
+    this.currentLatitude = Number(params.get('currentLatitude'));
+    this.currentLongitude = Number(params.get('currentLongitude'));
     this.demo = params.get('demo');
   }
   public dismiss() {

@@ -83,7 +83,7 @@
     </div>
   </ion-card>
 
-  <img src="assets/QR.png" class="qr" (click)="bleScan()" *ngIf="!inRide">
+  <img src="assets/QR.png" class="qr" (click)="testBLE()" *ngIf="!inRide">
 
   <div class="circle" (click)="center()" *ngIf="!inRide">
     <ion-icon name="locate" class="icon locate"></ion-icon>
@@ -92,14 +92,14 @@
 <!--
   <agm-map (mapReady)="mapReady($event)" [latitude]="39.905022" [longitude]="-75.354034" [zoom]="16" [streetViewControl]="false" [clickableIcons]="false" (mapClick)="closeBikePreview()" #gm>
 -->
-  <agm-map (mapReady)="mapReady($event)" [latitude]="latitude" [longitude]="longitude" [zoom]="16" [streetViewControl]="false" [clickableIcons]="false" (mapClick)="closeBikePreview()" #gm>
+  <agm-map (mapReady)="mapReady($event)" [latitude]="mapLatitude" [longitude]="mapLongitude" [zoom]="16" [streetViewControl]="false" [clickableIcons]="false" (mapClick)="closeBikePreview()" #gm>
 
     <agm-polygon *ngIf="paths" [paths]="paths" [fillOpacity]="0.2" [clickable]="false" [strokeWeight]="0"></agm-polygon>
 <!--
     <agm-marker [visible]="!inRide" [zIndex]="3" [latitude]="39.905022" [longitude]="-75.354034" [iconUrl]="'assets/location.png'"></agm-marker>
 -->
-    <agm-marker [visible]="!inRide" [zIndex]="3" [latitude]="latitude" [longitude]="longitude" [iconUrl]="'assets/location.png'">
-      <agm-circle [visible]="!inRide" [latitude]="latitude" [longitude]="longitude" [radius]="50" [fillColor]="color" [fillOpacity]="0.3" [strokeWeight]="0"></agm-circle>
+    <agm-marker [zIndex]="3" [latitude]="latitude" [longitude]="longitude" [iconUrl]="currentLocationPic">
+      <agm-circle [latitude]="latitude" [longitude]="longitude" [radius]="50" [fillColor]="locationColor" [fillOpacity]="0.3" [strokeWeight]="0"></agm-circle>
     </agm-marker>
 
     <agm-marker [visible]="!inRide" *ngFor="let bike of bikes" [zIndex]="2" [latitude]="bike.currentPosition[0]" [longitude]="bike.currentPosition[1]" [iconUrl]="'assets/bike-icon.png'" (markerClick)="openBikePreview(bike.number)"></agm-marker>
@@ -114,7 +114,6 @@
         [longitude]="data[1]">
       </agm-polyline-point>
     </agm-polyline>
-    <agm-marker [visible]="inRide" [latitude]="currentLatitude" [longitude]="currentLongitude" [iconUrl]="'assets/inRide.png'"></agm-marker>
 
   </agm-map>
 
