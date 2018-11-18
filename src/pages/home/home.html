@@ -83,27 +83,27 @@
     </div>
   </ion-card>
 
-  <img src="assets/QR.png" class="qr" (click)="demo()" *ngIf="!inRide">
+  <img src="assets/QR.png" class="qr" (click)="bleScan()" *ngIf="!inRide">
 
   <div class="circle" (click)="center()" *ngIf="!inRide">
     <ion-icon name="locate" class="icon locate"></ion-icon>
   </div>
-
-  <agm-map (mapReady)="mapReady($event)" [latitude]="39.905022" [longitude]="-75.354034" [zoom]="16" [streetViewControl]="false" [clickableIcons]="false" (mapClick)="closeBikePreview()">
 <!--
-  <agm-map (mapReady)="mapReady($event)" [latitude]="mapLatitude" [longitude]="mapLongitude" [zoom]="16" [streetViewControl]="false" [clickableIcons]="false" (mapClick)="closeBikePreview()">
+  <agm-map (mapReady)="mapReady($event)" [latitude]="39.905022" [longitude]="-75.354034" [zoom]="16" [streetViewControl]="false" [clickableIcons]="false" (mapClick)="closeBikePreview()">
 -->
-    <agm-polygon *ngIf="paths" [paths]="paths" [fillOpacity]="0.2" [clickable]="false" [strokeWeight]="0"></agm-polygon>
 
+  <agm-map (mapReady)="mapReady($event)" [latitude]="mapLatitude" [longitude]="mapLongitude" [zoom]="16" [streetViewControl]="false" [clickableIcons]="false" (mapClick)="closeBikePreview()">
+
+    <agm-polygon *ngIf="paths" [paths]="paths" [fillOpacity]="0.2" [clickable]="false" [strokeWeight]="0"></agm-polygon>
+<!--
     <agm-marker [visible]="!inRide" [zIndex]="3" [latitude]="39.905022" [longitude]="-75.354034" [iconUrl]="'assets/location.png'">
       <agm-circle [visible]="!inRide" [latitude]="39.905022" [longitude]="-75.354034" [radius]="50" [fillColor]="locationColor" [fillOpacity]="0.3" [strokeWeight]="0"></agm-circle>
     </agm-marker>
-
-<!--
+-->
     <agm-marker [visible]="!inRide" [zIndex]="3" [latitude]="latitude" [longitude]="longitude" [iconUrl]="currentLocationPic">
       <agm-circle [visible]="!inRide" [latitude]="latitude" [longitude]="longitude" [radius]="50" [fillColor]="locationColor" [fillOpacity]="0.3" [strokeWeight]="0"></agm-circle>
     </agm-marker>
--->
+
     <agm-marker [visible]="!inRide" *ngFor="let bike of bikes" [zIndex]="2" [latitude]="bike.currentPosition[0]" [longitude]="bike.currentPosition[1]" [iconUrl]="'assets/bike-icon.png'" (markerClick)="openBikePreview(bike.number)"></agm-marker>
 
     <agm-marker *ngFor="let hub of hubs" [zIndex]="1" [latitude]="hub.location[0]" [longitude]="hub.location[1]" [iconUrl]="'assets/hub-icon.png'">
@@ -171,7 +171,9 @@
         <button ion-item (click)="share()">Donate a bike</button>
         <button ion-item (click)="report()">Report a bike</button>
         <button ion-item (click)="logout()">Logout</button>
+        <!--
         <button ion-item (click)="demo()">DEMO</button>
+      -->
         <!--
         <button ion-item (click)="test()">DEMO</button>
         <button ion-item (click)="reset()">Reset</button>
